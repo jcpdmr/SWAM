@@ -7,6 +7,24 @@ spring:
       username: myuser
       password: secret
 
+  cloud:
+    stream:
+      defaultBinder: rabbit
+      # bindings:
+      #   input:
+      #     destination: my-queue
+      #     group: my-group
+      #   output:
+      #     destination: my-queue
+      function:
+        bindings:
+          nameSink-in-0: operationinput
+      # rabbit:
+      #   binder:
+      #     addresses: rabbitmq:5672
+      #     username: myuser
+      #     password: secret
+
   rabbitmq:
     host: rabbitmq
     port: 5672
