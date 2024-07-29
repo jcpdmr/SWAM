@@ -1,0 +1,99 @@
+services:
+  catalog:
+    depends_on:
+      - config-server
+      - mongodb_catalog
+      - rabbitmq
+    build:
+      context: ./catalog
+      dockerfile: Dockerfile
+    volumes:
+      - ./catalog:/app
+      - ./catalog/.m2:/root/.m2
+    working_dir: /app
+    command: sh run_dev_mode.sh
+    ports:
+      - 8080:8080
+      - 35729:35729
+      - 5005:5005
+    
+  operation:
+    depends_on:
+      - config-server
+      - mongodb_operation
+      - rabbitmq
+    build:
+      context: ./operation
+      dockerfile: Dockerfile
+    volumes:
+      - ./operation:/app
+      - ./operation/.m2:/root/.m2
+    working_dir: /app
+    command: sh run_dev_mode.sh
+    ports:
+      - 8081:8080
+      - 35730:35729
+      - 5006:5005
+  
+  analysis:
+    depends_on:
+      - config-server
+      - mongodb_analysis
+      - rabbitmq
+    build:
+      context: ./analysis
+      dockerfile: Dockerfile
+    volumes:
+      - ./analysis:/app
+      - ./analysis/.m2:/root/.m2
+    working_dir: /app
+    command: sh run_dev_mode.sh
+    ports:
+      - 8082:8080
+      - 35731:35729
+      - 5007:5005
+  
+  mongodb_catalog:
+    image: 'mongo:latest'
+    environment:
+      - 'MONGO_INITDB_DATABASE=mydatabase'
+      - 'MONGO_INITDB_ROOT_PASSWORD=secret'
+      - 'MONGO_INITDB_ROOT_USERNAME=root'
+    ports:
+      - '27017'
+  
+  mongodb_operation:
+    image: 'mongo:latest'
+    environment:
+      - 'MONGO_INITDB_DATABASE=mydatabase'
+      - 'MONGO_INITDB_ROOT_PASSWORD=secret'
+      - 'MONGO_INITDB_ROOT_USERNAME=root'
+    ports:
+      - '27017'
+  
+  mongodb_analysis:
+    image: 'mongo:latest'
+    environment:
+      - 'MONGO_INITDB_DATABASE=mydatabase'
+      - 'MONGO_INITDB_ROOT_PASSWORD=secret'
+      - 'MONGO_INITDB_ROOT_USERNAME=root'
+    ports:
+      - '27017'
+
+  rabbitmq:
+    image: 'rabbitmq:latest'
+    environment:
+      - 'RABBITMQ_DEFAULT_PASS=secret'
+      - 'RABBITMQ_DEFAULT_USER=myuser'
+    ports:
+      - '5672'
+
+  config-server:
+    build:
+      context: ./config-server
+      dockerfile: Dockerfile
+    volumes:
+      - ./config:/config
+    ports:
+      - "8888:8888"
+      
