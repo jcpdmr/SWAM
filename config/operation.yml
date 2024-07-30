@@ -7,23 +7,19 @@ spring:
       username: myuser
       password: secret
 
-  # cloud:
-  #   stream:
-  #     defaultBinder: rabbit
-  #     # bindings:
-  #     #   input:
-  #     #     destination: my-queue
-  #     #     group: my-group
-  #     #   output:
-  #     #     destination: my-queue
-  #     function:
-  #       bindings:
-  #         nameSink-in-0: operationinput
-  #     # rabbit:
-  #     #   binder:
-  #     #     addresses: rabbitmq:5672
-  #     #     username: myuser
-  #     #     password: secret
+  cloud:
+    stream:
+      bindings:
+        consumeMessage-in-0:
+          destination: testexchange
+      # rabbit:
+      #   bindings:
+      #     consumeMessage-in-0:
+      #       consumer:
+      #         bindQueue: true
+      #         declareExchange: false
+      #         queueNameGroupOnly: true
+      #         bindingRoutingKey: '#'  # Ricevi tutti i messaggi, puoi specificare routing key specifiche se necessario
 
   rabbitmq:
     host: rabbitmq
