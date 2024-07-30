@@ -7,23 +7,14 @@ spring:
       username: myuser
       password: secret
       
-  # cloud:
-  #   stream:
-  #     defaultBinder: rabbit
-  #     # bindings:
-  #     #   input:
-  #     #     destination: my-queue
-  #     #     group: my-group
-  #     #   output:
-  #     #     destination: my-queue
-  #     function:
-  #       bindings:
-  #         supplyName-out-0: operationinput
-  #     # rabbit:
-  #     #   binder:
-  #     #     addresses: rabbitmq:5672
-  #     #     username: myuser
-  #     #     password: secret
+  cloud:
+      stream:
+        defaultBinder: rabbit
+        output-bindings: test-exchange
+        # bindings:
+        #   producer-out-0:
+        #     destination: test-exchange
+        #     group: my-group
   
   rabbitmq:
     host: rabbitmq
