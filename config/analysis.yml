@@ -1,11 +1,28 @@
 spring:
   data:
     mongodb:
-      host: mongodb_analysis
+      host: mongodb_operation
       port: 27017
       database: mydatabase
       username: myuser
       password: secret
+
+  cloud:
+
+      function:
+        # routing-expression: "headers['myroutekey'] == 'consumerC' ? 'consumerC' : 'consumerD'"
+        routing-expression: "headers['myroutekey']"
+        # definition: consumerA;consumerB
+      stream:
+        defaultBinder: rabbit
+        bindings:
+          functionRouter-in-0:
+            destination: analysis_in
+        #     # group: my-group
+        #   consumerB-in-0:
+        #     destination: functionRouter-in-0
+        #     # group: my-group
+        
 
   rabbitmq:
     host: rabbitmq

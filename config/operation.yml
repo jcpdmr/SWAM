@@ -8,12 +8,21 @@ spring:
       password: secret
 
   cloud:
+
+      function:
+        # routing-expression: "headers['myroutekey'] == 'consumerA' ? 'consumerA' : 'consumerB'"
+        routing-expression: "headers['myroutekey']"
+        # definition: consumerA;consumerB
       stream:
         defaultBinder: rabbit
         bindings:
-          consumer-in-0:
-            destination: test-exchange
-            group: my-group
+          functionRouter-in-0:
+            destination: operation_in
+        #     # group: my-group
+        #   consumerB-in-0:
+        #     destination: functionRouter-in-0
+        #     # group: my-group
+        
 
   rabbitmq:
     host: rabbitmq

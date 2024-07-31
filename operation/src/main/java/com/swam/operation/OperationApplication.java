@@ -4,6 +4,7 @@ package com.swam.operation;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.messaging.Message;
 
 import java.util.function.Consumer;
 
@@ -16,9 +17,16 @@ public class OperationApplication {
 	}
 
 	@Bean
-    public Consumer<String> consumer(){
+    public Consumer<Message<String>> consumerA(){
         return msg ->  {
-            System.out.println(msg);
+            System.out.println("Message recived by A: " + msg.getPayload());
+        };
+    }
+
+    @Bean
+    public Consumer<Message<String>> consumerB(){
+        return msg ->  {
+            System.out.println("Message recived by B: " + msg.getPayload());
         };
     }
 }
