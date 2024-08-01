@@ -7,19 +7,21 @@ spring:
       username: myuser
       password: secret
   
-  cloud:
-      # function:
-      #   routing-expression: headers['myroutekey']
-      stream:
-        defaultBinder: rabbit
-        # function:
-        #   routing:
-        #     enabled: true
-        output-bindings: operation_in;analysis_in
-        # bindings:
-        #   producer-out-0:
-        #     destination: test-exchange
-        #     group: my-group
+  # cloud:
+  #     function:
+  #       routing-expression: headers['myroutekey']
+  #     stream:
+  #       defaultBinder: rabbit
+  #       output-bindings: operation_in;analysis_in
+  #       bindings:
+  #         functionRouter-in-0:
+  #           destination: catalog_in
+  #         testConsumer1-in-0:
+  #           destination: catalog_in2
+  #           group: catalog
+  #         testConsumer2-in-0:
+  #           destination: catalog_in2
+  #           group: catalog
 
 
   rabbitmq:

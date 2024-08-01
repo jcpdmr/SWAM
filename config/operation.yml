@@ -7,21 +7,15 @@ spring:
       username: myuser
       password: secret
 
-  cloud:
-
-      function:
-        # routing-expression: "headers['myroutekey'] == 'consumerA' ? 'consumerA' : 'consumerB'"
-        routing-expression: "headers['myroutekey']"
-        # definition: consumerA;consumerB
-      stream:
-        defaultBinder: rabbit
-        bindings:
-          functionRouter-in-0:
-            destination: operation_in
-        #     # group: my-group
-        #   consumerB-in-0:
-        #     destination: functionRouter-in-0
-        #     # group: my-group
+  # cloud:
+  #     function:
+  #       routing-expression: "headers['myroutekey']"
+  #     stream:
+  #       defaultBinder: rabbit
+  #       output-bindings: catalog_in;analysis_in
+  #       bindings:
+  #         functionRouter-in-0:
+  #           destination: operation_in
         
 
   rabbitmq:
