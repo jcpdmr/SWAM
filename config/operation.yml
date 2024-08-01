@@ -6,6 +6,7 @@ spring:
       database: mydatabase
       username: myuser
       password: secret
+      authentication-database: admin
 
   rabbitmq:
     host: rabbitmq
