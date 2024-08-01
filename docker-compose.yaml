@@ -10,6 +10,7 @@ services:
     volumes:
       - ./catalog:/app
       - ./catalog/.m2:/root/.m2
+      - ./qesm_src/target/qesm-workflow-engine.jar:/qesm.jar
     working_dir: /app
     command: sh run_dev_mode.sh
     ports:
@@ -28,6 +29,7 @@ services:
     volumes:
       - ./operation:/app
       - ./operation/.m2:/root/.m2
+      - ./qesm_src/target/qesm-workflow-engine.jar:/qesm.jar
     working_dir: /app
     command: sh run_dev_mode.sh
     ports:
@@ -46,6 +48,7 @@ services:
     volumes:
       - ./analysis:/app
       - ./analysis/.m2:/root/.m2
+      - ./qesm_src/target/qesm-workflow-engine.jar:/qesm.jar
     working_dir: /app
     command: sh run_dev_mode.sh
     ports:
