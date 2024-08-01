@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
 @Configuration
 public class RabbitConfiguration {
 
@@ -31,74 +30,72 @@ public class RabbitConfiguration {
     }
 
     // Exchanges definition
-    @Bean 
-    public DirectExchange gatewayExchange(){
+    @Bean
+    public DirectExchange gatewayExchange() {
         return new DirectExchange("swam.gateway", true, false, null);
     }
 
-    @Bean 
-    public DirectExchange microservicesExchange(){
+    @Bean
+    public DirectExchange microservicesExchange() {
         return new DirectExchange("swam.microservices", true, false, null);
     }
 
     // Queues definition
     @Bean
     public Queue gatewayQueue() {
-       return new Queue("gateway_in");
+        return new Queue("gateway_in");
     }
 
     @Bean
     public Queue catalogQueue() {
-       return new Queue("catalog_in");
+        return new Queue("catalog_in");
     }
 
     @Bean
     public Queue operationQueue() {
-       return new Queue("operation_in");
+        return new Queue("operation_in");
     }
 
     @Bean
     public Queue analysisQueue() {
-       return new Queue("catalog_in");
+        return new Queue("analysis_in");
     }
 
     // Bindings for gatewayExchange definition
     @Bean
-    public Binding gatewayGatewayBinding(){
+    public Binding gatewayGatewayBinding() {
         return BindingBuilder.bind(gatewayQueue()).to(gatewayExchange()).with("gateway");
     }
 
     @Bean
-    public Binding gatewayCatalogBinding(){
+    public Binding gatewayCatalogBinding() {
         return BindingBuilder.bind(catalogQueue()).to(gatewayExchange()).with("catalog");
     }
 
     @Bean
-    public Binding gatewayOperationBinding(){
+    public Binding gatewayOperationBinding() {
         return BindingBuilder.bind(operationQueue()).to(gatewayExchange()).with("operation");
     }
 
     @Bean
-    public Binding gatewayAnalysisBinding(){
+    public Binding gatewayAnalysisBinding() {
         return BindingBuilder.bind(analysisQueue()).to(gatewayExchange()).with("analysis");
     }
 
     // Bindings for microservicesExchange definition
     @Bean
-    public Binding microservicesCatalogBinding(){
+    public Binding microservicesCatalogBinding() {
         return BindingBuilder.bind(catalogQueue()).to(microservicesExchange()).with("catalog");
     }
 
     @Bean
-    public Binding microservicesOperationBinding(){
+    public Binding microservicesOperationBinding() {
         return BindingBuilder.bind(operationQueue()).to(microservicesExchange()).with("operation");
     }
 
     @Bean
-    public Binding microservicesAnalysisBinding(){
+    public Binding microservicesAnalysisBinding() {
         return BindingBuilder.bind(analysisQueue()).to(microservicesExchange()).with("analysis");
     }
 
-
-    
 }

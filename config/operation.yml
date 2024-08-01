@@ -7,17 +7,6 @@ spring:
       username: myuser
       password: secret
 
-  # cloud:
-  #     function:
-  #       routing-expression: "headers['myroutekey']"
-  #     stream:
-  #       defaultBinder: rabbit
-  #       output-bindings: catalog_in;analysis_in
-  #       bindings:
-  #         functionRouter-in-0:
-  #           destination: operation_in
-        
-
   rabbitmq:
     host: rabbitmq
     port: 5672

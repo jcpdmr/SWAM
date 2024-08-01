@@ -13,7 +13,7 @@ services:
     working_dir: /app
     command: sh run_dev_mode.sh
     ports:
-      - 8080:8080
+      - 8083:8080
       - 35729:35729
       - 5005:5005
     
@@ -53,6 +53,23 @@ services:
       - 35731:35729
       - 5007:5005
   
+  gateway:
+    depends_on:
+      - config-server
+      - rabbitmq
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    volumes:
+      - ./gateway:/app
+      - ./gateway/.m2:/root/.m2
+    working_dir: /app
+    command: sh run_dev_mode.sh
+    ports:
+      - 8080:8080
+      - 35732:35729
+      - 5008:5005
+
   mongodb_catalog:
     image: 'mongo:latest'
     environment:
@@ -85,6 +102,8 @@ services:
     environment:
       - 'RABBITMQ_DEFAULT_PASS=secret'
       - 'RABBITMQ_DEFAULT_USER=myuser'
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
     ports:
       - '5672'
       - 15672:15672
@@ -98,3 +117,9 @@ services:
     ports:
       - "8888:8888"
       
+volumes:
+  rabbitmq_data:
+    driver: local
+    driver_opts:
+      type: tmpfs
+      device: tmpfs

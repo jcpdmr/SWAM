@@ -1,4 +1,4 @@
-package com.swam.operation;
+package com.swam.gateway;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
