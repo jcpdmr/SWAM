@@ -7,8 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication
+import com.swam.multimodule.commons.EchoTest;
+
+@SpringBootApplication()
+@ComponentScan(basePackages = { "com.swam.multimodule" })
 public class CatalogApplication implements CommandLineRunner {
 
 	public static void main(String[] args) {
@@ -34,6 +38,8 @@ public class CatalogApplication implements CommandLineRunner {
 		personList = personRepository.findByName("pippo");
 		System.out.println("person found after deleting: ");
 		personList.forEach(person -> System.out.println(person));
+
+		EchoTest.testCommons();
 
 	}
 

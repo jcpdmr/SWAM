@@ -1,56 +1,51 @@
 services:
+
   catalog:
     depends_on:
       - config-server
       - mongodb_catalog
       - rabbitmq
-    build:
-      context: ./catalog
-      dockerfile: Dockerfile
+    image: openjdk:22-jdk
     volumes:
       - ./catalog:/app
       - ./catalog/.m2:/root/.m2
-      - ./qesm_src/target/qesm-workflow-engine.jar:/qesm.jar
+      - ./trigger.txt:/app/trigger.txt
     working_dir: /app
-    command: sh run_dev_mode.sh
+    command: ["sh", "-c", "sleep 5 && java -jar /app/target/catalog-0.0.1-SNAPSHOT.jar"]
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev 
     ports:
       - 8083:8080
       - 35729:35729
-      - 5005:5005
-    
+      # - 5005:5005
+
   operation:
     depends_on:
       - config-server
       - mongodb_operation
       - rabbitmq
-    build:
-      context: ./operation
-      dockerfile: Dockerfile
+    image: openjdk:22-jdk
     volumes:
       - ./operation:/app
       - ./operation/.m2:/root/.m2
-      - ./qesm_src/target/qesm-workflow-engine.jar:/qesm.jar
     working_dir: /app
-    command: sh run_dev_mode.sh
+    command: ["sh", "-c", "sleep 5 && java -jar /app/target/operation-0.0.1-SNAPSHOT.jar"]
     ports:
       - 8081:8080
       - 35730:35729
-      - 5006:5005
+      # - 5006:5005
   
   analysis:
     depends_on:
       - config-server
       - mongodb_analysis
       - rabbitmq
-    build:
-      context: ./analysis
-      dockerfile: Dockerfile
+    image: openjdk:22-jdk
     volumes:
       - ./analysis:/app
       - ./analysis/.m2:/root/.m2
-      - ./qesm_src/target/qesm-workflow-engine.jar:/qesm.jar
     working_dir: /app
-    command: sh run_dev_mode.sh
+    command: ["sh", "-c", "sleep 5 && java -jar /app/target/analysis-0.0.1-SNAPSHOT.jar"]
     ports:
       - 8082:8080
       - 35731:35729
@@ -60,18 +55,27 @@ services:
     depends_on:
       - config-server
       - rabbitmq
-    build:
-      context: ./gateway
-      dockerfile: Dockerfile
+    image: openjdk:22-jdk
     volumes:
       - ./gateway:/app
       - ./gateway/.m2:/root/.m2
     working_dir: /app
-    command: sh run_dev_mode.sh
+    command: ["sh", "-c", "sleep 5 && java -jar /app/target/gateway-0.0.1-SNAPSHOT.jar"]
     ports:
       - 8080:8080
       - 35732:35729
       - 5008:5005
+
+
+  config-server:
+    image: openjdk:22-jdk
+    volumes:
+      - ./config:/config
+      - ./config-server:/app
+    working_dir: /app
+    command: ["java", "-jar", "/app/target/config-server-0.0.1-SNAPSHOT.jar"]
+    ports:
+      - "8888:8888"
 
   mongodb_catalog:
     image: 'mongo:latest'
@@ -81,7 +85,7 @@ services:
       - 'MONGO_INITDB_ROOT_USERNAME=myuser'
     ports:
       - '27017'
-  
+
   mongodb_operation:
     image: 'mongo:latest'
     environment:
@@ -111,15 +115,6 @@ services:
       - '5672'
       - 15672:15672
 
-  config-server:
-    build:
-      context: ./config-server
-      dockerfile: Dockerfile
-    volumes:
-      - ./config:/config
-    ports:
-      - "8888:8888"
-      
 volumes:
   rabbitmq_data:
     driver: local

@@ -1,14 +1,14 @@
-package com.swam.gateway;
+package com.swam.multimodule.commons;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RabbitMQSender {
+public class RabbitMQSenderGateway {
 
     private final RabbitTemplate rabbitTemplate;
 
-    public RabbitMQSender(RabbitTemplate rabbitTemplate) {
+    public RabbitMQSenderGateway(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
 
