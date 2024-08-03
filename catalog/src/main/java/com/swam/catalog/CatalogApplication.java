@@ -40,6 +40,7 @@ public class CatalogApplication implements CommandLineRunner {
 		personList.forEach(person -> System.out.println(person));
 
 		EchoTest.testCommons();
+		EchoTest.testCommons();
 
 	}
 

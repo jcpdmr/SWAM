@@ -7,13 +7,13 @@ services:
       - rabbitmq
     image: openjdk:22-jdk
     volumes:
-      - ./catalog:/app
-      - ./catalog/.m2:/root/.m2
-      - ./trigger.txt:/app/trigger.txt
+      - ./catalog/target/catalog-0.0.1-SNAPSHOT.jar:/app/app.jar
+      - ./run_dev_mode.sh:/app/run_dev_mode.sh
     working_dir: /app
-    command: ["sh", "-c", "sleep 5 && java -jar /app/target/catalog-0.0.1-SNAPSHOT.jar"]
+    command: ["java", "-jar", "/app/app.jar"]
     environment:
       - SPRING_PROFILES_ACTIVE=dev 
+      - MICROSERVICE_NAME=catalog
     ports:
       - 8083:8080
       - 35729:35729
@@ -26,10 +26,13 @@ services:
       - rabbitmq
     image: openjdk:22-jdk
     volumes:
-      - ./operation:/app
-      - ./operation/.m2:/root/.m2
+      - ./operation/target/operation-0.0.1-SNAPSHOT.jar:/app/app.jar
+      - ./run_dev_mode.sh:/app/run_dev_mode.sh
     working_dir: /app
-    command: ["sh", "-c", "sleep 5 && java -jar /app/target/operation-0.0.1-SNAPSHOT.jar"]
+    command: ["java", "-jar", "/app/app.jar"]
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev 
+      - MICROSERVICE_NAME=operation
     ports:
       - 8081:8080
       - 35730:35729
@@ -42,10 +45,13 @@ services:
       - rabbitmq
     image: openjdk:22-jdk
     volumes:
-      - ./analysis:/app
-      - ./analysis/.m2:/root/.m2
+      - ./analysis/target/analysis-0.0.1-SNAPSHOT.jar:/app/app.jar
+      - ./run_dev_mode.sh:/app/run_dev_mode.sh
     working_dir: /app
-    command: ["sh", "-c", "sleep 5 && java -jar /app/target/analysis-0.0.1-SNAPSHOT.jar"]
+    command: ["java", "-jar", "/app/app.jar"]
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev 
+      - MICROSERVICE_NAME=analysis
     ports:
       - 8082:8080
       - 35731:35729
@@ -57,10 +63,13 @@ services:
       - rabbitmq
     image: openjdk:22-jdk
     volumes:
-      - ./gateway:/app
-      - ./gateway/.m2:/root/.m2
+      - ./gateway/target/gateway-0.0.1-SNAPSHOT.jar:/app/app.jar
+      - ./run_dev_mode.sh:/app/run_dev_mode.sh
     working_dir: /app
-    command: ["sh", "-c", "sleep 5 && java -jar /app/target/gateway-0.0.1-SNAPSHOT.jar"]
+    command: ["java", "-jar", "/app/app.jar"]
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev 
+      - MICROSERVICE_NAME=gateway
     ports:
       - 8080:8080
       - 35732:35729
