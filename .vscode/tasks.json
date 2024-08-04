@@ -1,24 +1,62 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "label": "Dev Build",
-        "type": "shell",
-        "command": "./dev_build.sh",
-        "group": {
-          "kind": "build",
-          "isDefault": true
-        },
-        "presentation": {
-          "echo": true,
-          "reveal": "always",
-          "focus": false,
-          "panel": "new",
-          "close": true,
-          "showReuseMessage": true,
-          "clear": false
-        },
-        "problemMatcher": []
-      }
-    ]
-  }
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "1: Dev Build, Reload, Show",
+      "type": "shell",
+      "command": "./dev_build.sh -brl",
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "close": true,
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "2: Show docker logs",
+      "type": "shell",
+      "command": "./dev_build.sh -l",
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "close": true,
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "3: Reload docker containers",
+      "type": "shell",
+      "command": "./dev_build.sh -r",
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "close": true,
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    }
+  ]
+}

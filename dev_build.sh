@@ -1,24 +1,25 @@
 #!/bin/bash
 
-# Esegui la compilazione del progetto Maven
-./mvnw install --threads 4 -DskipTests
 
-# Nome del container da controllare
 CONFIG_SERVER="config-server"
 
-# Nomi dei servizi da avviare inizialmente
 BASE_SERVICES=("rabbitmq" "mongodb_catalog" "mongodb_operation" "mongodb_analysis" "config-server")
 
-# Nomi dei servizi da avviare dopo lo sleep
 MICROSERVICES=("catalog" "operation" "analysis" "gateway")
 
 
+
+build_project(){
+  # Multithread compilation with maven
+  ./mvnw install --threads C -DskipTests
+}
+
 is_service_running() {
   local service=$1
-  # Ottieni l'ID del container per il servizio
+  # Get service' container id
   local container_id=$(docker compose ps -q "$service")
   
-  # Verifica se il container esiste e se è in esecuzione
+  # Check if the container exists and it's running
   if [ -n "$container_id" ]; then
     local status=$(docker inspect -f '{{.State.Status}}' "$container_id")
     [ "$status" == "running" ]
@@ -27,35 +28,70 @@ is_service_running() {
   fi
 }
 
-if is_service_running "$CONFIG_SERVER"; then
-  echo "Avvio il compose restart solo dei microservizi"
-  docker compose restart "${MICROSERVICES[@]}"
-else
-  echo "Avvio il compose up"
+show_microservices_log(){
+  # geometry != pixels
+  cmd="gnome-terminal --geometry=150x50"
 
-  # Avvia Docker Compose con i servizi iniziali
-  echo "Avviando i servizi iniziali:"
-  docker compose up -d "${BASE_SERVICES[@]}"
+  for servizio in "${MICROSERVICES[@]}"
+  do
+      cmd+=" --tab --title='Log of $servizio' --command='bash -c \"docker-compose logs -f $servizio; exec bash\"'"
+  done
 
-  # Attendi 5 secondi
-  echo "Delay di 8 secondi per dare tempo al config-server di avviarsi"
-  sleep 8
+  eval $cmd
+}
 
-  # Avvia i servizi rimanenti
-  echo "Avviando gli altri microservizi:"
-  docker compose up -d "${MICROSERVICES[@]}"
-fi
+restart_needed_containers(){
 
+  if is_service_running "$CONFIG_SERVER"; then
+    echo "Compose restart of:"
+    docker compose restart "${MICROSERVICES[@]}"
+  else
+    
+    # Starting base containers
+    echo "Starting base containers:"
+    docker compose up -d "${BASE_SERVICES[@]}"
 
-# Costruisci il comando per gnome-terminal
-cmd="gnome-terminal --geometry=150x50"
+    echo "Delay (8s) to let config-server start"
+    sleep 8
 
-for servizio in "${MICROSERVICES[@]}"
-do
-    cmd+=" --tab --title='Log di $servizio' --command='bash -c \"docker-compose logs -f $servizio; exec bash\"'"
+    # Starting microservices
+    echo "Starting microservices:"
+    docker compose up -d "${MICROSERVICES[@]}"
+  fi
+}
+
+usage() {
+  echo "Usage: $0 [-b] [-r] [-l]"
+  echo "  -b  Build pom of multimodule project"
+  echo "  -r  Reload only needed containers"
+  echo "  -l  Open log of microservices"
+  echo "  -h  This message"
+  exit 1
+}
+
+# Options parsing
+while getopts "brlh" opt; do
+  case ${opt} in
+    b )
+      build_project
+      ;;
+    r )
+      restart_needed_containers
+      ;;
+    l )
+      show_microservices_log
+      ;;
+    h )
+      usage
+      ;;
+    \? )
+      usage
+      ;;
+  esac
 done
 
-# Esegui il comando
-eval $cmd
-
-exit 0
+# Checks if no arguments have been passed
+if [ $# -eq 0 ]; then
+  usage
+  exit 1
+fi
