@@ -9,7 +9,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-import com.swam.multimodule.commons.EchoTest;
+import com.qesm.WorkflowType;
+import com.qesm.RandomDAGGenerator.PdfType;
 
 @SpringBootApplication()
 @ComponentScan(basePackages = { "com.swam.multimodule" })
@@ -20,27 +21,21 @@ public class CatalogApplication implements CommandLineRunner {
 	}
 
 	@Autowired
-	private PersonRepository personRepository;
+	private WorkflowTypeRepository workflowTypeRepository;
 
 	@Override
 	public void run(String... args) throws Exception {
-		Person pippo = new Person("pippo", 10);
 
-		System.out.println("saving person");
-		personRepository.save(pippo);
+		WorkflowType w1 = new WorkflowType();
+		w1.generateRandomDAG(3, 3, 2, 2, 50, PdfType.UNIFORM);
+		System.out.println(w1);
+		WorkflowTypeDTO workflowTypeDTO = new WorkflowTypeDTO(w1);
 
-		List<Person> personList = personRepository.findByName("pippo");
-		System.out.println("person saved: ");
-		personList.forEach(person -> System.out.println(person));
-
-		personRepository.deleteById(personList.get(0).getId());
-
-		personList = personRepository.findByName("pippo");
-		System.out.println("person found after deleting: ");
-		personList.forEach(person -> System.out.println(person));
-
-		EchoTest.testCommons();
-		EchoTest.testCommons();
+		workflowTypeRepository.save(workflowTypeDTO);
+		List<WorkflowTypeDTO> resultList = workflowTypeRepository.findAll();
+		WorkflowType w1FromQuery = resultList.get(0).toWorkflowType();
+		System.out.println(w1FromQuery);
+		System.out.println("I workflow sono uguali? : " + w1.equals(w1FromQuery));
 
 	}
 

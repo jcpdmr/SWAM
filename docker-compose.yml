@@ -10,9 +10,9 @@ services:
       - ./catalog/target/catalog-0.0.1-SNAPSHOT.jar:/app/app.jar
       - ./run_dev_mode.sh:/app/run_dev_mode.sh
     working_dir: /app
-    command: ["java", "-jar", "/app/app.jar"]
+    command: [ "java", "-jar", "/app/app.jar" ]
     environment:
-      - SPRING_PROFILES_ACTIVE=dev 
+      - SPRING_PROFILES_ACTIVE=dev
       - MICROSERVICE_NAME=catalog
     ports:
       - 8083:8080
@@ -29,15 +29,15 @@ services:
       - ./operation/target/operation-0.0.1-SNAPSHOT.jar:/app/app.jar
       - ./run_dev_mode.sh:/app/run_dev_mode.sh
     working_dir: /app
-    command: ["java", "-jar", "/app/app.jar"]
+    command: [ "java", "-jar", "/app/app.jar" ]
     environment:
-      - SPRING_PROFILES_ACTIVE=dev 
+      - SPRING_PROFILES_ACTIVE=dev
       - MICROSERVICE_NAME=operation
     ports:
       - 8081:8080
       - 35730:35729
       # - 5006:5005
-  
+
   analysis:
     depends_on:
       - config-server
@@ -48,15 +48,15 @@ services:
       - ./analysis/target/analysis-0.0.1-SNAPSHOT.jar:/app/app.jar
       - ./run_dev_mode.sh:/app/run_dev_mode.sh
     working_dir: /app
-    command: ["java", "-jar", "/app/app.jar"]
+    command: [ "java", "-jar", "/app/app.jar" ]
     environment:
-      - SPRING_PROFILES_ACTIVE=dev 
+      - SPRING_PROFILES_ACTIVE=dev
       - MICROSERVICE_NAME=analysis
     ports:
       - 8082:8080
       - 35731:35729
       - 5007:5005
-  
+
   gateway:
     depends_on:
       - config-server
@@ -66,15 +66,14 @@ services:
       - ./gateway/target/gateway-0.0.1-SNAPSHOT.jar:/app/app.jar
       - ./run_dev_mode.sh:/app/run_dev_mode.sh
     working_dir: /app
-    command: ["java", "-jar", "/app/app.jar"]
+    command: [ "java", "-jar", "/app/app.jar" ]
     environment:
-      - SPRING_PROFILES_ACTIVE=dev 
+      - SPRING_PROFILES_ACTIVE=dev
       - MICROSERVICE_NAME=gateway
     ports:
       - 8080:8080
       - 35732:35729
       - 5008:5005
-
 
   config-server:
     image: openjdk:22-jdk
@@ -82,12 +81,19 @@ services:
       - ./config:/config
       - ./config-server:/app
     working_dir: /app
-    command: ["java", "-jar", "/app/target/config-server-0.0.1-SNAPSHOT.jar"]
+    command:
+      [
+        "java",
+        "-jar",
+        "/app/target/config-server-0.0.1-SNAPSHOT.jar"
+      ]
     ports:
       - "8888:8888"
 
   mongodb_catalog:
     image: 'mongo:latest'
+    # volumes:
+    #   - mongodb_data:/data/db
     environment:
       - 'MONGO_INITDB_DATABASE=mydatabase'
       - 'MONGO_INITDB_ROOT_PASSWORD=secret'
@@ -103,7 +109,7 @@ services:
       - 'MONGO_INITDB_ROOT_USERNAME=myuser'
     ports:
       - '27017'
-  
+
   mongodb_analysis:
     image: 'mongo:latest'
     environment:
@@ -130,3 +136,8 @@ volumes:
     driver_opts:
       type: tmpfs
       device: tmpfs
+  # mongodb_data:
+  #   driver: local
+  #   driver_opts:
+  #     type: tmpfs
+  #     device: tmpfs

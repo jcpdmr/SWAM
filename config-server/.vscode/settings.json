@@ -1,0 +1,11 @@
+{
+    "files.exclude": {
+      ".m2": true,
+      ".mvn": true,
+      "target":true,
+      "Dockerfile":true,
+      "mvnw":true,
+      "pom.xml":true,
+      "src/main/resources":true
+    }
+}

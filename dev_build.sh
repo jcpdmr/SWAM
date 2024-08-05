@@ -5,13 +5,52 @@ CONFIG_SERVER="config-server"
 
 BASE_SERVICES=("rabbitmq" "mongodb_catalog" "mongodb_operation" "mongodb_analysis" "config-server")
 
-MICROSERVICES=("catalog" "operation" "analysis" "gateway")
+MICROSERVICES=("catalog" "operation" "analysis" "gateway" "mongodb_catalog")
+MICROSERVICES_TO_LOG=("catalog" "operation" "analysis" "gateway")
 
+# Funzione per installare un JAR nel repository Maven locale
+install_jar() {
+    local group_id="$1"
+    local artifact_id="$2"
+    local version="$3"
+    local jar_path="$4"
+    
+    # Costruisci il percorso del jar nel repository locale di Maven
+    local local_repo_path="$HOME/.m2/repository/$(echo $group_id | tr '.' '/')/$artifact_id/$version/$artifact_id-$version.jar"
 
+    # Controlla se il jar esiste già nel repository locale
+    if [ -f "$local_repo_path" ]; then
+        echo "Il jar di $artifact_id è già installato nel repository Maven locale."
+    else
+        echo "Il jar di $artifact_id non è presente nel repository Maven locale. Procedo con l'installazione..."
+        
+        # Verifica che il file jar esista nella cartella lib
+        if [ -f "$jar_path" ]; then
+            # Installa il jar nel repository locale
+            mvn install:install-file -Dfile="$jar_path" -DgroupId="$group_id" -DartifactId="$artifact_id" -Dversion="$version" -Dpackaging=jar
+            
+            if [ $? -eq 0 ]; then
+                echo "Il jar di $artifact_id è stato installato con successo nel repository Maven locale."
+            else
+                echo "Si è verificato un errore durante l'installazione del jar di $artifact_id."
+            fi
+        else
+            echo "Errore: Il file $jar_path non esiste."
+            exit 1
+        fi
+    fi
+}
+
+setup_dependency(){
+  install_jar "com.eulero" "eulero" "1.0" "./qesm_src/lib/eulero.jar"
+  install_jar "com.sirio" "sirio" "1.0" "./qesm_src/lib/sirio.jar"
+}
 
 build_project(){
+  # Check for jar dependency (sirio, eurlero)
+  setup_dependency
   # Multithread compilation with maven
-  ./mvnw install --threads C -DskipTests
+  ./mvnw install --threads 1C -DskipTests
 }
 
 is_service_running() {
@@ -29,12 +68,19 @@ is_service_running() {
 }
 
 show_microservices_log(){
-  # geometry != pixels
-  cmd="gnome-terminal --geometry=150x50"
 
-  for servizio in "${MICROSERVICES[@]}"
+  if [ "$1" == "new" ]; then
+    tail_option="--tail 0"
+  else
+    tail_option=""
+  fi
+
+  # geometry != pixels
+  cmd="gnome-terminal --geometry=200x50"
+
+  for servizio in "${MICROSERVICES_TO_LOG[@]}"
   do
-      cmd+=" --tab --title='Log of $servizio' --command='bash -c \"docker-compose logs -f $servizio; exec bash\"'"
+      cmd+=" --tab --title='Log of $servizio' --command='bash -c \"docker-compose logs -f $tail_option $servizio; exec bash\"'"
   done
 
   eval $cmd
@@ -70,7 +116,7 @@ usage() {
 }
 
 # Options parsing
-while getopts "brlh" opt; do
+while getopts "brl:h" opt; do
   case ${opt} in
     b )
       build_project
@@ -79,7 +125,12 @@ while getopts "brlh" opt; do
       restart_needed_containers
       ;;
     l )
-      show_microservices_log
+      # Controlla se c'è un parametro aggiuntivo dopo -l
+      if [[ $OPTARG == "new" ]]; then
+        show_microservices_log new
+      else
+        show_microservices_log
+      fi
       ;;
     h )
       usage
