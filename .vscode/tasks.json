@@ -57,6 +57,25 @@
         "clear": false
       },
       "problemMatcher": []
+    },
+    {
+      "label": "4: Start GUIs for each mongoDB",
+      "type": "shell",
+      "command": "./dev_build.sh -d",
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "close": true,
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
     }
   ]
 }

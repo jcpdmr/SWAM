@@ -99,7 +99,7 @@ services:
       - 'MONGO_INITDB_ROOT_PASSWORD=secret'
       - 'MONGO_INITDB_ROOT_USERNAME=myuser'
     ports:
-      - '27017'
+      - 27017:27017
 
   mongodb_operation:
     image: 'mongo:latest'
@@ -108,7 +108,7 @@ services:
       - 'MONGO_INITDB_ROOT_PASSWORD=secret'
       - 'MONGO_INITDB_ROOT_USERNAME=myuser'
     ports:
-      - '27017'
+      - 27018:27017
 
   mongodb_analysis:
     image: 'mongo:latest'
@@ -117,7 +117,7 @@ services:
       - 'MONGO_INITDB_ROOT_PASSWORD=secret'
       - 'MONGO_INITDB_ROOT_USERNAME=myuser'
     ports:
-      - '27017'
+      - 27019:27017
 
   rabbitmq:
     image: 'rabbitmq:management'

@@ -1,0 +1,56 @@
+{
+  "type": "Compass Connections",
+  "version": {
+    "$numberInt": "1"
+  },
+  "connections": [
+    {
+      "id": "analysisDB",
+      "lastUsed": {
+        "$date": {
+          "$numberLong": "1722958719272"
+        }
+      },
+      "favorite": {
+        "name": "analysisDB"
+      },
+      "savedConnectionType": "favorite",
+      "connectionOptions": {
+        "connectionString": "mongodb://myuser:secret@localhost:27019/",
+        "oidc": {}
+      }
+    },
+    {
+      "id": "operationDB",
+      "lastUsed": {
+        "$date": {
+          "$numberLong": "1722958617043"
+        }
+      },
+      "favorite": {
+        "name": "operationDB"
+      },
+      "savedConnectionType": "favorite",
+      "connectionOptions": {
+        "connectionString": "mongodb://myuser:secret@localhost:27018",
+        "oidc": {}
+      }
+    },
+    {
+      "id": "catalogDB",
+      "lastUsed": {
+        "$date": {
+          "$numberLong": "1722958263975"
+        }
+      },
+      "favorite": {
+        "name": "catalogDB"
+      },
+      "savedConnectionType": "favorite",
+      "connectionOptions": {
+        "connectionString": "mongodb://myuser:secret@localhost:27017",
+        "oidc": {}
+      }
+    }
+  ]
+}

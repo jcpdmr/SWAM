@@ -8,6 +8,8 @@ BASE_SERVICES=("rabbitmq" "mongodb_catalog" "mongodb_operation" "mongodb_analysi
 MICROSERVICES=("catalog" "operation" "analysis" "gateway" "mongodb_catalog")
 MICROSERVICES_TO_LOG=("catalog" "operation" "analysis" "gateway")
 
+DATABASES=("analysisDB" "operationDB" "catalogDB")
+
 # Funzione per installare un JAR nel repository Maven locale
 install_jar() {
     local group_id="$1"
@@ -78,9 +80,9 @@ show_microservices_log(){
   # geometry != pixels
   cmd="gnome-terminal --geometry=200x50"
 
-  for servizio in "${MICROSERVICES_TO_LOG[@]}"
+  for service in "${MICROSERVICES_TO_LOG[@]}"
   do
-      cmd+=" --tab --title='Log of $servizio' --command='bash -c \"docker-compose logs -f $tail_option $servizio; exec bash\"'"
+      cmd+=" --tab --title='Log of $service' --command='bash -c \"docker compose logs -f $tail_option $service; exec bash\"'"
   done
 
   eval $cmd
@@ -106,6 +108,16 @@ restart_needed_containers(){
   fi
 }
 
+connect_to_DBs_GUI(){
+  echo "Starting mongoDB-compass GUIs for each DB"
+  for database in "${DATABASES[@]}"
+  do
+      mongodb-compass --file "compass-connections.json" "$database" &
+  done
+
+  wait
+}
+
 usage() {
   echo "Usage: $0 [-b] [-r] [-l]"
   echo "  -b  Build pom of multimodule project"
@@ -116,7 +128,7 @@ usage() {
 }
 
 # Options parsing
-while getopts "brl:h" opt; do
+while getopts "brdl:h" opt; do
   case ${opt} in
     b )
       build_project
@@ -124,6 +136,9 @@ while getopts "brl:h" opt; do
     r )
       restart_needed_containers
       ;;
+    d )
+      connect_to_DBs_GUI
+      ;;  
     l )
       # Controlla se c'è un parametro aggiuntivo dopo -l
       if [[ $OPTARG == "new" ]]; then
