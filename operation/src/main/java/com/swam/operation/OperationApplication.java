@@ -1,43 +1,40 @@
 package com.swam.operation;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-import com.swam.commons.OrchestratorInfo.TargetMethods;
+import com.swam.commons.OrchestratorInfo;
+import com.swam.commons.RabbitMQSender;
+import com.swam.commons.RequestHandler;
 
 @SpringBootApplication
-@ComponentScan(basePackages = { "com.swam.commons" })
+@ComponentScan(basePackages = { "com.swam.commons", "com.swam.operation" })
 public class OperationApplication {
+
+    private final RabbitMQSender rabbitMQSender;
+
+    private final RequestHandler requestHandler;
+
+    public OperationApplication(@Qualifier("operation") RequestHandler requestHandler,
+            RabbitMQSender rabbitMQSenderMicroservices) {
+        this.rabbitMQSender = rabbitMQSenderMicroservices;
+        this.requestHandler = requestHandler;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(OperationApplication.class, args);
     }
 
     @RabbitListener(queues = "operation_in")
-    public void requestHandler(Message msg) {
+    public void messageHandler(Message msg) {
         System.out.println("Messaggio ricevuto dall'handler: " + msg);
 
-        // Map<TargetMethods, MethodInvoker> methodMap = new HashMap<>();
-
-        // methodMap.put(TargetMethods.ANALYZE, OperationApplication::echo1);
+        requestHandler.handle(new OrchestratorInfo(msg.getMessageProperties()).getTargetMethod());
+        rabbitMQSender.sendToNextHop(msg, false);
     }
 
-    @FunctionalInterface
-    interface MethodInvoker {
-        void invoke(OperationApplication obj);
-    }
-
-    public static void echo1() {
-        System.out.println("method 1");
-    }
-
-    public static void echo2() {
-        System.out.println("method 2");
-    }
 }

@@ -1,4 +1,4 @@
-package com.swam.multimodule.commons;
+package com.swam.commons;
 
 import java.util.Optional;
 
@@ -12,7 +12,7 @@ import com.qesm.ProductIstance;
 import com.qesm.ProductType;
 
 @Document
-public class ProductDTO <T extends AbstractProduct> {
+public class ProductDTO<T extends AbstractProduct> {
     private final String name;
     private final @Id String id;
     private final int quantityProduced;
@@ -57,33 +57,34 @@ public class ProductDTO <T extends AbstractProduct> {
     public Optional<T> toProduct() {
         if (itemGroup == ItemGroup.PROCESSED) {
             // if (objectClass == ProductType.class){
-                @SuppressWarnings("unchecked")
-                T product = (T) new ProductType(name, quantityProduced, pdf);
-                return Optional.of(product);
+            @SuppressWarnings("unchecked")
+            T product = (T) new ProductType(name, quantityProduced, pdf);
+            return Optional.of(product);
             // }
             // else if (objectClass == ProductIstance.class){
-            //     ProductType myProductTypeExample = new ProductType("myProductTypeExample", 1,  null);
-            //     @SuppressWarnings("unchecked")
-            //     T product = (T) new ProductIstance(myProductTypeExample);
-            //     return Optional.of(product);
+            // ProductType myProductTypeExample = new ProductType("myProductTypeExample", 1,
+            // null);
+            // @SuppressWarnings("unchecked")
+            // T product = (T) new ProductIstance(myProductTypeExample);
+            // return Optional.of(product);
             // }
             // else{
-            //     return Optional.empty();
+            // return Optional.empty();
             // }
         } else {
             // if (objectClass == ProductType.class){
-                @SuppressWarnings("unchecked")
-                T product = (T) new ProductType(name);
-                return Optional.of(product);
+            @SuppressWarnings("unchecked")
+            T product = (T) new ProductType(name);
+            return Optional.of(product);
             // }
             // else if (objectClass == ProductIstance.class){
-            //     ProductType myProductTypeExample = new ProductType("myProductTypeExample");
-            //     @SuppressWarnings("unchecked")
-            //     T product = (T) new ProductIstance(myProductTypeExample);
-            //     return Optional.of(product);
+            // ProductType myProductTypeExample = new ProductType("myProductTypeExample");
+            // @SuppressWarnings("unchecked")
+            // T product = (T) new ProductIstance(myProductTypeExample);
+            // return Optional.of(product);
             // }
             // else{
-            //     return Optional.empty();
+            // return Optional.empty();
             // }
         }
 

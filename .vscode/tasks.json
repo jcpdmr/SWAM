@@ -76,6 +76,25 @@
         "clear": false
       },
       "problemMatcher": []
-    }
+    },
+    {
+      "label": "5: Build pom",
+      "type": "shell",
+      "command": "./dev_build.sh -b",
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "close": false,
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
   ]
 }

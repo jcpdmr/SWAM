@@ -12,13 +12,15 @@ public class OrchestratorInfo {
 
     public enum TargetMethods {
         ISTANCE_TEMPLATE,
-        ANALYZE
+        ANALYZE,
+        NULL
     }
 
     public enum TargetMicroservices {
         CATALOG,
         OPERATION,
-        ANALYSIS
+        ANALYSIS,
+        GATEWAY
     }
 
     private Integer hopCounter;
@@ -77,6 +79,10 @@ public class OrchestratorInfo {
 
     public TargetMethods getTargetMethod() {
         return pipeline.get(hopCounter).getSecond();
+    }
+
+    public Integer getHopCounter() {
+        return hopCounter;
     }
 
     public Integer increaseHop() {

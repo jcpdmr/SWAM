@@ -57,7 +57,7 @@ build_project(){
 
 is_service_running() {
   local service=$1
-  # Get service' container id
+  # Get service's container id
   local container_id=$(docker compose ps -q "$service")
   
   # Check if the container exists and it's running
@@ -88,11 +88,31 @@ show_microservices_log(){
   eval $cmd
 }
 
+check_services(){
+    local restarted=0
+    for service in "${MICROSERVICES[@]}"; do
+        # Check if the microservice is running, otherwise start it
+        if ! is_service_running "$service"; then
+            echo "Starting service: $service"
+            docker compose start "$service"
+            restarted=1
+        fi
+    done
+    
+    # Recall the function if any service was restarted
+    if [ $restarted -eq 1 ]; then
+        echo "At least one service was started, checking again..."
+        check_services
+    fi
+}
+
 restart_needed_containers(){
 
   if is_service_running "$CONFIG_SERVER"; then
     echo "Compose restart of:"
     docker compose restart "${MICROSERVICES[@]}"
+    sleep 1 
+    check_services
   else
     
     # Starting base containers
@@ -105,6 +125,8 @@ restart_needed_containers(){
     # Starting microservices
     echo "Starting microservices:"
     docker compose up -d "${MICROSERVICES[@]}"
+    sleep 1 
+    check_services
   fi
 }
 

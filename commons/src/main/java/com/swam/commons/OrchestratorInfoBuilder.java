@@ -12,14 +12,18 @@ public class OrchestratorInfoBuilder {
 
     private List<Pair<TargetMicroservices, TargetMethods>> pipeline = new ArrayList<>();
 
-    private OrchestratorInfoBuilder(TargetMicroservices targetMicroservice, TargetMethods targetMethod) {
-        Pair<TargetMicroservices, TargetMethods> targets = Pair.of(targetMicroservice, targetMethod);
-        this.pipeline.add(targets);
+    private OrchestratorInfoBuilder() {
+
     }
 
-    public static OrchestratorInfoBuilder withTargets(TargetMicroservices targetMicroservice,
+    public static OrchestratorInfoBuilder newBuild() {
+        return new OrchestratorInfoBuilder();
+    }
+
+    public OrchestratorInfoBuilder addTargets(TargetMicroservices targetMicroservice,
             TargetMethods targetMethod) {
-        return new OrchestratorInfoBuilder(targetMicroservice, targetMethod);
+        this.pipeline.add(Pair.of(targetMicroservice, targetMethod));
+        return this;
     }
 
     public OrchestratorInfo build() {
