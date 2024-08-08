@@ -92,8 +92,8 @@ services:
 
   mongodb_catalog:
     image: 'mongo:latest'
-    # volumes:
-    #   - mongodb_data:/data/db
+    volumes:
+      - ./catalog/mongodb_data:/data/db
     environment:
       - 'MONGO_INITDB_DATABASE=mydatabase'
       - 'MONGO_INITDB_ROOT_PASSWORD=secret'
@@ -103,6 +103,8 @@ services:
 
   mongodb_operation:
     image: 'mongo:latest'
+    volumes:
+      - ./operation/mongodb_data:/data/db
     environment:
       - 'MONGO_INITDB_DATABASE=mydatabase'
       - 'MONGO_INITDB_ROOT_PASSWORD=secret'
@@ -112,6 +114,8 @@ services:
 
   mongodb_analysis:
     image: 'mongo:latest'
+    volumes:
+      - ./analysis/mongodb_data:/data/db
     environment:
       - 'MONGO_INITDB_DATABASE=mydatabase'
       - 'MONGO_INITDB_ROOT_PASSWORD=secret'

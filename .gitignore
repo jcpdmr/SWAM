@@ -4,3 +4,4 @@ target/
 !**/src/test/**/target/
 */.m2
 */lib
+*/mongodb_data/

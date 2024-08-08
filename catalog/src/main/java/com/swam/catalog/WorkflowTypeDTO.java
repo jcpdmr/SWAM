@@ -47,16 +47,6 @@ public class WorkflowTypeDTO {
         }
 
         for (CustomEdgeDTO customEdgeDTO : edgeSet) {
-            // ProductType sourceVertex = null, targetVertex = null;
-            // for (ProductType vertex : dag.vertexSet()) {
-            // if (sourceVertex != null && targetVertex != null) {
-            // break;
-            // } else if (customEdgeDTO.getSource().getName().equals(vertex.getName())) {
-            // sourceVertex = vertex;
-            // } else if (customEdgeDTO.getTarget().getName().equals(vertex.getName())) {
-            // targetVertex = vertex;
-            // }
-            // }
             CustomEdge customEdge = dag.addEdge(nameToProductMap.get(customEdgeDTO.getSource().getName()),
                     nameToProductMap.get(customEdgeDTO.getTarget().getName()));
             customEdge.setQuantityRequired(customEdgeDTO.getQuantityRequired());

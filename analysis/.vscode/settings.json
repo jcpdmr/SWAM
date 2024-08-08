@@ -6,6 +6,8 @@
       "Dockerfile":true,
       "mvnw":true,
       "pom.xml":true,
-      "src/main/resources":true
+      "src/main/resources":true,
+      ".vscode":true,
+      "mongodb_data":true
     }
 }
