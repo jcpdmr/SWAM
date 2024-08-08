@@ -12,14 +12,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.swam.multimodule.commons.OrchestratorInfo;
-import com.swam.multimodule.commons.OrchestratorInfoBuilder;
-import com.swam.multimodule.commons.RabbitMQSenderGateway;
-import com.swam.multimodule.commons.OrchestratorInfo.TargetMethods;
-import com.swam.multimodule.commons.OrchestratorInfo.TargetMicroservices;
+import com.swam.commons.OrchestratorInfo;
+import com.swam.commons.OrchestratorInfoBuilder;
+import com.swam.commons.RabbitMQSenderGateway;
+import com.swam.commons.OrchestratorInfo.TargetMethods;
+import com.swam.commons.OrchestratorInfo.TargetMicroservices;
 
 @SpringBootApplication
-@ComponentScan(basePackages = { "com.swam.multimodule", "com.swam.gateway" })
+@ComponentScan(basePackages = { "com.swam.commons", "com.swam.gateway" })
 @RestController
 public class GatewayApplication {
 

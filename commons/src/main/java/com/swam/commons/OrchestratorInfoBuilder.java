@@ -1,12 +1,12 @@
-package com.swam.multimodule.commons;
+package com.swam.commons;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.util.Pair;
 
-import com.swam.multimodule.commons.OrchestratorInfo.TargetMethods;
-import com.swam.multimodule.commons.OrchestratorInfo.TargetMicroservices;
+import com.swam.commons.OrchestratorInfo.TargetMethods;
+import com.swam.commons.OrchestratorInfo.TargetMicroservices;
 
 public class OrchestratorInfoBuilder {
 

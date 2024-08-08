@@ -1,4 +1,4 @@
-package com.swam.multimodule.commons;
+package com.swam.commons;
 
 import java.util.ArrayList;
 import java.util.HashMap;
