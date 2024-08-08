@@ -24,7 +24,6 @@ public class RabbitMQSenderMicroservices {
         orchestratorInfo.increaseHop();
         message = MessageBuilder.withBody(message.getBody()).andProperties(orchestratorInfo.toMessageProperties())
                 .build();
-
         switch (nextMicroservice) {
             case TargetMicroservices.CATALOG:
                 sendToCatalog(message);
