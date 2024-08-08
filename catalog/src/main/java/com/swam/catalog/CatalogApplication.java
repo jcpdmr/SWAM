@@ -12,11 +12,11 @@ import org.springframework.context.annotation.ComponentScan;
 
 import com.qesm.WorkflowType;
 import com.qesm.RandomDAGGenerator.PdfType;
-import com.swam.multimodule.commons.OrchestratorInfo;
-import com.swam.multimodule.commons.RabbitMQSenderMicroservices;
+import com.swam.commons.OrchestratorInfo;
+import com.swam.commons.RabbitMQSenderMicroservices;
 
 @SpringBootApplication()
-@ComponentScan(basePackages = { "com.swam.multimodule" })
+@ComponentScan(basePackages = { "com.swam.commons" })
 public class CatalogApplication implements CommandLineRunner {
 
 	public static void main(String[] args) {

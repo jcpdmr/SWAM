@@ -9,10 +9,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-import com.swam.multimodule.commons.OrchestratorInfo.TargetMethods;
+import com.swam.commons.OrchestratorInfo.TargetMethods;
 
 @SpringBootApplication
-@ComponentScan(basePackages = { "com.swam.multimodule" })
+@ComponentScan(basePackages = { "com.swam.commons" })
 public class OperationApplication {
 
     public static void main(String[] args) {

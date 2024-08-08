@@ -1,11 +1,11 @@
-package com.swam.multimodule.commons;
+package com.swam.commons;
 
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
-import com.swam.multimodule.commons.OrchestratorInfo.TargetMicroservices;
+import com.swam.commons.OrchestratorInfo.TargetMicroservices;
 
 @Service
 public class RabbitMQSenderMicroservices {

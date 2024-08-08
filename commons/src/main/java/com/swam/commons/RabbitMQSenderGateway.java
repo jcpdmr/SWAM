@@ -1,4 +1,4 @@
-package com.swam.multimodule.commons;
+package com.swam.commons;
 
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
