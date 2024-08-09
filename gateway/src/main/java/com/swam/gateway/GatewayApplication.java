@@ -2,8 +2,7 @@ package com.swam.gateway;
 
 import java.util.Date;
 
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.swam.commons.CustomMessage;
 import com.swam.commons.OrchestratorInfo;
 import com.swam.commons.OrchestratorInfoBuilder;
 import com.swam.commons.RabbitMQSender;
@@ -61,18 +60,18 @@ public class GatewayApplication {
 				.addTargets(TargetMicroservices.GATEWAY, TargetMethods.NULL)
 				.build();
 
-		Message testAPI = MessageBuilder.withBody("test msg".getBytes())
-				.andProperties(orchestratorInfo.toMessageProperties())
-				.build();
+		CustomMessage testAPI = new CustomMessage("test msg");
 
-		rabbitMQSender.sendToNextHop(testAPI, true);
+		rabbitMQSender.sendToNextHop(testAPI, true, orchestratorInfo);
 
 		return ResponseEntity.ok("sended to catalog");
 	}
 
 	@RabbitListener(queues = "gateway_in")
-	public void messageHandler(Message msg) {
-		System.out.println("Messaggio ricevuto dall'handler: " + msg);
-		System.out.println("testo del messaggio: " + new String(msg.getBody()));
+	public void messageHandler(CustomMessage msg, MessageProperties messageProperties) {
+		System.out.println("Messaggio ricevuto dall'handler: " + msg.getMsg());
+		System.out.println("Message properties: " + messageProperties);
+
+		// TODO: handle ack (using orchestratorInfo's uuid) and notify clients
 	}
 }

@@ -1,6 +1,6 @@
 package com.swam.catalog;
 
-import com.swam.commons.RequestHandler.MethodExecutor;
+import com.swam.commons.AbstractRequestHandler.MethodExecutor;
 
 public class MakeIstance implements MethodExecutor {
 

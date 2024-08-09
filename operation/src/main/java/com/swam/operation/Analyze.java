@@ -1,6 +1,6 @@
 package com.swam.operation;
 
-import com.swam.commons.RequestHandler.MethodExecutor;
+import com.swam.commons.AbstractRequestHandler.MethodExecutor;
 
 public class Analyze implements MethodExecutor {
 
