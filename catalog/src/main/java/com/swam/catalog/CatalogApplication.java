@@ -22,17 +22,21 @@ import com.swam.commons.RabbitMQSender;
 @ComponentScan(basePackages = { "com.swam.commons", "com.swam.catalog" })
 public class CatalogApplication implements CommandLineRunner {
 
+	@SuppressWarnings("unused")
 	private final WorkflowTypeRepository workflowTypeRepository;
 
+	@SuppressWarnings("unused")
 	private final ProductIstanceRepository productIstanceRepository;
 
+	@SuppressWarnings("unused")
 	private final ProductTypeRepository productTypeRepository;
 
-	private final RequestHandler requestHandler;
+	@SuppressWarnings("unused")
+	private final MessageHandler requestHandler;
 
 	public CatalogApplication(WorkflowTypeRepository workflowTypeRepository,
 			ProductIstanceRepository productIstanceRepository, ProductTypeRepository productTypeRepository,
-			RequestHandler requestHandler) {
+			MessageHandler requestHandler) {
 		this.workflowTypeRepository = workflowTypeRepository;
 		this.productIstanceRepository = productIstanceRepository;
 		this.productTypeRepository = productTypeRepository;
@@ -79,16 +83,4 @@ public class CatalogApplication implements CommandLineRunner {
 		// productIstanceRepository.save(pi1DTO);
 		// productIstanceRepository.save(pi2DTO);
 	}
-
-	// @RabbitListener(queues = "catalog_in")
-	// public void messageHandler(CustomMessage msg, MessageProperties
-	// messageProperties) {
-	// System.out.println("Messaggio ricevuto dall'handler: " + msg.getMsg());
-	// System.out.println("Messagge properties: " + messageProperties);
-
-	// OrchestratorInfo orchestratorInfo = new OrchestratorInfo(messageProperties);
-
-	// requestHandler.handle(orchestratorInfo.getTargetMethod());
-	// rabbitMQSender.sendToNextHop(msg, false, orchestratorInfo);
-	// }
 }

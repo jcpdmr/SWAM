@@ -1,6 +1,7 @@
 package com.swam.commons;
 
 import java.util.Map;
+import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
@@ -11,7 +12,9 @@ import lombok.Setter;
 @Setter
 public class CustomMessage {
     private String msg;
-    private Map<String, Object> requestBody;
+    private Optional<Map<String, Object>> requestBody;
+    private Optional<Map<String, String>> requestParam;
+    private Optional<Integer> ackHop;
 
     @JsonCreator
     public CustomMessage(String msg) {

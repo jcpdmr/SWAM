@@ -11,8 +11,15 @@ import org.springframework.data.util.Pair;
 public class OrchestratorInfo {
 
     public enum TargetMethods {
-        ISTANCE_TEMPLATE,
+
+        // analysis's methods
         ANALYZE,
+        // catalog's methods
+        ISTANCE_TEMPLATE,
+        // operation's methods
+        // gateway's methods
+        CHECK_ACK,
+        // common's methods
         NULL
     }
 
@@ -20,7 +27,8 @@ public class OrchestratorInfo {
         CATALOG,
         OPERATION,
         ANALYSIS,
-        GATEWAY
+        GATEWAY,
+        END
     }
 
     private final UUID uuid;
@@ -29,6 +37,12 @@ public class OrchestratorInfo {
 
     public OrchestratorInfo(List<Pair<TargetMicroservices, TargetMethods>> pipeline) {
         this.uuid = UUID.randomUUID();
+        this.hopCounter = 0;
+        this.pipeline = pipeline;
+    }
+
+    public OrchestratorInfo(List<Pair<TargetMicroservices, TargetMethods>> pipeline, UUID uuid) {
+        this.uuid = uuid;
         this.hopCounter = 0;
         this.pipeline = pipeline;
     }
@@ -77,7 +91,11 @@ public class OrchestratorInfo {
     }
 
     public TargetMicroservices getTargetMicroservice() {
-        return pipeline.get(hopCounter).getFirst();
+        if (hopCounter.equals(pipeline.size())) {
+            return TargetMicroservices.END;
+        } else {
+            return pipeline.get(hopCounter).getFirst();
+        }
     }
 
     public TargetMethods getTargetMethod() {
@@ -96,23 +114,6 @@ public class OrchestratorInfo {
     public UUID getUuid() {
         return uuid;
     }
-
-    // public MessageProperties toMessageProperties() {
-    // MessageProperties messageProperties = new MessageProperties();
-    // Map<String, Object> headers = new HashMap<>();
-    // headers.put("hopCounter", hopCounter.toString());
-    // String targetMicroservices = "";
-    // String targetMethods = "";
-    // for (Pair<TargetMicroservices, TargetMethods> pair : pipeline) {
-    // targetMicroservices += pair.getFirst().toString() + ";";
-    // targetMethods += pair.getSecond().toString() + ";";
-    // }
-    // headers.put("targetMicroservices", targetMicroservices);
-    // headers.put("targetMethods", targetMethods);
-
-    // messageProperties.setHeaders(headers);
-    // return messageProperties;
-    // }
 
     public void addHeadersToMessageProperties(MessageProperties messageProperties) {
         Map<String, Object> headers = messageProperties.getHeaders();

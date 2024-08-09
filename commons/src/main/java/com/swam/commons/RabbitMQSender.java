@@ -1,11 +1,14 @@
 package com.swam.commons;
 
+import java.util.Optional;
+
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
+import com.swam.commons.OrchestratorInfo.TargetMethods;
 import com.swam.commons.OrchestratorInfo.TargetMicroservices;
 
 @Service
@@ -17,9 +20,9 @@ public class RabbitMQSender {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void sendToNextHop(Object message, Boolean isGateway, OrchestratorInfo orchestratorInfo) {
+    public void sendToNextHop(Object message, OrchestratorInfo orchestratorInfo, Boolean isFromGateway) {
 
-        if (!isGateway) {
+        if (!isFromGateway) {
             orchestratorInfo.increaseHop();
         }
 
@@ -27,29 +30,39 @@ public class RabbitMQSender {
 
         CustomMessagePostProcessor messagePostProcessor = new CustomMessagePostProcessor(orchestratorInfo);
 
+        OrchestratorInfo ackOrchestratorInfo = OrchestratorInfoBuilder.newBuild()
+                .withUUID(orchestratorInfo.getUuid())
+                .addTargets(TargetMicroservices.GATEWAY, TargetMethods.CHECK_ACK)
+                .build();
+
+        CustomMessagePostProcessor ackPostProcessor = new CustomMessagePostProcessor(ackOrchestratorInfo);
+
         CustomMessage ackMessage = new CustomMessage("ACK");
+        ackMessage.setAckHop(Optional.of(orchestratorInfo.getHopCounter()));
 
         switch (nextMicroservice) {
             case TargetMicroservices.CATALOG:
                 sendToCatalog(message, "swam.microservices", messagePostProcessor);
-                if (!isGateway) {
-                    sendToGateway(ackMessage, messagePostProcessor);
+                if (!isFromGateway) {
+                    sendToGateway(ackMessage, ackPostProcessor);
                 }
                 break;
             case TargetMicroservices.OPERATION:
                 sendToOperation(message, "swam.microservices", messagePostProcessor);
-                if (!isGateway) {
-                    sendToGateway(ackMessage, messagePostProcessor);
+                if (!isFromGateway) {
+                    sendToGateway(ackMessage, ackPostProcessor);
                 }
                 break;
             case TargetMicroservices.ANALYSIS:
                 sendToAnalysis(message, "swam.microservices", messagePostProcessor);
-                if (!isGateway) {
-                    sendToGateway(ackMessage, messagePostProcessor);
+                if (!isFromGateway) {
+                    sendToGateway(ackMessage, ackPostProcessor);
                 }
                 break;
             case TargetMicroservices.GATEWAY:
                 sendToGateway(message, messagePostProcessor);
+                break;
+            case TargetMicroservices.END:
                 break;
             default:
                 // TODO: handle errors

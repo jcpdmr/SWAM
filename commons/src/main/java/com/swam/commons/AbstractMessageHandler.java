@@ -7,26 +7,27 @@ import org.springframework.amqp.core.MessageProperties;
 
 import com.swam.commons.OrchestratorInfo.TargetMethods;
 
-public abstract class AbstractRequestHandler {
+public abstract class AbstractMessageHandler {
 
     private Map<TargetMethods, MethodExecutor> methodsMap;
     private final RabbitMQSender rabbitMQSender;
 
-    public AbstractRequestHandler(RabbitMQSender rabbitMQSender) {
+    public AbstractMessageHandler(RabbitMQSender rabbitMQSender) {
         this.rabbitMQSender = rabbitMQSender;
         this.methodsMap = new HashMap<>();
         methodsMap.put(TargetMethods.NULL, null);
     }
 
     public void addMethod(TargetMethods targetMethod, MethodExecutor methodExecutor) {
+        // TODO: check if targetMethod already present
         methodsMap.put(targetMethod, methodExecutor);
     }
 
-    protected abstract void listener(CustomMessage request, MessageProperties messageProperties);
+    protected abstract void listener(CustomMessage message, MessageProperties messageProperties);
 
-    protected void handle(CustomMessage request, MessageProperties messageProperties) {
+    protected void handle(CustomMessage message, MessageProperties messageProperties) {
 
-        System.out.println("Messaggio ricevuto dall'handler: " + request.getMsg());
+        // System.out.println("Messaggio ricevuto dall'handler: " + message.getMsg());
         // System.out.println("Messagge properties: " + messageProperties);
 
         OrchestratorInfo orchestratorInfo = new OrchestratorInfo(messageProperties);
@@ -34,31 +35,35 @@ public abstract class AbstractRequestHandler {
         // System.out.println("Lista di bindings dei metodi: " + methodsMap);
         // System.out.println("Nome del motodo da eseguire: " + method);
 
-        Boolean requestHandledCorrectly = true;
+        Boolean messageHandledCorrectly = true;
 
         if (method.equals(TargetMethods.NULL)) {
             System.out.println("execute NULL method");
         } else {
             MethodExecutor methodExecutor = methodsMap.get(method);
             if (methodExecutor != null) {
-                methodExecutor.execute();
+                methodExecutor.execute(message);
             } else {
                 System.out.println("Method: [" + method + "] not binded, current bindings: " + methodsMap);
 
-                requestHandledCorrectly = false;
+                messageHandledCorrectly = false;
             }
         }
 
-        if (requestHandledCorrectly) {
-            rabbitMQSender.sendToNextHop(request, false, orchestratorInfo);
+        if (messageHandledCorrectly) {
+            rabbitMQSender.sendToNextHop(message, orchestratorInfo, false);
         } else {
             // TODO: notify gateway (BAD REQUEST)
         }
 
     }
 
+    protected RabbitMQSender getRabbitMQSender() {
+        return rabbitMQSender;
+    }
+
     @FunctionalInterface
     public interface MethodExecutor {
-        public void execute();
+        public void execute(CustomMessage context);
     }
 }
