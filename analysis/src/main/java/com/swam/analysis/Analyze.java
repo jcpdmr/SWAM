@@ -1,4 +1,4 @@
-package com.swam.operation;
+package com.swam.analysis;
 
 import com.swam.commons.AbstractMessageHandler.MethodExecutor;
 import com.swam.commons.CustomMessage;

@@ -1,6 +1,5 @@
 package com.swam.operation;
 
-import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
@@ -15,13 +14,13 @@ public class MessageHandler extends AbstractMessageHandler {
     public MessageHandler(RabbitMQSender rabbitMQSender) {
 
         super(rabbitMQSender);
-        this.addMethod(TargetMethods.ANALYZE, new Analyze());
+        this.addMethod(TargetMethods.MAKE_PERSISTENCE, new MakePersistence());
     }
 
     @Override
     @RabbitListener(queues = "operation_in")
-    protected void listener(CustomMessage message, MessageProperties messageProperties) {
-        this.handle(message, messageProperties);
+    protected void listener(CustomMessage message) {
+        this.handle(message);
     }
 
 }

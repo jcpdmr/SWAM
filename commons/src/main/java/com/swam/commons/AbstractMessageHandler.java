@@ -3,8 +3,7 @@ package com.swam.commons;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.amqp.core.MessageProperties;
-
+import com.swam.commons.CustomMessage.MessageType;
 import com.swam.commons.OrchestratorInfo.TargetMethods;
 
 public abstract class AbstractMessageHandler {
@@ -23,15 +22,17 @@ public abstract class AbstractMessageHandler {
         methodsMap.put(targetMethod, methodExecutor);
     }
 
-    protected abstract void listener(CustomMessage message, MessageProperties messageProperties);
+    protected abstract void listener(CustomMessage message);
 
-    protected void handle(CustomMessage message, MessageProperties messageProperties) {
+    protected void handle(CustomMessage message) {
 
         // System.out.println("Messaggio ricevuto dall'handler: " + message.getMsg());
-        // System.out.println("Messagge properties: " + messageProperties);
 
-        OrchestratorInfo orchestratorInfo = new OrchestratorInfo(messageProperties);
+        OrchestratorInfo orchestratorInfo = message.getOrchestratorInfo();
+        // System.out.println(message.getOrchestratorInfo());
+
         TargetMethods method = orchestratorInfo.getTargetMethod();
+
         // System.out.println("Lista di bindings dei metodi: " + methodsMap);
         // System.out.println("Nome del motodo da eseguire: " + method);
 
@@ -51,7 +52,9 @@ public abstract class AbstractMessageHandler {
         }
 
         if (messageHandledCorrectly) {
-            rabbitMQSender.sendToNextHop(message, orchestratorInfo, false);
+            if (message.getMessageType().equals(MessageType.TO_BE_FORWARDED)) {
+                rabbitMQSender.sendToNextHop(message, false);
+            }
         } else {
             // TODO: notify gateway (BAD REQUEST)
         }

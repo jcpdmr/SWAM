@@ -25,8 +25,8 @@ public class Orchestrator {
 
         OrchestratorInfo orchestratorInfo = OrchestratorInfoBuilder.newBuild()
                 .addTargets(TargetMicroservices.CATALOG, TargetMethods.ISTANCE_TEMPLATE)
-                .addTargets(TargetMicroservices.OPERATION, TargetMethods.ANALYZE)
-                .addTargets(TargetMicroservices.ANALYSIS, TargetMethods.NULL)
+                .addTargets(TargetMicroservices.OPERATION, TargetMethods.MAKE_PERSISTENCE)
+                .addTargets(TargetMicroservices.ANALYSIS, TargetMethods.ANALYZE)
                 .addTargets(TargetMicroservices.GATEWAY, TargetMethods.CHECK_ACK)
                 .build();
 

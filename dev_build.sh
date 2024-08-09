@@ -5,7 +5,7 @@ CONFIG_SERVER="config-server"
 
 BASE_SERVICES=("rabbitmq" "mongodb_catalog" "mongodb_operation" "mongodb_analysis" "config-server")
 
-MICROSERVICES=("catalog" "operation" "analysis" "gateway" "mongodb_catalog")
+MICROSERVICES=("catalog" "operation" "analysis" "gateway")
 MICROSERVICES_TO_LOG=("catalog" "operation" "analysis" "gateway")
 
 DATABASES=("analysisDB" "operationDB" "catalogDB")

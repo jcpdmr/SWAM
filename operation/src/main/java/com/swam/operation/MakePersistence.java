@@ -1,14 +1,14 @@
-package com.swam.catalog;
+package com.swam.operation;
 
 import com.swam.commons.AbstractMessageHandler.MethodExecutor;
 import com.swam.commons.CustomMessage;
 
-public class MakeIstance implements MethodExecutor {
+public class MakePersistence implements MethodExecutor {
 
     @Override
     public void execute(CustomMessage context) {
         // TODO: implement method
-        System.out.println("Execute MakeIstance");
+        System.out.println("Execute MakePersistence");
         if (context.getRequestBody().isPresent()) {
             System.out.println("RequestBody: " + context.getRequestBody().get());
         }

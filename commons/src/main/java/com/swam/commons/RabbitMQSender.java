@@ -2,12 +2,10 @@ package com.swam.commons;
 
 import java.util.Optional;
 
-import org.springframework.amqp.AmqpException;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
+import com.swam.commons.CustomMessage.MessageType;
 import com.swam.commons.OrchestratorInfo.TargetMethods;
 import com.swam.commons.OrchestratorInfo.TargetMicroservices;
 
@@ -20,47 +18,54 @@ public class RabbitMQSender {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void sendToNextHop(Object message, OrchestratorInfo orchestratorInfo, Boolean isFromGateway) {
+    public void sendToNextHop(CustomMessage message, Boolean isFromGateway) {
+
+        OrchestratorInfo orchestratorInfo = message.getOrchestratorInfo();
+
+        TargetMicroservices sender = null;
+        OrchestratorInfo ackOrchestratorInfo = null;
+        CustomMessage ackMessage = null;
 
         if (!isFromGateway) {
+            sender = orchestratorInfo.getTargetMicroservice();
+            message.setSender(sender);
+
             orchestratorInfo.increaseHop();
+
+            ackOrchestratorInfo = OrchestratorInfoBuilder.newBuild()
+                    .withUUID(orchestratorInfo.getUuid())
+                    .addTargets(TargetMicroservices.GATEWAY, TargetMethods.CHECK_ACK)
+                    .build();
+
+            ackMessage = new CustomMessage("ACK", ackOrchestratorInfo, sender, MessageType.ACK);
+            ackMessage.setAckHop(Optional.of(orchestratorInfo.getHopCounter()));
         }
 
         TargetMicroservices nextMicroservice = orchestratorInfo.getTargetMicroservice();
 
-        CustomMessagePostProcessor messagePostProcessor = new CustomMessagePostProcessor(orchestratorInfo);
-
-        OrchestratorInfo ackOrchestratorInfo = OrchestratorInfoBuilder.newBuild()
-                .withUUID(orchestratorInfo.getUuid())
-                .addTargets(TargetMicroservices.GATEWAY, TargetMethods.CHECK_ACK)
-                .build();
-
-        CustomMessagePostProcessor ackPostProcessor = new CustomMessagePostProcessor(ackOrchestratorInfo);
-
-        CustomMessage ackMessage = new CustomMessage("ACK");
-        ackMessage.setAckHop(Optional.of(orchestratorInfo.getHopCounter()));
-
         switch (nextMicroservice) {
             case TargetMicroservices.CATALOG:
-                sendToCatalog(message, "swam.microservices", messagePostProcessor);
+                sendToCatalog(message, "swam.microservices");
                 if (!isFromGateway) {
-                    sendToGateway(ackMessage, ackPostProcessor);
+                    sendToGateway(ackMessage);
                 }
                 break;
             case TargetMicroservices.OPERATION:
-                sendToOperation(message, "swam.microservices", messagePostProcessor);
+                sendToOperation(message, "swam.microservices");
                 if (!isFromGateway) {
-                    sendToGateway(ackMessage, ackPostProcessor);
+                    sendToGateway(ackMessage);
                 }
                 break;
             case TargetMicroservices.ANALYSIS:
-                sendToAnalysis(message, "swam.microservices", messagePostProcessor);
+                sendToAnalysis(message, "swam.microservices");
                 if (!isFromGateway) {
-                    sendToGateway(ackMessage, ackPostProcessor);
+                    sendToGateway(ackMessage);
                 }
                 break;
             case TargetMicroservices.GATEWAY:
-                sendToGateway(message, messagePostProcessor);
+                message.setMessageType(MessageType.END_MESSAGE);
+                ;
+                sendToGateway(message);
                 break;
             case TargetMicroservices.END:
                 break;
@@ -71,36 +76,20 @@ public class RabbitMQSender {
 
     }
 
-    private class CustomMessagePostProcessor implements MessagePostProcessor {
-
-        private final OrchestratorInfo orchestratorInfo;
-
-        public CustomMessagePostProcessor(OrchestratorInfo orchestratorInfo) {
-            this.orchestratorInfo = orchestratorInfo;
-        }
-
-        @Override
-        public Message postProcessMessage(Message message) throws AmqpException {
-            orchestratorInfo.addHeadersToMessageProperties(message.getMessageProperties());
-            return message;
-        }
-
+    private void sendToCatalog(CustomMessage message, String exchange) {
+        rabbitTemplate.convertAndSend(exchange, "catalog", message);
     }
 
-    private void sendToCatalog(Object message, String exchange, MessagePostProcessor messagePostProcessor) {
-        rabbitTemplate.convertAndSend(exchange, "catalog", message, messagePostProcessor);
+    private void sendToAnalysis(CustomMessage message, String exchange) {
+        rabbitTemplate.convertAndSend(exchange, "analysis", message);
     }
 
-    private void sendToAnalysis(Object message, String exchange, MessagePostProcessor messagePostProcessor) {
-        rabbitTemplate.convertAndSend(exchange, "analysis", message, messagePostProcessor);
+    private void sendToOperation(CustomMessage message, String exchange) {
+        rabbitTemplate.convertAndSend(exchange, "operation", message);
     }
 
-    private void sendToOperation(Object message, String exchange, MessagePostProcessor messagePostProcessor) {
-        rabbitTemplate.convertAndSend(exchange, "operation", message, messagePostProcessor);
-    }
-
-    private void sendToGateway(Object message, MessagePostProcessor messagePostProcessor) {
-        rabbitTemplate.convertAndSend("swam.gateway", "gateway", message, messagePostProcessor);
+    private void sendToGateway(CustomMessage message) {
+        rabbitTemplate.convertAndSend("swam.gateway", "gateway", message);
     }
 
 }

@@ -8,6 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = { "com.swam.commons", "com.swam.operation" })
 public class OperationApplication {
 
+    @SuppressWarnings("unused")
     private final MessageHandler requestHandler;
 
     public OperationApplication(MessageHandler requestHandler) {

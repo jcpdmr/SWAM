@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.swam.commons.CustomMessage;
 import com.swam.commons.OrchestratorInfo;
 import com.swam.commons.RabbitMQSender;
+import com.swam.commons.CustomMessage.MessageType;
+import com.swam.commons.OrchestratorInfo.TargetMicroservices;
 
 @RestController
 public class Controller {
@@ -30,10 +32,11 @@ public class Controller {
         System.out.println("Request params: " + requestParam);
 
         OrchestratorInfo orchestratorInfo = orchestrator.computeOrchestratorInfo();
-        CustomMessage testApiGET = new CustomMessage("test msg");
+        CustomMessage testApiGET = new CustomMessage("test get", orchestratorInfo, TargetMicroservices.GATEWAY,
+                MessageType.TO_BE_FORWARDED);
         testApiGET.setRequestParam(Optional.of(requestParam));
 
-        rabbitMQSender.sendToNextHop(testApiGET, orchestratorInfo, true);
+        rabbitMQSender.sendToNextHop(testApiGET, true);
 
         return ResponseEntity.ok("api-get-ok");
     }
@@ -43,10 +46,11 @@ public class Controller {
         System.out.println("Request body: " + requestBody);
 
         OrchestratorInfo orchestratorInfo = orchestrator.computeOrchestratorInfo();
-        CustomMessage testApiPOST = new CustomMessage("test msg");
+        CustomMessage testApiPOST = new CustomMessage("test post", orchestratorInfo, TargetMicroservices.GATEWAY,
+                MessageType.TO_BE_FORWARDED);
         testApiPOST.setRequestBody(Optional.of(requestBody));
 
-        rabbitMQSender.sendToNextHop(testApiPOST, orchestratorInfo, true);
+        rabbitMQSender.sendToNextHop(testApiPOST, true);
 
         return ResponseEntity.ok("api-post-ok");
     }

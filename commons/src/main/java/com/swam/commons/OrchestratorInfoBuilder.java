@@ -35,7 +35,7 @@ public class OrchestratorInfoBuilder {
 
     public OrchestratorInfo build() {
         if (uuid != null) {
-            return new OrchestratorInfo(pipeline, uuid);
+            return new OrchestratorInfo(this.pipeline, uuid);
         } else {
             return new OrchestratorInfo(this.pipeline);
         }

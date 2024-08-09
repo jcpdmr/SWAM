@@ -1,13 +1,16 @@
 package com.swam.gateway;
 
-import org.springframework.amqp.core.MessageProperties;
+import java.util.UUID;
+
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 
 import org.springframework.stereotype.Service;
 
 import com.swam.commons.AbstractMessageHandler;
 import com.swam.commons.CustomMessage;
+import com.swam.commons.OrchestratorInfo;
 import com.swam.commons.RabbitMQSender;
+import com.swam.commons.CustomMessage.MessageType;
 import com.swam.commons.OrchestratorInfo.TargetMethods;
 
 @Service
@@ -25,23 +28,38 @@ public class MessageHandler extends AbstractMessageHandler {
 
     @Override
     @RabbitListener(queues = "gateway_in")
-    protected void listener(CustomMessage message, MessageProperties messageProperties) {
-        this.handle(message, messageProperties);
+    protected void listener(CustomMessage message) {
+        this.handle(message);
     }
 
     private class HandleACK implements MethodExecutor {
 
-        // TODO: handle ack (using orchestratorInfo's uuid) and notify clients
         @Override
         public void execute(CustomMessage context) {
-            // TODO: implement method
             System.out.println("Execute HandleACK");
-            if (context.getAckHop().isPresent()) {
 
-                System.out.println("Ricevuto ACK con hop: " + context.getAckHop().get());
+            UUID orchestrationUUID = context.getOrchestratorInfo().getUuid();
+
+            if (orchestrator.getActiveOrchestratorInfo(orchestrationUUID).isPresent()) {
+                OrchestratorInfo orchestratorInfo = orchestrator.getActiveOrchestratorInfo(orchestrationUUID).get();
+
+                if (context.getMessageType().equals(MessageType.END_MESSAGE)) {
+                    Integer lastHop = context.getOrchestratorInfo().getHopCounter();
+
+                    System.out.println("Recived END_MESSAGE from: " + context.getSender());
+                    System.out.println("Progress: [" + lastHop + "/" + (orchestratorInfo.getMaxHop() - 1) + "]");
+                    System.out.println("Request completed");
+
+                    // TODO: handle response and notification to client
+                } else if (context.getMessageType().equals(MessageType.ACK)) {
+                    Integer ackHop = context.getAckHop().get();
+
+                    System.out.println("Recived ACK from: " + context.getSender());
+                    System.out.println("Progress: [" + ackHop + "/" + (orchestratorInfo.getMaxHop() - 1) + "]");
+                }
             } else {
-                // TODO: handle errors
-                System.out.println("Errore ack");
+                System.out.println("No active orchestration with uuid: " + orchestrationUUID);
+                // TODO: handle error
             }
 
         }
