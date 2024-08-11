@@ -6,7 +6,7 @@
 		<groupId>com.swam</groupId>
 		<artifactId>common-dependencies</artifactId>
 		<version>0.1.0</version>
-		<relativePath>../common-pom.xml</relativePath>
+		<relativePath>../intermediate_pom/pom.xml</relativePath>
 	</parent>
 	<groupId>com.swam</groupId>
 	<artifactId>analysis</artifactId>
