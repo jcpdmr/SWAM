@@ -1,8 +1,13 @@
 package com.swam.analysis;
 
-import com.swam.commons.AbstractMessageHandler.MethodExecutor;
-import com.swam.commons.CustomMessage;
+import com.swam.commons.MessageHandler.MethodExecutor;
 
+import org.springframework.stereotype.Service;
+
+import com.swam.commons.CustomMessage;
+import com.swam.commons.OrchestratorInfo.TargetMethods;
+
+@Service
 public class Analyze implements MethodExecutor {
 
     @Override
@@ -15,6 +20,11 @@ public class Analyze implements MethodExecutor {
         if (context.getParamMap().isPresent()) {
             System.out.println("RequestParam: " + context.getParamMap().get());
         }
+    }
+
+    @Override
+    public TargetMethods getBinding() {
+        return TargetMethods.ANALYZE;
     }
 
 }

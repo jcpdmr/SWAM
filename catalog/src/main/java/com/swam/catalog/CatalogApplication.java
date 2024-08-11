@@ -1,12 +1,17 @@
 package com.swam.catalog;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.oristool.eulero.modeling.stochastictime.UniformTime;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
 import com.qesm.WorkflowType;
@@ -14,13 +19,18 @@ import com.qesm.ProductIstance;
 import com.qesm.ProductType;
 import com.qesm.RandomDAGGenerator.PdfType;
 import com.swam.commons.CustomMessage;
+import com.swam.commons.MessageHandler;
 import com.swam.commons.OrchestratorInfo;
 import com.swam.commons.ProductDTO;
 import com.swam.commons.RabbitMQSender;
+import com.swam.commons.MessageHandler.MethodExecutor;
 
 @SpringBootApplication()
 @ComponentScan(basePackages = { "com.swam.commons", "com.swam.catalog" })
 public class CatalogApplication implements CommandLineRunner {
+
+	@Autowired
+	private ApplicationContext applicationContext;
 
 	@SuppressWarnings("unused")
 	private final WorkflowTypeRepository workflowTypeRepository;
@@ -82,5 +92,6 @@ public class CatalogApplication implements CommandLineRunner {
 
 		// productIstanceRepository.save(pi1DTO);
 		// productIstanceRepository.save(pi2DTO);
+
 	}
 }

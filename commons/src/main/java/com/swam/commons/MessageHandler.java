@@ -1,28 +1,34 @@
 package com.swam.commons;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Service;
 
 import com.swam.commons.CustomMessage.MessageType;
 import com.swam.commons.OrchestratorInfo.TargetMethods;
 
-public abstract class AbstractMessageHandler {
+@Service
+public class MessageHandler {
 
-    private Map<TargetMethods, MethodExecutor> methodsMap;
+    private final Map<TargetMethods, MethodExecutor> methodsMap;
     private final RabbitMQSender rabbitMQSender;
 
-    public AbstractMessageHandler(RabbitMQSender rabbitMQSender) {
+    public MessageHandler(RabbitMQSender rabbitMQSender, List<MethodExecutor> methodExecutors) {
         this.rabbitMQSender = rabbitMQSender;
-        this.methodsMap = new HashMap<>();
+        this.methodsMap = methodExecutors.stream()
+                .collect(Collectors.toMap(MethodExecutor::getBinding, Function.identity()));
         methodsMap.put(TargetMethods.NULL, null);
     }
 
-    public void addMethod(TargetMethods targetMethod, MethodExecutor methodExecutor) {
-        // TODO: check if targetMethod already present
-        methodsMap.put(targetMethod, methodExecutor);
+    @RabbitListener(queues = "${spring.rabbitmq.in-queue}")
+    protected void listener(CustomMessage message) {
+        this.handle(message);
     }
-
-    protected abstract void listener(CustomMessage message);
 
     protected void handle(CustomMessage message) {
 
@@ -45,7 +51,8 @@ public abstract class AbstractMessageHandler {
             if (methodExecutor != null) {
                 methodExecutor.execute(message);
             } else {
-                System.out.println("Method: [" + method + "] not binded, current bindings: " + methodsMap);
+                System.out.println("Method: [" + method + "] not binded, current bindings: " + methodsMap
+                        + " . Have you added @Service to Method?");
 
                 messageHandledCorrectly = false;
             }
@@ -65,8 +72,9 @@ public abstract class AbstractMessageHandler {
         return rabbitMQSender;
     }
 
-    @FunctionalInterface
     public interface MethodExecutor {
         public void execute(CustomMessage context);
+
+        public TargetMethods getBinding();
     }
 }

@@ -4,6 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
+import com.swam.commons.MessageHandler;
+
 @SpringBootApplication
 @ComponentScan(basePackages = { "com.swam.commons", "com.swam.operation" })
 public class OperationApplication {

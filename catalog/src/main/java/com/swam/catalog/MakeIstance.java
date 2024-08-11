@@ -1,8 +1,13 @@
 package com.swam.catalog;
 
-import com.swam.commons.AbstractMessageHandler.MethodExecutor;
+import com.swam.commons.MessageHandler.MethodExecutor;
+import com.swam.commons.OrchestratorInfo.TargetMethods;
+
+import org.springframework.stereotype.Service;
+
 import com.swam.commons.CustomMessage;
 
+@Service
 public class MakeIstance implements MethodExecutor {
 
     @Override
@@ -15,6 +20,11 @@ public class MakeIstance implements MethodExecutor {
         if (context.getParamMap().isPresent()) {
             System.out.println("RequestParam: " + context.getParamMap().get());
         }
+    }
+
+    @Override
+    public TargetMethods getBinding() {
+        return TargetMethods.ISTANCE_TEMPLATE;
     }
 
 }
