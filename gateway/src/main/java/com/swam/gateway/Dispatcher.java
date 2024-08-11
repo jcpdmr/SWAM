@@ -28,7 +28,7 @@ public class Dispatcher {
 
     private final Map<String, OrchestrationPlanner> orchestratorMap;
     private final RabbitMQSender rabbitMQSender;
-    Map<UUID, OrchestratorInfo> activeOrchestration;
+    private final Map<UUID, OrchestratorInfo> activeOrchestration;
 
     public Dispatcher(List<OrchestrationPlanner> orchestratorSuppliers, RabbitMQSender rabbitMQSender) {
         this.orchestratorMap = orchestratorSuppliers.stream()
@@ -37,13 +37,10 @@ public class Dispatcher {
         this.activeOrchestration = new HashMap<>();
     }
 
-    public ResponseEntity<String> dispatchRequest(String path, HttpServletRequest request) {
+    public ResponseEntity<String> dispatchRequest(String path, Optional<Map<String, String>> queryParams,
+            Optional<String> requestBody) {
 
-        // TODO: improve path resolution (security problems)
-        System.out.println(path);
-        String relativePath = path.substring(path.indexOf("/dev/") + "/dev/".length());
-
-        OrchestrationPlanner planner = orchestratorMap.get(relativePath);
+        OrchestrationPlanner planner = orchestratorMap.get(path);
 
         if (planner != null) {
             OrchestratorInfo orchestratorInfo = planner.orchestrate();
@@ -53,40 +50,12 @@ public class Dispatcher {
                     TargetMicroservices.GATEWAY,
                     MessageType.TO_BE_FORWARDED);
 
-            String requestMethod = request.getMethod();
-            if (requestMethod.equalsIgnoreCase("POST")) {
-
-                String contentType = request.getContentType();
-                if ("application/json".equalsIgnoreCase(contentType)) {
-                    // Read json body
-                    StringBuilder stringBuilder = new StringBuilder();
-                    try {
-                        BufferedReader bufferedReader = request.getReader();
-                        String line;
-                        while ((line = bufferedReader.readLine()) != null) {
-                            stringBuilder.append(line);
-                        }
-                    } catch (IOException e) {
-                        // TODO: handle exception
-                    }
-                    String requestBody = stringBuilder.toString();
-                    testApi.setRequestBody(Optional.of(requestBody));
-                } else {
-                    return ResponseEntity.badRequest().body("ContenteType: " + contentType + " not supported");
-                }
-
-            } else if (requestMethod.equalsIgnoreCase("GET")) {
-                Map<String, String[]> paramMap = request.getParameterMap();
-                Map<String, List<String>> transformedMap = paramMap.entrySet().stream()
-                        .collect(Collectors.toMap(
-                                Map.Entry::getKey,
-                                e -> Arrays.asList(e.getValue())));
-
-                testApi.setParamMap(Optional.of(transformedMap));
-            } else {
-                return ResponseEntity.badRequest().body("Method: " + requestMethod + " not supported");
+            if (queryParams.isPresent()) {
+                testApi.setQueryParams(Optional.of(queryParams.get()));
             }
-
+            if (requestBody.isPresent()) {
+                testApi.setRequestBody(Optional.of(requestBody.get()));
+            }
             rabbitMQSender.sendToNextHop(testApi, true);
 
             return ResponseEntity.ok("Request handled correctly");

@@ -20,7 +20,7 @@ public class CustomMessage {
     private TargetMicroservices sender;
     private MessageType messageType;
     private Optional<String> requestBody;
-    private Optional<Map<String, List<String>>> paramMap;
+    private Optional<Map<String, String>> queryParams;
     private Optional<Integer> ackHop;
 
     public enum MessageType {

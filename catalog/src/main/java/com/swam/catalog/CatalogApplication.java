@@ -29,9 +29,6 @@ import com.swam.commons.MessageHandler.MethodExecutor;
 @ComponentScan(basePackages = { "com.swam.commons", "com.swam.catalog" })
 public class CatalogApplication implements CommandLineRunner {
 
-	@Autowired
-	private ApplicationContext applicationContext;
-
 	@SuppressWarnings("unused")
 	private final WorkflowTypeRepository workflowTypeRepository;
 

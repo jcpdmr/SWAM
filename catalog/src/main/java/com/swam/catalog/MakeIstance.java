@@ -17,8 +17,8 @@ public class MakeIstance implements MethodExecutor {
         if (context.getRequestBody().isPresent()) {
             System.out.println("RequestBody: " + context.getRequestBody().get());
         }
-        if (context.getParamMap().isPresent()) {
-            System.out.println("RequestParam: " + context.getParamMap().get());
+        if (context.getQueryParams().isPresent()) {
+            System.out.println("RequestParam: " + context.getQueryParams().get());
         }
     }
 
