@@ -1,5 +1,6 @@
 package com.swam.commons;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -18,8 +19,8 @@ public class CustomMessage {
     private OrchestratorInfo orchestratorInfo;
     private TargetMicroservices sender;
     private MessageType messageType;
-    private Optional<Map<String, Object>> requestBody;
-    private Optional<Map<String, String>> requestParam;
+    private Optional<String> requestBody;
+    private Optional<Map<String, List<String>>> paramMap;
     private Optional<Integer> ackHop;
 
     public enum MessageType {

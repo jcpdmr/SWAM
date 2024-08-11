@@ -16,11 +16,11 @@ import com.swam.commons.OrchestratorInfo.TargetMethods;
 @Service
 public class MessageHandler extends AbstractMessageHandler {
 
-    private final Orchestrator orchestrator;
+    private final Dispatcher dispatcher;
 
-    public MessageHandler(RabbitMQSender rabbitMQSender, Orchestrator orchestrator) {
+    public MessageHandler(RabbitMQSender rabbitMQSender, Dispatcher dispatcher) {
         super(rabbitMQSender);
-        this.orchestrator = orchestrator;
+        this.dispatcher = dispatcher;
 
         this.addMethod(TargetMethods.CHECK_ACK, new HandleACK());
 
@@ -40,8 +40,8 @@ public class MessageHandler extends AbstractMessageHandler {
 
             UUID orchestrationUUID = context.getOrchestratorInfo().getUuid();
 
-            if (orchestrator.getActiveOrchestratorInfo(orchestrationUUID).isPresent()) {
-                OrchestratorInfo orchestratorInfo = orchestrator.getActiveOrchestratorInfo(orchestrationUUID).get();
+            if (dispatcher.getActiveOrchestratorInfo(orchestrationUUID).isPresent()) {
+                OrchestratorInfo orchestratorInfo = dispatcher.getActiveOrchestratorInfo(orchestrationUUID).get();
 
                 if (context.getMessageType().equals(MessageType.END_MESSAGE)) {
                     Integer lastHop = context.getOrchestratorInfo().getHopCounter();
@@ -49,6 +49,7 @@ public class MessageHandler extends AbstractMessageHandler {
                     System.out.println("Recived END_MESSAGE from: " + context.getSender());
                     System.out.println("Progress: [" + lastHop + "/" + (orchestratorInfo.getMaxHop() - 1) + "]");
                     System.out.println("Request completed");
+                    dispatcher.removeActiveOrchestration(orchestrationUUID);
 
                     // TODO: handle response and notification to client
                 } else if (context.getMessageType().equals(MessageType.ACK)) {
