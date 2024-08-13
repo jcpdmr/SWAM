@@ -14,16 +14,27 @@ public class OrchestratorInfo {
 
     public enum TargetMethods {
 
-        // analysis's methods
         ANALYZE,
-        // catalog's methods
         ISTANCE_TEMPLATE,
-        // operation's methods
-        // gateway's methods
         CHECK_ACK,
-        // common's methods
         NULL,
-        MAKE_PERSISTENCE
+        MAKE_PERSISTENCE,
+
+        GET_WORKFLOW,
+        GET_PRODUCT,
+        GET_ANALYSIS,
+
+        PUT_WORKFLOW,
+        PUT_PRODUCT,
+        PUT_ANALYSIS,
+
+        POST_WORKFLOW,
+        POST_PRODUCT,
+        POST_ANALYSIS,
+
+        DELETE_WORKFLOW,
+        DELETE_PRODUCT,
+        DELETE_ANALYSIS,
     }
 
     public enum TargetMicroservices {

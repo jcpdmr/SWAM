@@ -13,12 +13,8 @@ public class GatewayApplication {
 	@SuppressWarnings("unused")
 	private final MessageHandler requestHandler;
 
-	@SuppressWarnings("unused")
-	private final Controller controller;
-
-	public GatewayApplication(MessageHandler requestHandler, Controller controller) {
+	public GatewayApplication(MessageHandler requestHandler) {
 		this.requestHandler = requestHandler;
-		this.controller = controller;
 	}
 
 	public static void main(String[] args) {

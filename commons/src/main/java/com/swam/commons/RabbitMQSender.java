@@ -3,6 +3,7 @@ package com.swam.commons;
 import java.util.Optional;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.swam.commons.CustomMessage.MessageType;
@@ -37,7 +38,8 @@ public class RabbitMQSender {
                     .addTargets(TargetMicroservices.GATEWAY, TargetMethods.CHECK_ACK)
                     .build();
 
-            ackMessage = new CustomMessage("ACK", ackOrchestratorInfo, sender, MessageType.ACK);
+            ackMessage = new CustomMessage("ACK", ackOrchestratorInfo, sender, MessageType.ACK,
+                    ResponseEntity.ok(null));
             ackMessage.setAckHop(Optional.of(orchestratorInfo.getHopCounter()));
         }
 
