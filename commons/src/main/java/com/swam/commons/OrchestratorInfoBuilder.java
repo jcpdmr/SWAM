@@ -11,10 +11,11 @@ import com.swam.commons.OrchestratorInfo.TargetMicroservices;
 
 public class OrchestratorInfoBuilder {
 
-    private List<Pair<TargetMicroservices, TargetMethods>> pipeline = new ArrayList<>();
+    private List<Pair<TargetMicroservices, TargetMethods>> pipeline;
     private UUID uuid;
 
     private OrchestratorInfoBuilder() {
+        this.pipeline = new ArrayList<>();
         this.uuid = null;
     }
 
@@ -24,6 +25,11 @@ public class OrchestratorInfoBuilder {
 
     public OrchestratorInfoBuilder withUUID(UUID uuid) {
         this.uuid = uuid;
+        return this;
+    }
+
+    public OrchestratorInfoBuilder setTargets(List<Pair<TargetMicroservices, TargetMethods>> targets) {
+        this.pipeline = targets;
         return this;
     }
 

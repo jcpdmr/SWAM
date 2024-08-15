@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import com.qesm.ProductType;
 import com.swam.commons.CustomMessage;
 import com.swam.commons.OrchestratorInfo.TargetMethods;
-import com.swam.commons.ProductDTO;
 
 @Service
 public class MakePersistence implements MethodExecutor {
@@ -45,7 +44,7 @@ public class MakePersistence implements MethodExecutor {
         // System.out.println(pi1);
         // System.out.println(pi2);
 
-        ProductDTO<ProductType> pt1DTO = new ProductDTO<ProductType>(pt1);
+        // ProductDTO<ProductType> pt1DTO = new ProductDTO<ProductType>(pt1);
         // ProductDTO<ProductType> pt2DTO = new ProductDTO<ProductType>(pt2);
 
         // ProductDTO<ProductIstance> pi1DTO = new ProductDTO<ProductIstance>(pi1);

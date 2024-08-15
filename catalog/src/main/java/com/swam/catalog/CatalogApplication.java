@@ -1,5 +1,8 @@
 package com.swam.catalog;
 
+import java.util.List;
+
+import org.oristool.eulero.modeling.stochastictime.UniformTime;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -61,39 +64,42 @@ public class CatalogApplication implements CommandLineRunner {
 		// System.out.println(w1FromQuery);
 		// System.out.println("I workflow sono uguali? : " + w1.equals(w1FromQuery));
 
-		ProductType pt1 = new ProductType("pt1", 1, new UniformTime(1, 2));
-		ProductType pt2 = new ProductType("pt2", 1, new UniformTime(1, 2));
-		System.out.println(pt1);
-		System.out.println(pt2);
+		// ProductType pt1 = new ProductType("pt1", 1, new UniformTime(1, 2));
+		// ProductType pt2 = new ProductType("pt2", 1, new UniformTime(1, 2));
+		// System.out.println(pt1);
+		// System.out.println(pt2);
 
-		ProductIstance pi1 = new ProductIstance(pt1);
-		ProductIstance pi2 = new ProductIstance(pt2);
-		System.out.println(pi1);
-		System.out.println(pi2);
+		// ProductIstance pi1 = new ProductIstance(pt1);
+		// ProductIstance pi2 = new ProductIstance(pt2);
+		// System.out.println(pi1);
+		// System.out.println(pi2);
 
-		ProductTypeDTO pt1DTO = new ProductTypeDTO(pt1);
-		ProductTypeDTO pt2DTO = new ProductTypeDTO(pt2);
+		// ProductTypeDTO pt1DTO = new ProductTypeDTO(pt1);
+		// ProductTypeDTO pt2DTO = new ProductTypeDTO(pt2);
 
-		ProductIstanceDTO pi1DTO = new ProductIstanceDTO(pi1);
-		ProductIstanceDTO pi2DTO = new ProductIstanceDTO(pi2);
+		// ProductIstanceDTO pi1DTO = new ProductIstanceDTO(pi1);
+		// ProductIstanceDTO pi2DTO = new ProductIstanceDTO(pi2);
 
-		productTypeRepository.save(pt1DTO);
-		productTypeRepository.save(pt2DTO);
+		// productTypeRepository.save(pt1DTO);
+		// productTypeRepository.save(pt2DTO);
 
-		productIstanceRepository.save(pi1DTO);
-		productIstanceRepository.save(pi2DTO);
+		// productIstanceRepository.save(pi1DTO);
+		// productIstanceRepository.save(pi2DTO);
 
-		List<ProductTypeDTO> allProductTypes = productTypeRepository.findAll();
-		List<ProductIstanceDTO> allProductIstances = productIstanceRepository.findAll();
+		// List<ProductTypeDTO> allProductTypes = productTypeRepository.findAll();
+		// List<ProductIstanceDTO> allProductIstances =
+		// productIstanceRepository.findAll();
 
-		for (ProductTypeDTO producttypeDTO : allProductTypes) {
-			ProductType pt = producttypeDTO.toProduct();
-			System.out.println("Created ProductType: " + pt + "     is Type:" + producttypeDTO.getIsType());
-		}
+		// for (ProductTypeDTO producttypeDTO : allProductTypes) {
+		// ProductType pt = producttypeDTO.toProduct();
+		// System.out.println("Created ProductType: " + pt + " is Type:" +
+		// producttypeDTO.getIsType());
+		// }
 
-		for (ProductIstanceDTO productIstanceDTO : allProductIstances) {
-			ProductIstance pt = productIstanceDTO.toProduct();
-			System.out.println("Created ProductIstance: " + pt + "     is Type:" + productIstanceDTO.getIsType());
-		}
+		// for (ProductIstanceDTO productIstanceDTO : allProductIstances) {
+		// ProductIstance pt = productIstanceDTO.toProduct();
+		// System.out.println("Created ProductIstance: " + pt + " is Type:" +
+		// productIstanceDTO.getIsType());
+		// }
 	}
 }
