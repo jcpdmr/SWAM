@@ -1,8 +1,10 @@
 package com.swam.commons;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.swam.commons.OrchestratorInfo.TargetMicroservices;
@@ -19,14 +21,27 @@ public class CustomMessage {
     private OrchestratorInfo orchestratorInfo;
     private TargetMicroservices sender;
     private MessageType messageType;
+    private Integer responseStatusCode;
+    private String responseBody;
+    private Map<String, String> uriTemplateVariables;
     private Optional<String> requestBody;
-    private Optional<Map<String, String>> queryParams;
+    private Optional<Map<String, String>> requestParams;
     private Optional<Integer> ackHop;
 
     public enum MessageType {
         ACK,
         TO_BE_FORWARDED,
         END_MESSAGE
+    }
+
+    public CustomMessage(String msg, OrchestratorInfo orchestratorInfo, TargetMicroservices sender,
+            MessageType messageType, ResponseEntity<String> responseEntity) {
+        this.msg = msg;
+        this.orchestratorInfo = orchestratorInfo;
+        this.sender = sender;
+        this.messageType = messageType;
+        this.responseStatusCode = responseEntity.getStatusCode().value();
+        this.responseBody = responseEntity.getBody();
     }
 
     @JsonCreator
@@ -38,4 +53,7 @@ public class CustomMessage {
         this.messageType = messageType;
     }
 
+    public ResponseEntity<String> getResponseEntity() {
+        return new ResponseEntity<>(responseBody, HttpStatusCode.valueOf(responseStatusCode));
+    }
 }

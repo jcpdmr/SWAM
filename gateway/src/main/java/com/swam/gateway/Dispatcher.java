@@ -1,68 +1,77 @@
 package com.swam.gateway;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.AntPathMatcher;
 
 import com.swam.commons.CustomMessage;
-import com.swam.commons.CustomMessage.MessageType;
 import com.swam.commons.OrchestratorInfo;
-import com.swam.commons.OrchestratorInfo.TargetMicroservices;
 import com.swam.commons.RabbitMQSender;
 import com.swam.gateway.OrchestratorConfig.OrchestrationPlanner;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class Dispatcher {
 
-    private final Map<String, OrchestrationPlanner> orchestratorMap;
+    private final Map<List<String>, OrchestrationPlanner> orchestratorMap;
     private final RabbitMQSender rabbitMQSender;
     private final Map<UUID, OrchestratorInfo> activeOrchestration;
+    private final AntPathMatcher antPathMatcher;
 
     public Dispatcher(List<OrchestrationPlanner> orchestratorSuppliers, RabbitMQSender rabbitMQSender) {
         this.orchestratorMap = orchestratorSuppliers.stream()
-                .collect(Collectors.toMap(OrchestrationPlanner::getBindingPath, Function.identity()));
+                .collect(Collectors.toMap(OrchestrationPlanner::getBindingPaths, Function.identity()));
         this.rabbitMQSender = rabbitMQSender;
         this.activeOrchestration = new HashMap<>();
+        this.antPathMatcher = new AntPathMatcher();
     }
 
-    public ResponseEntity<String> dispatchRequest(String path, Optional<Map<String, String>> queryParams,
+    public ResponseEntity<String> dispatchRequest(HttpMethod httpMethod, String uriPath,
+            Optional<Map<String, String>> requestParams,
             Optional<String> requestBody) {
 
-        OrchestrationPlanner planner = orchestratorMap.get(path);
-
-        if (planner != null) {
-            OrchestratorInfo orchestratorInfo = planner.orchestrate();
-            activeOrchestration.put(orchestratorInfo.getUuid(), orchestratorInfo);
-
-            CustomMessage testApi = new CustomMessage("test api", orchestratorInfo,
-                    TargetMicroservices.GATEWAY,
-                    MessageType.TO_BE_FORWARDED);
-
-            if (queryParams.isPresent()) {
-                testApi.setQueryParams(Optional.of(queryParams.get()));
+        CustomMessage apiMessage = null;
+        // Look for a match in all bindingPaths provided by OrchestrationPlanner's Beans
+        for (Entry<List<String>, OrchestrationPlanner> entry : orchestratorMap.entrySet()) {
+            for (String bindingPath : entry.getKey()) {
+                // System.out.println("Check bindingPath: " + bindingPath);
+                if (antPathMatcher.match(bindingPath, uriPath)) {
+                    // If a match is found, uriVariables will be extracted (they are defined in the
+                    // bindingPath itself)
+                    Map<String, String> variables = antPathMatcher.extractUriTemplateVariables(
+                            bindingPath,
+                            uriPath);
+                    apiMessage = entry.getValue().orchestrate(httpMethod, variables, requestParams,
+                            requestBody);
+                }
             }
-            if (requestBody.isPresent()) {
-                testApi.setRequestBody(Optional.of(requestBody.get()));
-            }
-            rabbitMQSender.sendToNextHop(testApi, true);
-
-            return ResponseEntity.ok("Request handled correctly");
-        } else {
-            return ResponseEntity.badRequest().body("Path: " + path + " not found");
-
         }
+
+        // Check if any Errors occured during Orchestration and forward it
+        if (apiMessage == null) {
+            return new ResponseEntity<>("Path: " + uriPath + " not found", HttpStatusCode.valueOf(404));
+        } else if (apiMessage.getResponseEntity().getStatusCode().isError()) {
+            return apiMessage.getResponseEntity();
+        }
+
+        // Save orchestration as an active orchestration (related to a request that need
+        // to be resolved)
+        activeOrchestration.put(apiMessage.getOrchestratorInfo().getUuid(), apiMessage.getOrchestratorInfo());
+
+        rabbitMQSender.sendToNextHop(apiMessage, true);
+
+        return ResponseEntity.ok("Request handled correctly");
+
     }
 
     public Optional<OrchestratorInfo> getActiveOrchestratorInfo(UUID orchestrationUUID) {

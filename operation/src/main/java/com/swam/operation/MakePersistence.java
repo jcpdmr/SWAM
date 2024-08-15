@@ -17,8 +17,8 @@ public class MakePersistence implements MethodExecutor {
         if (context.getRequestBody().isPresent()) {
             System.out.println("RequestBody: " + context.getRequestBody().get());
         }
-        if (context.getQueryParams().isPresent()) {
-            System.out.println("RequestParam: " + context.getQueryParams().get());
+        if (context.getRequestParams().isPresent()) {
+            System.out.println("RequestParam: " + context.getRequestParams().get());
         }
     }
 

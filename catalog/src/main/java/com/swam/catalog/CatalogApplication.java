@@ -1,17 +1,8 @@
 package com.swam.catalog;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.oristool.eulero.modeling.stochastictime.UniformTime;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
@@ -62,10 +53,7 @@ public class CatalogApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		// WorkflowType w1 = new WorkflowType();
-		// w1.generateRandomDAG(3, 3, 2, 2, 50, PdfType.UNIFORM);
-		// System.out.println(w1);
-		// WorkflowTypeDTO workflowTypeDTO = new WorkflowTypeDTO(w1);
+		// MakePersistence testMakePersistence = new MakePersistence();
 
 		// workflowTypeRepository.save(workflowTypeDTO);
 		// List<WorkflowTypeDTO> resultList = workflowTypeRepository.findAll();
