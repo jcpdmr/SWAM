@@ -39,7 +39,6 @@ services:
   analysis:
     depends_on:
       - config-server
-      - mongodb_analysis
       - rabbitmq
     image: openjdk:22-jdk
     volumes:
@@ -102,17 +101,6 @@ services:
       - 'MONGO_INITDB_ROOT_USERNAME=myuser'
     ports:
       - 27018:27017
-
-  mongodb_analysis:
-    image: 'mongo:latest'
-    volumes:
-      - ./analysis/mongodb_data:/data/db
-    environment:
-      - 'MONGO_INITDB_DATABASE=mydatabase'
-      - 'MONGO_INITDB_ROOT_PASSWORD=secret'
-      - 'MONGO_INITDB_ROOT_USERNAME=myuser'
-    ports:
-      - 27019:27017
 
   rabbitmq:
     image: 'rabbitmq:management'

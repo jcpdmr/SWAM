@@ -3,7 +3,7 @@ package com.swam.commons;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.data.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -70,12 +70,12 @@ public class OrchestratorInfo {
         if (hopCounter.equals(pipeline.size())) {
             return TargetMicroservices.END;
         } else {
-            return pipeline.get(hopCounter).getFirst();
+            return pipeline.get(hopCounter).getLeft();
         }
     }
 
     public TargetMethods getTargetMethod() {
-        return pipeline.get(hopCounter).getSecond();
+        return pipeline.get(hopCounter).getRight();
     }
 
     public Integer increaseHop() {

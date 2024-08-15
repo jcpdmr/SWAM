@@ -5,12 +5,12 @@ source .env
 
 CONFIG_SERVER="config-server"
 
-BASE_SERVICES=("rabbitmq" "mongodb_catalog" "mongodb_operation" "mongodb_analysis" "config-server")
+BASE_SERVICES=("rabbitmq" "mongodb_catalog" "mongodb_operation" "config-server")
 
 MICROSERVICES=(${MICROSERVICE_CATALOG_NAME} ${MICROSERVICE_OPERATION_NAME} ${MICROSERVICE_ANALYSIS_NAME} ${MICROSERVICE_GATEWAY_NAME})
 MICROSERVICES_TO_LOG=(${MICROSERVICE_CATALOG_NAME} ${MICROSERVICE_OPERATION_NAME} ${MICROSERVICE_ANALYSIS_NAME} ${MICROSERVICE_GATEWAY_NAME})
 
-DATABASES=("analysisDB" "operationDB" "catalogDB")
+DATABASES=("operationDB" "catalogDB")
 
 # Function used to install a JAR in local Maven repository
 install_jar() {
@@ -111,6 +111,7 @@ check_services(){
 restart_needed_containers(){
 
   if is_service_running "$CONFIG_SERVER"; then
+    drop_all_mongoDB_databases
     echo "Compose restart of:"
     docker compose restart "${MICROSERVICES[@]}"
     sleep 1 
@@ -123,7 +124,7 @@ restart_needed_containers(){
 
     echo "Delay (8s) to let config-server start"
     sleep 8
-
+    drop_all_mongoDB_databases
     # Starting microservices
     echo "Starting microservices:"
     docker compose up -d "${MICROSERVICES[@]}"
@@ -140,6 +141,20 @@ connect_to_DBs_GUI(){
   done
 
   wait
+}
+
+drop_all_mongoDB_databases(){
+  docker compose exec mongodb_catalog mongosh \
+  --username $MONGO_USER \
+  --password $MONGO_PSW \
+  --authenticationDatabase admin \
+  --eval "db.getSiblingDB('$MONGO_DB_NAME').dropDatabase()"
+
+  docker compose exec mongodb_operation mongosh \
+  --username $MONGO_USER \
+  --password $MONGO_PSW \
+  --authenticationDatabase admin \
+  --eval "db.getSiblingDB('$MONGO_DB_NAME').dropDatabase()"
 }
 
 usage() {

@@ -34,9 +34,9 @@ public class MakePersistence implements MethodExecutor {
         // System.out.println(w1FromQuery);
         // System.out.println("I workflow sono uguali? : " + w1.equals(w1FromQuery));
 
-        ProductType pt1 = new ProductType("pt1", 1, new UniformTime(1, 2));
+        // ProductType pt1 = new ProductType("pt1", 1, new UniformTime(1, 2));
         // ProductType pt2 = new ProductType("pt2", 1, new UniformTime(1, 2));
-        System.out.println(pt1);
+        // System.out.println(pt1);
         // System.out.println(pt2);
 
         // ProductIstance pi1 = new ProductIstance(pt1);
@@ -58,6 +58,8 @@ public class MakePersistence implements MethodExecutor {
 
         // ProductType reconstructedProduct = pt1DTO.toProduct(ProductType.class);
         // System.out.println(reconstructedProduct);
+
+        
 
     }
 

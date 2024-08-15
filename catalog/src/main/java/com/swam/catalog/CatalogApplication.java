@@ -35,12 +35,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CatalogApplication implements CommandLineRunner {
 
-	// @SuppressWarnings("unused")
-	// private final WorkflowTypeRepository workflowTypeRepository;
-
-	// @SuppressWarnings("unused")
-	// private final ProductIstanceRepository productIstanceRepository;
-
 	private final ProductTypeRepository productTypeRepository;
 	private final ProductIstanceRepository productIstanceRepository;
 	private final WorkflowTypeRepository workflowTypeRepository;
@@ -56,7 +50,7 @@ public class CatalogApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		// MakePersistence testMakePersistence = new MakePersistence();
+		MakePersistence testMakePersistence = new MakePersistence();
 
 		// workflowTypeRepository.save(workflowTypeDTO);
 		// List<WorkflowTypeDTO> resultList = workflowTypeRepository.findAll();

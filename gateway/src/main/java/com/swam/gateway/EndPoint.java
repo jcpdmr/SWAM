@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.data.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.http.HttpMethod;
 
 import com.swam.commons.OrchestratorInfo.TargetMethods;
