@@ -20,17 +20,25 @@ import com.qesm.AbstractProduct;
 import com.qesm.ProductIstance;
 import com.qesm.ProductType;
 import com.qesm.RandomDAGGenerator.PdfType;
+import com.swam.commons.ProductTypeRepository;
+import com.swam.commons.ProductIstanceRepository;
+import com.swam.commons.ProductTypeDTO;
+import com.swam.commons.WorkflowTypeRepository;
+import com.swam.commons.WorkflowIstanceRepository;
 import com.swam.commons.CustomMessage;
 import com.swam.commons.MessageHandler;
 import com.swam.commons.OrchestratorInfo;
+import com.swam.commons.ProductIstanceDTO;
 import com.swam.commons.AbstractProductDTO;
-import com.swam.commons.ProductRepository;
 import com.swam.commons.RabbitMQSender;
 import com.swam.commons.MessageHandler.MethodExecutor;
+
+import lombok.RequiredArgsConstructor;
 
 @SpringBootApplication()
 @EnableMongoRepositories(basePackages = "com.swam.commons")
 @ComponentScan(basePackages = { "com.swam.commons", "com.swam.catalog" })
+@RequiredArgsConstructor
 public class CatalogApplication implements CommandLineRunner {
 
 	// @SuppressWarnings("unused")
@@ -39,16 +47,13 @@ public class CatalogApplication implements CommandLineRunner {
 	// @SuppressWarnings("unused")
 	// private final ProductIstanceRepository productIstanceRepository;
 
-	@SuppressWarnings("unused")
-	private final ProductRepository<ProductType> productRepository;
+	private final ProductTypeRepository productTypeRepository;
+	private final ProductIstanceRepository productIstanceRepository;
+	private final WorkflowTypeRepository workflowTypeRepository;
+	private final WorkflowIstanceRepository workflowIstanceRepository;
 
 	@SuppressWarnings("unused")
 	private final MessageHandler requestHandler;
-
-	public CatalogApplication(MessageHandler requestHandler, ProductRepository<ProductType> productRepository) {
-		this.requestHandler = requestHandler;
-		this.productRepository = productRepository;
-	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(CatalogApplication.class, args);
@@ -78,33 +83,29 @@ public class CatalogApplication implements CommandLineRunner {
 		System.out.println(pi1);
 		System.out.println(pi2);
 
-		AbstractProductDTO<ProductType> pt1DTO = new AbstractProductDTO<ProductType>(pt1);
-		AbstractProductDTO<ProductType> pt2DTO = new AbstractProductDTO<ProductType>(pt2);
+		ProductTypeDTO pt1DTO = new ProductTypeDTO(pt1);
+		ProductTypeDTO pt2DTO = new ProductTypeDTO(pt2);
 
-		AbstractProductDTO<ProductIstance> pi1DTO = new AbstractProductDTO<ProductIstance>(pi1);
-		AbstractProductDTO<ProductIstance> pi2DTO = new AbstractProductDTO<ProductIstance>(pi2);
+		ProductIstanceDTO pi1DTO = new ProductIstanceDTO(pi1);
+		ProductIstanceDTO pi2DTO = new ProductIstanceDTO(pi2);
 
-		productRepository.save(pt1DTO);
-		productRepository.save(pt2DTO);
+		productTypeRepository.save(pt1DTO);
+		productTypeRepository.save(pt2DTO);
 
-		productRepository.save(pi1DTO);
-		productRepository.save(pi2DTO);
+		productIstanceRepository.save(pi1DTO);
+		productIstanceRepository.save(pi2DTO);
 
-		List<AbstractProductDTO<ProductType>> allProducts = productRepository.findAll();
+		List<ProductTypeDTO> allProductTypes = productTypeRepository.findAll();
+		List<ProductIstanceDTO> allProductIstances = productIstanceRepository.findAll();
 
-		for (AbstractProductDTO<ProductType> productDTO : allProducts) {
-			System.out.println(productDTO.getIsType());
-			try {
-				ProductType pt = productDTO.toEdge().get();
-				System.out.println("Created ProductType: " + pt);
-			} catch (Exception e) {
-				try {
-					ProductIstance pi = (ProductIstance) productDTO.toEdge().get();
-					System.out.println("Created ProductIstance: " + pi);
-				} catch (Exception e2) {
+		for (ProductTypeDTO producttypeDTO : allProductTypes) {
+			ProductType pt = producttypeDTO.toProduct();
+			System.out.println("Created ProductType: " + pt + "     is Type:" + producttypeDTO.getIsType());
+		}
 
-				}
-			}
+		for (ProductIstanceDTO productIstanceDTO : allProductIstances) {
+			ProductIstance pt = productIstanceDTO.toProduct();
+			System.out.println("Created ProductIstance: " + pt + "     is Type:" + productIstanceDTO.getIsType());
 		}
 	}
 }

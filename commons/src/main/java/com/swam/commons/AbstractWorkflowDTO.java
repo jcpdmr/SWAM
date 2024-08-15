@@ -14,12 +14,12 @@ import lombok.Getter;
 
 @Document
 @Getter
-public abstract class AbstractWorkflowDTO<P extends AbstractProductDTO, E extends AbstractCustomEdgeDTO> {
+public abstract class AbstractWorkflowDTO<P extends AbstractProductDTO, E extends AbstractCustomEdgeDTO, T extends AbstractProduct> {
 
     protected @Id String id;
     protected final Set<P> vertexSet;
     protected final Set<E> edgeSet;
-    protected final @Transient HashMap<String, ? extends AbstractProduct> nameToProductMap;
+    protected final @Transient HashMap<String, T> nameToProductMap;
 
     public AbstractWorkflowDTO(Set<P> vertexSet,
             Set<E> edgeSet) {
@@ -28,7 +28,7 @@ public abstract class AbstractWorkflowDTO<P extends AbstractProductDTO, E extend
         this.nameToProductMap = new HashMap<>();
     }
 
-    public abstract <V extends AbstractProduct, W extends AbstractWorkflow<V, W>> AbstractWorkflow<V, W> toWorkflow();
+    public abstract AbstractWorkflow<T, ? extends AbstractWorkflow<T, ?>> toWorkflow();
 
     @Override
     public String toString() {

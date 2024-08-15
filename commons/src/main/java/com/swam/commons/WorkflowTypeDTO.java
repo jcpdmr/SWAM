@@ -6,13 +6,16 @@ import java.util.stream.Collectors;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.qesm.CustomEdge;
+import com.qesm.ListenableDAG;
+import com.qesm.ProductType;
 import com.qesm.WorkflowType;
 
 import lombok.Getter;
 
 @Document
 @Getter
-public class WorkflowTypeDTO extends AbstractWorkflowDTO<ProductTypeDTO, CustomEdgeTypeDTO> {
+public class WorkflowTypeDTO extends AbstractWorkflowDTO<ProductTypeDTO, CustomEdgeTypeDTO, ProductType> {
 
     @PersistenceCreator
     public WorkflowTypeDTO(Set<ProductTypeDTO> vertexSet,
@@ -25,6 +28,27 @@ public class WorkflowTypeDTO extends AbstractWorkflowDTO<ProductTypeDTO, CustomE
                 .collect(Collectors.toSet()),
                 workflowType.getDag().edgeSet().stream().map(edge -> new CustomEdgeTypeDTO(edge))
                         .collect(Collectors.toSet()));
+    }
+
+    @Override
+    public WorkflowType toWorkflow() {
+
+        ListenableDAG<ProductType, CustomEdge> dag = new ListenableDAG<>(CustomEdge.class);
+
+        for (ProductTypeDTO productTypeDTO : vertexSet) {
+            ProductType productType = productTypeDTO.toProduct();
+            nameToProductMap.put(productTypeDTO.getName(), productType);
+            dag.addVertex(productType);
+        }
+
+        for (CustomEdgeTypeDTO customEdgeDTO : edgeSet) {
+            CustomEdge customEdge = dag.addEdge(nameToProductMap.get(customEdgeDTO.getSource().getName()),
+                    nameToProductMap.get(customEdgeDTO.getTarget().getName()));
+            customEdge.setQuantityRequired(customEdgeDTO.getQuantityRequired());
+        }
+
+        return new WorkflowType(dag);
+
     }
 
 }

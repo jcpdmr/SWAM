@@ -6,20 +6,15 @@ import java.util.stream.Collectors;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.qesm.AbstractProduct;
-import com.qesm.AbstractWorkflow;
 import com.qesm.CustomEdge;
 import com.qesm.ListenableDAG;
 import com.qesm.ProductIstance;
-import com.qesm.ProductType;
 import com.qesm.WorkflowIstance;
-import com.qesm.WorkflowType;
-
 import lombok.Getter;
 
 @Document
 @Getter
-public class WorkflowIstanceDTO extends AbstractWorkflowDTO<ProductIstanceDTO, CustomEdgeIstanceDTO> {
+public class WorkflowIstanceDTO extends AbstractWorkflowDTO<ProductIstanceDTO, CustomEdgeIstanceDTO, ProductIstance> {
 
     @PersistenceCreator
     public WorkflowIstanceDTO(Set<ProductIstanceDTO> vertexSet,
@@ -35,9 +30,9 @@ public class WorkflowIstanceDTO extends AbstractWorkflowDTO<ProductIstanceDTO, C
     }
 
     @Override
-    public <V extends AbstractProduct, W extends AbstractWorkflow<V, W>> AbstractWorkflow<V, W> toWorkflow() {
+    public WorkflowIstance toWorkflow() {
 
-        ListenableDAG<ProductType, CustomEdge> dag = new ListenableDAG<>(CustomEdge.class);
+        ListenableDAG<ProductIstance, CustomEdge> dag = new ListenableDAG<>(CustomEdge.class);
 
         for (ProductIstanceDTO productIstanceDTO : vertexSet) {
             ProductIstance productIstance = productIstanceDTO.toProduct();
@@ -45,13 +40,13 @@ public class WorkflowIstanceDTO extends AbstractWorkflowDTO<ProductIstanceDTO, C
             dag.addVertex(productIstance);
         }
 
-        for (AbstractCustomEdgeDTO customEdgeDTO : edgeSet) {
+        for (CustomEdgeIstanceDTO customEdgeDTO : edgeSet) {
             CustomEdge customEdge = dag.addEdge(nameToProductMap.get(customEdgeDTO.getSource().getName()),
                     nameToProductMap.get(customEdgeDTO.getTarget().getName()));
             customEdge.setQuantityRequired(customEdgeDTO.getQuantityRequired());
         }
 
-        return new WorkflowType(dag);
+        return new WorkflowIstance(dag);
 
     }
 
