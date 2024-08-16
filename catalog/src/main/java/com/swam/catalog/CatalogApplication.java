@@ -19,6 +19,7 @@ import com.swam.commons.ProductIstanceRepository;
 import com.swam.commons.ProductTypeDTO;
 import com.swam.commons.WorkflowTypeRepository;
 import com.swam.commons.WorkflowIstanceRepository;
+import com.swam.commons.WorkflowTypeDTO;
 import com.swam.commons.CustomMessage;
 import com.swam.commons.MessageHandler;
 import com.swam.commons.OrchestratorInfo;
@@ -50,7 +51,11 @@ public class CatalogApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		MakePersistence testMakePersistence = new MakePersistence();
+		WorkflowType workflowType = new WorkflowType();
+		workflowType.generateRandomDAG(5, 5, 3, 3, 50, PdfType.UNIFORM);
+
+		WorkflowTypeDTO workflowTypeDTO = new WorkflowTypeDTO(workflowType);
+		workflowTypeRepository.save(workflowTypeDTO);
 
 		// workflowTypeRepository.save(workflowTypeDTO);
 		// List<WorkflowTypeDTO> resultList = workflowTypeRepository.findAll();

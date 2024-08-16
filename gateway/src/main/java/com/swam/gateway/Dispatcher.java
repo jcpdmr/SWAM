@@ -18,19 +18,18 @@ import org.springframework.util.AntPathMatcher;
 import com.swam.commons.CustomMessage;
 import com.swam.commons.OrchestratorInfo;
 import com.swam.commons.RabbitMQSender;
-import com.swam.gateway.OrchestratorConfig.OrchestrationPlanner;
 
 @Service
 public class Dispatcher {
 
-    private final Map<List<String>, OrchestrationPlanner> orchestratorMap;
+    private final Map<List<String>, AbstractEndPointHandler> endPointMap;
     private final RabbitMQSender rabbitMQSender;
     private final Map<UUID, OrchestratorInfo> activeOrchestration;
     private final AntPathMatcher antPathMatcher;
 
-    public Dispatcher(List<OrchestrationPlanner> orchestratorSuppliers, RabbitMQSender rabbitMQSender) {
-        this.orchestratorMap = orchestratorSuppliers.stream()
-                .collect(Collectors.toMap(OrchestrationPlanner::getBindingPaths, Function.identity()));
+    public Dispatcher(List<AbstractEndPointHandler> orchestratorSuppliers, RabbitMQSender rabbitMQSender) {
+        this.endPointMap = orchestratorSuppliers.stream()
+                .collect(Collectors.toMap(AbstractEndPointHandler::getBindingPaths, Function.identity()));
         this.rabbitMQSender = rabbitMQSender;
         this.activeOrchestration = new HashMap<>();
         this.antPathMatcher = new AntPathMatcher();
@@ -41,8 +40,9 @@ public class Dispatcher {
             Optional<String> requestBody) {
 
         CustomMessage apiMessage = null;
-        // Look for a match in all bindingPaths provided by OrchestrationPlanner's Beans
-        for (Entry<List<String>, OrchestrationPlanner> entry : orchestratorMap.entrySet()) {
+        // Look for a match in all bindingPaths provided by AbstractEndPointHandler's
+        // Beans
+        for (Entry<List<String>, AbstractEndPointHandler> entry : endPointMap.entrySet()) {
             for (String bindingPath : entry.getKey()) {
                 // System.out.println("Check bindingPath: " + bindingPath);
                 if (antPathMatcher.match(bindingPath, uriPath)) {
@@ -51,7 +51,7 @@ public class Dispatcher {
                     Map<String, String> variables = antPathMatcher.extractUriTemplateVariables(
                             bindingPath,
                             uriPath);
-                    apiMessage = entry.getValue().orchestrate(httpMethod, variables, requestParams,
+                    apiMessage = entry.getValue().handle(httpMethod, variables, requestParams,
                             requestBody);
                 }
             }

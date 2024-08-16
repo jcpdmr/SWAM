@@ -6,11 +6,20 @@ import org.oristool.eulero.modeling.stochastictime.UniformTime;
 import org.springframework.stereotype.Service;
 
 import com.qesm.ProductType;
+import com.qesm.WorkflowType;
+import com.qesm.RandomDAGGenerator.PdfType;
 import com.swam.commons.CustomMessage;
+import com.swam.commons.WorkflowTypeDTO;
+import com.swam.commons.WorkflowTypeRepository;
 import com.swam.commons.OrchestratorInfo.TargetMethods;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class MakePersistence implements MethodExecutor {
+
+    private final WorkflowTypeRepository workflowTypeRepository;
 
     @Override
     public void execute(CustomMessage context) {
@@ -59,7 +68,11 @@ public class MakePersistence implements MethodExecutor {
         // ProductType reconstructedProduct = pt1DTO.toProduct(ProductType.class);
         // System.out.println(reconstructedProduct);
 
-        
+        // WorkflowType workflowType = new WorkflowType();
+        // workflowType.generateRandomDAG(5, 5, 3, 3, 50, PdfType.UNIFORM);
+
+        // WorkflowTypeDTO workflowTypeDTO = new WorkflowTypeDTO(workflowType);
+        // workflowTypeRepository.save(workflowTypeDTO);
 
     }
 
