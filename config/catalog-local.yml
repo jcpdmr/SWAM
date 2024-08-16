@@ -1,0 +1,28 @@
+spring:
+  main:
+    web-application-type: none
+
+  devtools:
+    livereload:
+      enabled: false
+    # restart:
+    #   additional-paths: ../commons/target/classes
+
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: mydatabase
+      username: myuser
+      password: secret
+      authentication-database: admin
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: myuser
+    password: secret
+    in-queue: catalog_in
+# logging:
+#   level:
+#     org.springframework.boot.devtools: DEBUG

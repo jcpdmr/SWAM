@@ -11,12 +11,14 @@ services:
     working_dir: /app
     command: [ "java", "-jar", "/app/app.jar" ]
     environment:
-      - SPRING_PROFILES_ACTIVE=${DEV_PROFILE}
+      - SPRING_PROFILES_ACTIVE=${DOCKER_PROFILE}
       - MICROSERVICE_NAME=${MICROSERVICE_CATALOG_NAME}
     ports:
       - 8083:8080
       - 35729:35729
       # - 5005:5005
+    networks:
+      - containers-network
 
   operation:
     depends_on:
@@ -29,12 +31,14 @@ services:
     working_dir: /app
     command: [ "java", "-jar", "/app/app.jar" ]
     environment:
-      - SPRING_PROFILES_ACTIVE=${DEV_PROFILE}
+      - SPRING_PROFILES_ACTIVE=${DOCKER_PROFILE}
       - MICROSERVICE_NAME=${MICROSERVICE_OPERATION_NAME}
     ports:
       - 8081:8080
       - 35730:35729
       # - 5006:5005
+    networks:
+      - containers-network
 
   analysis:
     depends_on:
@@ -46,12 +50,14 @@ services:
     working_dir: /app
     command: [ "java", "-jar", "/app/app.jar" ]
     environment:
-      - SPRING_PROFILES_ACTIVE=${DEV_PROFILE}
+      - SPRING_PROFILES_ACTIVE=${DOCKER_PROFILE}
       - MICROSERVICE_NAME=${MICROSERVICE_ANALYSIS_NAME}
     ports:
       - 8082:8080
       - 35731:35729
       - 5007:5005
+    networks:
+      - containers-network
 
   gateway:
     depends_on:
@@ -63,12 +69,14 @@ services:
     working_dir: /app
     command: [ "java", "-jar", "/app/app.jar" ]
     environment:
-      - SPRING_PROFILES_ACTIVE=${DEV_PROFILE}
+      - SPRING_PROFILES_ACTIVE=${DOCKER_PROFILE}
       - MICROSERVICE_NAME=${MICROSERVICE_GATEWAY_NAME}
     ports:
       - 8080:8080
       - 35732:35729
       - 5008:5005
+    networks:
+      - containers-network
 
   config-server:
     image: openjdk:22-jdk
@@ -79,6 +87,9 @@ services:
     command: [ "java", "-jar", "/app/app.jar" ]
     ports:
       - "8888:8888"
+    networks:
+      - host-network
+      - containers-network
 
   mongodb_catalog:
     image: 'mongo:latest'
@@ -90,6 +101,9 @@ services:
       - 'MONGO_INITDB_ROOT_USERNAME=myuser'
     ports:
       - 27017:27017
+    networks:
+      - host-network
+      - containers-network
 
   mongodb_operation:
     image: 'mongo:latest'
@@ -101,6 +115,9 @@ services:
       - 'MONGO_INITDB_ROOT_USERNAME=myuser'
     ports:
       - 27018:27017
+    networks:
+      - host-network
+      - containers-network
 
   rabbitmq:
     image: 'rabbitmq:management'
@@ -110,8 +127,11 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     ports:
-      - '5672'
+      - 5672:5672
       - 15672:15672
+    networks:
+      - host-network
+      - containers-network
 
 volumes:
   rabbitmq_data:
@@ -124,3 +144,9 @@ volumes:
   #   driver_opts:
   #     type: tmpfs
   #     device: tmpfs
+
+networks:
+  host-network:
+    driver: bridge
+  containers-network:
+    driver: bridge

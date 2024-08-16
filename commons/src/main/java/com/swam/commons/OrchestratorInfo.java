@@ -3,8 +3,6 @@ package com.swam.commons;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -70,12 +68,12 @@ public class OrchestratorInfo {
         if (hopCounter.equals(pipeline.size())) {
             return TargetMicroservices.END;
         } else {
-            return pipeline.get(hopCounter).getLeft();
+            return pipeline.get(hopCounter).getKey();
         }
     }
 
     public TargetMethods getTargetMethod() {
-        return pipeline.get(hopCounter).getRight();
+        return pipeline.get(hopCounter).getValue();
     }
 
     public Integer increaseHop() {

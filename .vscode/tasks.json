@@ -96,5 +96,126 @@
       },
       "problemMatcher": []
     },
+    {
+      "label": "6: Run local-dev",
+      "type": "shell",
+      "dependsOrder": "sequence",
+            "dependsOn": [
+                "Setup local dev",
+                "Run all modules",
+            ],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+    },
+    {
+      "label": "Setup local dev",
+      "type": "shell",
+      "command": "./setup-local-dev.sh",
+      "args": [
+          "-s"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "close": true,
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run all modules",
+      "type": "shell",
+      "dependsOrder": "parallel",
+            "dependsOn": [
+                "Run Catalog Module",
+                "Run Analysis Module",
+                "Run Operation Module",
+                "Run Gateway Module"
+            ],
+      "isBackground": true,
+      "problemMatcher": [],
+    },
+    {
+      "label": "Run Catalog Module",
+      "type": "shell",
+      "command": "./mvnw",
+      "args": [
+          "spring-boot:run",
+          "-pl",
+          "catalog",
+          "-Dspring-boot.run.profiles=local",
+      ],
+      "group": "none",
+      "isBackground": true,
+      "presentation": {
+          "reveal": "always",
+          "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+        "label": "Run Analysis Module",
+        "type": "shell",
+        "command": "./mvnw",
+        "args": [
+            "spring-boot:run",
+            "-pl",
+            "analysis",
+            "-Dspring-boot.run.profiles=local",
+
+        ],
+        "group": "none",
+        "isBackground": true,
+        "presentation": {
+            "reveal": "always",
+            "panel": "new"
+        },
+        "problemMatcher": []
+    },
+    {
+        "label": "Run Operation Module",
+        "type": "shell",
+        "command": "./mvnw",
+        "args": [
+            "spring-boot:run",
+            "-pl",
+            "operation",
+            "-Dspring-boot.run.profiles=local",
+
+        ],
+        "group": "none",
+        "isBackground": true,
+        "presentation": {
+            "reveal": "always",
+            "panel": "new"
+        },
+        "problemMatcher": []
+    },
+    {
+        "label": "Run Gateway Module",
+        "type": "shell",
+        "command": "./mvnw",
+        "args": [
+            "spring-boot:run",
+            "-pl",
+            "gateway",
+            "-Dspring-boot.run.profiles=local",
+
+        ],
+        "group": "none",
+        "isBackground": true,
+        "presentation": {
+            "reveal": "always",
+            "panel": "new"
+        },
+        "problemMatcher": []
+    },
   ]
 }
