@@ -22,7 +22,7 @@ public class CustomMessage {
     private TargetMicroservices sender;
     private MessageType messageType;
     private Integer responseStatusCode;
-    private String responseBody;
+    private Object responseBody;
     private Map<String, String> uriTemplateVariables;
     private Optional<String> requestBody;
     private Optional<Map<String, String>> requestParams;
@@ -53,7 +53,7 @@ public class CustomMessage {
         this.messageType = messageType;
     }
 
-    public ResponseEntity<String> getResponseEntity() {
+    public ResponseEntity<Object> getResponseEntity() {
         return new ResponseEntity<>(responseBody, HttpStatusCode.valueOf(responseStatusCode));
     }
 }

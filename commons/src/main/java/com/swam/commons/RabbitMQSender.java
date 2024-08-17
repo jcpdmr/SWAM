@@ -66,7 +66,6 @@ public class RabbitMQSender {
                 break;
             case TargetMicroservices.GATEWAY:
                 message.setMessageType(MessageType.END_MESSAGE);
-                ;
                 sendToGateway(message);
                 break;
             case TargetMicroservices.END:

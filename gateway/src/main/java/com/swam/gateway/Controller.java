@@ -24,7 +24,7 @@ public class Controller {
     }
 
     @RequestMapping("/**")
-    public ResponseEntity<String> handleRequest(@RequestParam(required = false) Map<String, String> requestParams,
+    public ResponseEntity<Object> handleRequest(@RequestParam(required = false) Map<String, String> requestParams,
             @RequestBody(required = false) String requestBody, HttpServletRequest request) {
         String path = request.getRequestURI();
         String method = request.getMethod();

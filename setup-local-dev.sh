@@ -127,14 +127,23 @@ drop_all_mongoDB_databases(){
   --eval "db.getSiblingDB('$MONGO_DB_NAME').dropDatabase()"
 }
 
-
+kill_old_spring_istance(){
+  ps aux | grep 'spring-boot:run' | awk '{print $2}' | while read pid; do
+    if [[ -n "$pid" ]]; then
+        echo "Terminazione del processo PID: $pid"
+        kill "$pid" 2>/dev/null || echo "Errore nella terminazione del processo PID: $pid"
+    fi
+  done
+}
 
 setup_env(){
+  kill_old_spring_istance
+
   setup_dependency
 
   start_base_services
 
-  ./mvnw install -pl commons -DskipTests 
+  # ./mvnw install -pl commons -DskipTests 
   
   check_mongodb "mongodb_catalog" &
   PID2=$!
@@ -153,6 +162,7 @@ setup_env(){
 
 
 
+
 usage() {
   echo "Usage: $0 [-s] [-m]"
   echo "  -s  Setup local env"
@@ -162,10 +172,13 @@ usage() {
 }
 
 # Options parsing
-while getopts "sh" opt; do
+while getopts "sah" opt; do
   case ${opt} in
     s )
       setup_env
+      ;;
+    a )
+      run_catalog
       ;;
     h )
       usage

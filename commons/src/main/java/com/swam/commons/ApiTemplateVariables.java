@@ -1,4 +1,4 @@
-package com.swam.gateway;
+package com.swam.commons;
 
 public class ApiTemplateVariables {
 

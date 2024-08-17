@@ -21,3 +21,6 @@ spring:
     username: myuser
     password: secret
     in-queue: operation_in
+# logging:
+#   level:
+#     org.springframework.boot.devtools: DEBUG

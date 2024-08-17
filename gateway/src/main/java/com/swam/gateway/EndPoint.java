@@ -139,7 +139,7 @@ public class EndPoint {
 
         @Override
         public EndPointBuilderStep4 withRouting(List<Pair<TargetMicroservices, TargetMethods>> routingEntries) {
-            endPointData.get(currentTargetType).get(currenHttpMethod).setRoutingMap(routingEntries);
+            endPointData.get(currentTargetType).get(currenHttpMethod).setRoutingMap(new ArrayList<>(routingEntries));
             return this;
         }
 
@@ -159,6 +159,14 @@ public class EndPoint {
 
         @Override
         public EndPoint build() {
+
+            // Adding final return to gateway to all route
+            for (Map<HttpMethod, MethodInfo> metodMap : endPointData.values()) {
+                for (MethodInfo methodInfo : metodMap.values()) {
+                    methodInfo.getRoutingMap().add(Pair.of(TargetMicroservices.GATEWAY, TargetMethods.CHECK_ACK));
+                }
+            }
+
             return new EndPoint(endPointData);
         }
 

@@ -117,7 +117,7 @@
       "command": "./setup-local-dev.sh",
       "args": [
           "-s"
-      ],
+        ],
       "presentation": {
         "echo": true,
         "reveal": "always",
@@ -150,13 +150,14 @@
           "spring-boot:run",
           "-pl",
           "catalog",
+          "-am",
           "-Dspring-boot.run.profiles=local",
       ],
       "group": "none",
       "isBackground": true,
       "presentation": {
           "reveal": "always",
-          "panel": "new"
+          "panel": "new",
       },
       "problemMatcher": []
     },
@@ -168,6 +169,7 @@
             "spring-boot:run",
             "-pl",
             "analysis",
+            "-am",
             "-Dspring-boot.run.profiles=local",
 
         ],
@@ -187,6 +189,7 @@
             "spring-boot:run",
             "-pl",
             "operation",
+            "-am",
             "-Dspring-boot.run.profiles=local",
 
         ],
@@ -206,6 +209,7 @@
             "spring-boot:run",
             "-pl",
             "gateway",
+            "-am",
             "-Dspring-boot.run.profiles=local",
 
         ],

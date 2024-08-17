@@ -5,8 +5,6 @@ spring:
   devtools:
     livereload:
       enabled: false
-    # restart:
-    #   additional-paths: ../commons/target/classes
 
   data:
     mongodb:

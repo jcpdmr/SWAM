@@ -35,7 +35,7 @@ public class Dispatcher {
         this.antPathMatcher = new AntPathMatcher();
     }
 
-    public ResponseEntity<String> dispatchRequest(HttpMethod httpMethod, String uriPath,
+    public ResponseEntity<Object> dispatchRequest(HttpMethod httpMethod, String uriPath,
             Optional<Map<String, String>> requestParams,
             Optional<String> requestBody) {
 

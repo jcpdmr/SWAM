@@ -8,6 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
+import com.swam.commons.ApiTemplateVariables;
 import com.swam.commons.CustomMessage;
 import com.swam.commons.CustomMessage.MessageType;
 import com.swam.commons.OrchestratorInfo;

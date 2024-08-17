@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 
+import com.swam.commons.ApiTemplateVariables;
 import com.swam.commons.CustomMessage;
 import com.swam.commons.OrchestratorInfo.TargetMethods;
 import com.swam.commons.OrchestratorInfo.TargetMicroservices;
