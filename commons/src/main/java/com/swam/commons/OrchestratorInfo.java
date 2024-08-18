@@ -5,9 +5,11 @@ import java.util.UUID;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Setter
 @Getter
+@ToString
 public class OrchestratorInfo {
 
     public enum TargetTasks {
@@ -59,10 +61,11 @@ public class OrchestratorInfo {
         this.pipeline = pipeline;
     }
 
-    @Override
-    public String toString() {
-        return "OrchestratorInfo [uuid=" + uuid + ", hopCounter=" + hopCounter + ", pipeline=" + pipeline + "]";
-    }
+    // @Override
+    // public String toString() {
+    // return "OrchestratorInfo [uuid=" + uuid + ", hopCounter=" + hopCounter + ",
+    // pipeline=" + pipeline + "]";
+    // }
 
     public TargetMicroservices getTargetMicroservice() {
         if (hopCounter.equals(pipeline.size())) {
