@@ -15,7 +15,6 @@ import com.qesm.ProductIstance;
 import com.qesm.ProductType;
 import com.qesm.RandomDAGGenerator.PdfType;
 import com.swam.commons.ProductTypeRepository;
-import com.swam.commons.Prova;
 import com.swam.commons.ProductIstanceRepository;
 import com.swam.commons.ProductTypeDTO;
 import com.swam.commons.WorkflowTypeRepository;
@@ -52,7 +51,6 @@ public class CatalogApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		Prova.print();
 		// System.out.println("test");
 
 		// WorkflowType workflowType = new WorkflowType();

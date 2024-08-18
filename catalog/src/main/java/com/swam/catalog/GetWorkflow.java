@@ -32,13 +32,12 @@ public class GetWorkflow implements MethodExecutor {
                 context.setResponseStatusCode(404);
                 context.setResponseBody("Workflow with workflowId: " + workflowId + " not found");
             } else {
-                context.setResponseBody(workflowId);
+                context.setResponseBody(workflowTypeDTO);
             }
         } else {
             // TODO: implement paging and filtering opt
             context.setResponseBody(workflowTypeRepository.findAll());
         }
-
     }
 
     @Override
