@@ -1,4 +1,4 @@
-package com.swam.catalog;
+package com.swam.operation;
 
 import java.util.Map;
 import java.util.Optional;
@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.swam.commons.ApiTemplateVariables;
 import com.swam.commons.CustomMessage;
-import com.swam.commons.WorkflowTypeDTO;
-import com.swam.commons.WorkflowTypeRepository;
+import com.swam.commons.WorkflowIstanceDTO;
+import com.swam.commons.WorkflowIstanceRepository;
 import com.swam.commons.MessageHandler.TaskExecutor;
 import com.swam.commons.OrchestratorInfo.TargetTasks;
 
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class GetWorkflow implements TaskExecutor {
 
-    private final WorkflowTypeRepository workflowTypeRepository;
+    private final WorkflowIstanceRepository workflowIstanceRepository;
 
     @Override
     public void execute(CustomMessage context) {
@@ -27,17 +27,18 @@ public class GetWorkflow implements TaskExecutor {
         String workflowId = uriTemplateVariables.get(ApiTemplateVariables.WORKFLOW_ID);
 
         if (workflowId != null) {
-            Optional<WorkflowTypeDTO> workflowTypeDTO = workflowTypeRepository.findById(workflowId);
-            if (workflowTypeDTO.isEmpty()) {
+            Optional<WorkflowIstanceDTO> workflowIstanceDTO = workflowIstanceRepository.findById(workflowId);
+            if (workflowIstanceDTO.isEmpty()) {
                 context.setResponseStatusCode(404);
                 context.setResponseBody("Workflow with workflowId: " + workflowId + " not found");
             } else {
-                context.setResponseBody(workflowTypeDTO);
+                context.setResponseBody(workflowIstanceDTO);
             }
         } else {
             // TODO: implement paging and filtering opt
-            context.setResponseBody(workflowTypeRepository.findAll());
+            context.setResponseBody(workflowIstanceRepository.findAll());
         }
+
     }
 
     @Override

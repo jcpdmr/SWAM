@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 public class OrchestratorInfo {
 
-    public enum TargetMethods {
+    public enum TargetTasks {
 
         ANALYZE,
         ISTANCE_TEMPLATE,
@@ -45,15 +45,15 @@ public class OrchestratorInfo {
 
     private final UUID uuid;
     private Integer hopCounter;
-    private List<Pair<TargetMicroservices, TargetMethods>> pipeline;
+    private List<Pair<TargetMicroservices, TargetTasks>> pipeline;
 
-    public OrchestratorInfo(List<Pair<TargetMicroservices, TargetMethods>> pipeline) {
+    public OrchestratorInfo(List<Pair<TargetMicroservices, TargetTasks>> pipeline) {
         this.uuid = UUID.randomUUID();
         this.hopCounter = 0;
         this.pipeline = pipeline;
     }
 
-    public OrchestratorInfo(List<Pair<TargetMicroservices, TargetMethods>> pipeline, UUID uuid) {
+    public OrchestratorInfo(List<Pair<TargetMicroservices, TargetTasks>> pipeline, UUID uuid) {
         this.uuid = uuid;
         this.hopCounter = 0;
         this.pipeline = pipeline;
@@ -72,7 +72,7 @@ public class OrchestratorInfo {
         }
     }
 
-    public TargetMethods getTargetMethod() {
+    public TargetTasks getTargetMethod() {
         return pipeline.get(hopCounter).getValue();
     }
 

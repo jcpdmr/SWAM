@@ -8,7 +8,7 @@ import java.util.Map;
 import org.springframework.http.HttpMethod;
 
 import com.swam.commons.Pair;
-import com.swam.commons.OrchestratorInfo.TargetMethods;
+import com.swam.commons.OrchestratorInfo.TargetTasks;
 import com.swam.commons.OrchestratorInfo.TargetMicroservices;
 
 import lombok.AllArgsConstructor;
@@ -41,7 +41,7 @@ public class EndPoint {
     @Getter
     @ToString
     protected static class MethodInfo {
-        private List<Pair<TargetMicroservices, TargetMethods>> routingMap;
+        private List<Pair<TargetMicroservices, TargetTasks>> routingMap;
         private final Map<Requirement, List<String>> idsRequirementsMap;
 
         public MethodInfo() {
@@ -78,7 +78,7 @@ public class EndPoint {
 
         EndPointBuilderStep3 withForbiddenIds(String... forbiddenIds);
 
-        EndPointBuilderStep4 withRouting(List<Pair<TargetMicroservices, TargetMethods>> routingEntries);
+        EndPointBuilderStep4 withRouting(List<Pair<TargetMicroservices, TargetTasks>> routingEntries);
 
     }
 
@@ -138,7 +138,7 @@ public class EndPoint {
         }
 
         @Override
-        public EndPointBuilderStep4 withRouting(List<Pair<TargetMicroservices, TargetMethods>> routingEntries) {
+        public EndPointBuilderStep4 withRouting(List<Pair<TargetMicroservices, TargetTasks>> routingEntries) {
             endPointData.get(currentTargetType).get(currenHttpMethod).setRoutingMap(new ArrayList<>(routingEntries));
             return this;
         }
@@ -163,7 +163,7 @@ public class EndPoint {
             // Adding final return to gateway to all route
             for (Map<HttpMethod, MethodInfo> metodMap : endPointData.values()) {
                 for (MethodInfo methodInfo : metodMap.values()) {
-                    methodInfo.getRoutingMap().add(Pair.of(TargetMicroservices.GATEWAY, TargetMethods.CHECK_ACK));
+                    methodInfo.getRoutingMap().add(Pair.of(TargetMicroservices.GATEWAY, TargetTasks.CHECK_ACK));
                 }
             }
 

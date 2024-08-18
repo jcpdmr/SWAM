@@ -1,14 +1,14 @@
 package com.swam.analysis;
 
-import com.swam.commons.MessageHandler.MethodExecutor;
+import com.swam.commons.MessageHandler.TaskExecutor;
 
 import org.springframework.stereotype.Service;
 
 import com.swam.commons.CustomMessage;
-import com.swam.commons.OrchestratorInfo.TargetMethods;
+import com.swam.commons.OrchestratorInfo.TargetTasks;
 
 @Service
-public class Analyze implements MethodExecutor {
+public class Analyze implements TaskExecutor {
 
     @Override
     public void execute(CustomMessage context) {
@@ -23,8 +23,8 @@ public class Analyze implements MethodExecutor {
     }
 
     @Override
-    public TargetMethods getBinding() {
-        return TargetMethods.ANALYZE;
+    public TargetTasks getBinding() {
+        return TargetTasks.ANALYZE;
     }
 
 }

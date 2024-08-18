@@ -6,18 +6,18 @@ import org.springframework.stereotype.Service;
 
 import com.swam.commons.CustomMessage;
 import com.swam.commons.OrchestratorInfo;
-import com.swam.commons.OrchestratorInfo.TargetMethods;
-import com.swam.commons.CustomMessage.MessageType;
-import com.swam.commons.MessageHandler.MethodExecutor;
+import com.swam.commons.OrchestratorInfo.TargetTasks;
 
+import lombok.AllArgsConstructor;
+
+import com.swam.commons.CustomMessage.MessageType;
+import com.swam.commons.MessageHandler.TaskExecutor;
+
+@AllArgsConstructor
 @Service
-public class HandleAck implements MethodExecutor {
+public class MicroserviceResponseHandler implements TaskExecutor {
 
     private final Dispatcher dispatcher;
-
-    HandleAck(Dispatcher dispatcher) {
-        this.dispatcher = dispatcher;
-    }
 
     @Override
     public void execute(CustomMessage context) {
@@ -51,8 +51,8 @@ public class HandleAck implements MethodExecutor {
     }
 
     @Override
-    public TargetMethods getBinding() {
-        return TargetMethods.CHECK_ACK;
+    public TargetTasks getBinding() {
+        return TargetTasks.CHECK_ACK;
     }
 
 }

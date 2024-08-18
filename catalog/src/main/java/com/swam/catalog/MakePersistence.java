@@ -1,6 +1,6 @@
 package com.swam.catalog;
 
-import com.swam.commons.MessageHandler.MethodExecutor;
+import com.swam.commons.MessageHandler.TaskExecutor;
 
 import org.oristool.eulero.modeling.stochastictime.UniformTime;
 import org.springframework.stereotype.Service;
@@ -11,13 +11,13 @@ import com.qesm.RandomDAGGenerator.PdfType;
 import com.swam.commons.CustomMessage;
 import com.swam.commons.WorkflowTypeDTO;
 import com.swam.commons.WorkflowTypeRepository;
-import com.swam.commons.OrchestratorInfo.TargetMethods;
+import com.swam.commons.OrchestratorInfo.TargetTasks;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class MakePersistence implements MethodExecutor {
+public class MakePersistence implements TaskExecutor {
 
     private final WorkflowTypeRepository workflowTypeRepository;
 
@@ -77,8 +77,8 @@ public class MakePersistence implements MethodExecutor {
     }
 
     @Override
-    public TargetMethods getBinding() {
-        return TargetMethods.MAKE_PERSISTENCE;
+    public TargetTasks getBinding() {
+        return TargetTasks.MAKE_PERSISTENCE;
     }
 
 }

@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.swam.commons.OrchestratorInfo.TargetMethods;
+import com.swam.commons.OrchestratorInfo.TargetTasks;
 import com.swam.commons.OrchestratorInfo.TargetMicroservices;
 
 public class OrchestratorInfoBuilder {
 
-    private List<Pair<TargetMicroservices, TargetMethods>> pipeline;
+    private List<Pair<TargetMicroservices, TargetTasks>> pipeline;
     private UUID uuid;
 
     private OrchestratorInfoBuilder() {
@@ -26,13 +26,13 @@ public class OrchestratorInfoBuilder {
         return this;
     }
 
-    public OrchestratorInfoBuilder setTargets(List<Pair<TargetMicroservices, TargetMethods>> targets) {
+    public OrchestratorInfoBuilder setTargets(List<Pair<TargetMicroservices, TargetTasks>> targets) {
         this.pipeline = targets;
         return this;
     }
 
     public OrchestratorInfoBuilder addTargets(TargetMicroservices targetMicroservice,
-            TargetMethods targetMethod) {
+            TargetTasks targetMethod) {
         this.pipeline.add(Pair.of(targetMicroservice, targetMethod));
         return this;
     }

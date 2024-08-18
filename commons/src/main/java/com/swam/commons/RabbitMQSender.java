@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.swam.commons.CustomMessage.MessageType;
-import com.swam.commons.OrchestratorInfo.TargetMethods;
+import com.swam.commons.OrchestratorInfo.TargetTasks;
 import com.swam.commons.OrchestratorInfo.TargetMicroservices;
 
 @Service
@@ -35,7 +35,7 @@ public class RabbitMQSender {
 
             ackOrchestratorInfo = OrchestratorInfoBuilder.newBuild()
                     .withUUID(orchestratorInfo.getUuid())
-                    .addTargets(TargetMicroservices.GATEWAY, TargetMethods.CHECK_ACK)
+                    .addTargets(TargetMicroservices.GATEWAY, TargetTasks.CHECK_ACK)
                     .build();
 
             ackMessage = new CustomMessage("ACK", ackOrchestratorInfo, sender, MessageType.ACK,
