@@ -1,6 +1,4 @@
-package com.swam.operation;
-
-import com.swam.commons.WorkflowRepository;
+package com.swam.commons.mongodb;
 
 public interface WorkflowIstanceRepository extends WorkflowRepository<WorkflowIstanceDTO> {
 

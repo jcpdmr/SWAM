@@ -1,4 +1,4 @@
-package com.swam.commons;
+package com.swam.commons.mongodb;
 
 import java.util.HashMap;
 import java.util.Set;

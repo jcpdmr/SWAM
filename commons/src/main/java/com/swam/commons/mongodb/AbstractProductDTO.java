@@ -1,4 +1,4 @@
-package com.swam.commons;
+package com.swam.commons.mongodb;
 
 import org.oristool.eulero.modeling.stochastictime.StochasticTime;
 import org.springframework.data.annotation.Id;

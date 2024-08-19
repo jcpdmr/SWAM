@@ -9,6 +9,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import com.qesm.RandomDAGGenerator.PdfType;
 import com.qesm.WorkflowType;
 import com.swam.commons.MessageDispatcher;
+import com.swam.commons.mongodb.WorkflowTypeDTO;
+import com.swam.commons.mongodb.WorkflowTypeRepository;
 
 import lombok.RequiredArgsConstructor;
 

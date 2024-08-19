@@ -1,4 +1,4 @@
-package com.swam.operation;
+package com.swam.commons.mongodb;
 
 import java.util.UUID;
 
@@ -6,8 +6,7 @@ import org.oristool.eulero.modeling.stochastictime.StochasticTime;
 import org.springframework.data.annotation.PersistenceCreator;
 
 import com.qesm.ProductIstance;
-import com.swam.commons.AbstractProductDTO;
-import com.swam.commons.AbstractProductDTO.ItemGroup;
+import com.swam.commons.mongodb.AbstractProductDTO.ItemGroup;
 
 public class ProductIstanceDTO extends AbstractProductDTO {
 

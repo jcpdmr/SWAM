@@ -1,4 +1,4 @@
-package com.swam.catalog;
+package com.swam.commons.mongodb;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -10,7 +10,6 @@ import com.qesm.CustomEdge;
 import com.qesm.ListenableDAG;
 import com.qesm.ProductType;
 import com.qesm.WorkflowType;
-import com.swam.commons.AbstractWorkflowDTO;
 
 import lombok.Getter;
 

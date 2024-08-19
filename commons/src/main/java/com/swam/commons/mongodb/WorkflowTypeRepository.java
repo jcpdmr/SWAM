@@ -1,6 +1,4 @@
-package com.swam.catalog;
-
-import com.swam.commons.WorkflowRepository;
+package com.swam.commons.mongodb;
 
 public interface WorkflowTypeRepository extends WorkflowRepository<WorkflowTypeDTO> {
 

@@ -4,15 +4,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qesm.AbstractProduct;
-import com.swam.commons.AbstractCustomEdgeDTO;
-import com.swam.commons.AbstractProductDTO;
-import com.swam.commons.AbstractWorkflowDTO;
 import com.swam.commons.ApiTemplateVariables;
 import com.swam.commons.CustomMessage;
-import com.swam.commons.WorkflowRepository;
 import com.swam.commons.MessageDispatcher.TaskExecutor;
 import com.swam.commons.RoutingInstructions.TargetTasks;
+import com.swam.commons.mongodb.AbstractCustomEdgeDTO;
+import com.swam.commons.mongodb.AbstractProductDTO;
+import com.swam.commons.mongodb.AbstractWorkflowDTO;
+import com.swam.commons.mongodb.WorkflowRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -75,6 +76,8 @@ public abstract class AbstractCRUDWorkflowTask<P extends AbstractProductDTO, E e
     private void postWorkflow(CustomMessage context) {
 
         System.out.println(context.getRequestBody());
+        ObjectMapper objectMapper = new ObjectMapper();
+
     }
 
     private void putWorkflow(CustomMessage context) {

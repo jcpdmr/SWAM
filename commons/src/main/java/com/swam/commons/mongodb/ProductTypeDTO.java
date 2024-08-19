@@ -1,4 +1,4 @@
-package com.swam.catalog;
+package com.swam.commons.mongodb;
 
 import java.util.UUID;
 
@@ -7,7 +7,6 @@ import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.qesm.ProductType;
-import com.swam.commons.AbstractProductDTO;
 
 import lombok.Getter;
 
