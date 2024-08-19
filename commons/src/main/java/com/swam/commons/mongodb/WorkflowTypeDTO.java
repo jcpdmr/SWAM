@@ -37,13 +37,13 @@ public class WorkflowTypeDTO extends AbstractWorkflowDTO<ProductTypeDTO, CustomE
 
         for (ProductTypeDTO productTypeDTO : vertexSet) {
             ProductType productType = productTypeDTO.toProduct();
-            nameToProductMap.put(productTypeDTO.getName(), productType);
+            idToProductMap.put(productTypeDTO.getId(), productType);
             dag.addVertex(productType);
         }
 
         for (CustomEdgeTypeDTO customEdgeDTO : edgeSet) {
-            CustomEdge customEdge = dag.addEdge(nameToProductMap.get(customEdgeDTO.getSource().getName()),
-                    nameToProductMap.get(customEdgeDTO.getTarget().getName()));
+            CustomEdge customEdge = dag.addEdge(idToProductMap.get(customEdgeDTO.getSourceId()),
+                    idToProductMap.get(customEdgeDTO.getTargetId()));
             customEdge.setQuantityRequired(customEdgeDTO.getQuantityRequired());
         }
 

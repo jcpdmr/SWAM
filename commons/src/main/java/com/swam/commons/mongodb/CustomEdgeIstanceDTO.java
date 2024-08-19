@@ -13,15 +13,16 @@ import lombok.Getter;
 public class CustomEdgeIstanceDTO extends AbstractCustomEdgeDTO {
 
     @PersistenceCreator
-    public CustomEdgeIstanceDTO(ProductIstanceDTO source, ProductIstanceDTO target, Integer quantityRequired) {
-        super(source, target, quantityRequired);
+    public CustomEdgeIstanceDTO(String sourceId, String targetId, Integer quantityRequired) {
+        super(sourceId, targetId, quantityRequired);
 
     }
 
-    public CustomEdgeIstanceDTO(CustomEdge customEdge) {
-        super(new ProductIstanceDTO((ProductIstance) customEdge.getSource()),
-                new ProductIstanceDTO((ProductIstance) customEdge.getTarget()), customEdge.getQuantityRequired());
-    }
+    // public CustomEdgeIstanceDTO(CustomEdge customEdge) {
+    // super(new ProductIstanceDTO((ProductIstance) customEdge.getSource()),
+    // new ProductIstanceDTO((ProductIstance) customEdge.getTarget()),
+    // customEdge.getQuantityRequired());
+    // }
 
     @Override
     public CustomEdge toEdge() {

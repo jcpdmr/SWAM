@@ -19,13 +19,14 @@ public abstract class AbstractWorkflowDTO<P extends AbstractProductDTO, E extend
     protected final Set<P> vertexSet;
     protected final Set<E> edgeSet;
     @JsonIgnore
-    protected final @Transient HashMap<String, T> nameToProductMap;
+    @Transient
+    protected final HashMap<String, T> idToProductMap;
 
     public AbstractWorkflowDTO(Set<P> vertexSet,
             Set<E> edgeSet) {
         this.vertexSet = vertexSet;
         this.edgeSet = edgeSet;
-        this.nameToProductMap = new HashMap<>();
+        this.idToProductMap = new HashMap<>();
     }
 
     public abstract AbstractWorkflow<T, ? extends AbstractWorkflow<T, ?>> toWorkflow();
@@ -34,4 +35,9 @@ public abstract class AbstractWorkflowDTO<P extends AbstractProductDTO, E extend
     public String toString() {
         return vertexSet.toString() + " " + edgeSet.toString();
     }
+
+    // public AbstractWorkflowDTO<P, E, T> newIstance(Set<P> vertexSet, Set<E>
+    // edgeSet) {
+    // return new AbstractWorkflowDTO<P, E, T>(vertexSet, edgeSet);
+    // }
 }

@@ -23,12 +23,14 @@ public class WorkflowIstanceDTO extends AbstractWorkflowDTO<ProductIstanceDTO, C
         super(vertexSet, edgeSet);
     }
 
-    public WorkflowIstanceDTO(WorkflowIstance workflowIstance) {
-        super(workflowIstance.getDag().vertexSet().stream().map(vertex -> new ProductIstanceDTO(vertex))
-                .collect(Collectors.toSet()),
-                workflowIstance.getDag().edgeSet().stream().map(edge -> new CustomEdgeIstanceDTO(edge))
-                        .collect(Collectors.toSet()));
-    }
+    // public WorkflowIstanceDTO(WorkflowIstance workflowIstance) {
+    // super(workflowIstance.getDag().vertexSet().stream().map(vertex -> new
+    // ProductIstanceDTO(vertex))
+    // .collect(Collectors.toSet()),
+    // workflowIstance.getDag().edgeSet().stream().map(edge -> new
+    // CustomEdgeIstanceDTO(edge))
+    // .collect(Collectors.toSet()));
+    // }
 
     @Override
     public WorkflowIstance toWorkflow() {
@@ -37,13 +39,13 @@ public class WorkflowIstanceDTO extends AbstractWorkflowDTO<ProductIstanceDTO, C
 
         for (ProductIstanceDTO productIstanceDTO : vertexSet) {
             ProductIstance productIstance = productIstanceDTO.toProduct();
-            nameToProductMap.put(productIstanceDTO.getName(), productIstance);
+            idToProductMap.put(productIstanceDTO.getName(), productIstance);
             dag.addVertex(productIstance);
         }
 
         for (CustomEdgeIstanceDTO customEdgeDTO : edgeSet) {
-            CustomEdge customEdge = dag.addEdge(nameToProductMap.get(customEdgeDTO.getSource().getName()),
-                    nameToProductMap.get(customEdgeDTO.getTarget().getName()));
+            CustomEdge customEdge = dag.addEdge(idToProductMap.get(customEdgeDTO.getSourceId()),
+                    idToProductMap.get(customEdgeDTO.getTargetId()));
             customEdge.setQuantityRequired(customEdgeDTO.getQuantityRequired());
         }
 

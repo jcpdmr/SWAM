@@ -1,69 +1,61 @@
 package com.swam.commons.mongodb;
 
+import java.util.UUID;
+
 import org.oristool.eulero.modeling.stochastictime.StochasticTime;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.qesm.AbstractProduct;
-import com.qesm.ProductType;
+import com.qesm.AbstractProduct.ItemGroup;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
 
-@Getter
-public abstract class AbstractProductDTO {
-    private final String name;
-    private final @Id String id;
-    private final int quantityProduced;
-    private final transient StochasticTime pdf;
-    private final Boolean isType;
+import lombok.Setter;
 
-    // TODO: is it possible to remove these duplicated lines of code?
-    public enum ItemGroup {
-        RAW_MATERIAL,
-        PROCESSED
-    }
+@AllArgsConstructor(onConstructor = @__({ @PersistenceCreator }))
+@Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Document
+public abstract class AbstractProductDTO<T extends AbstractProduct> {
+    private String name;
+    private @Id String id;
+    private Integer quantityProduced;
+    private transient StochasticTime pdf;
+    private ItemGroup itemGroup;
 
-    private final ItemGroup itemGroup;
-
-    public AbstractProductDTO(String name, String id, int quantityProduced, StochasticTime pdf, ItemGroup itemGroup,
-            Boolean isType) {
-        this.name = name;
-        this.quantityProduced = quantityProduced;
-        this.pdf = pdf;
-        this.id = id;
-        this.itemGroup = itemGroup;
-        this.isType = isType;
-    }
-
-    public AbstractProductDTO(AbstractProduct product) {
+    public AbstractProductDTO(T product) {
         this.name = product.getName();
         this.id = product.getUuid().toString();
-
         if (product.isProcessed()) {
             this.quantityProduced = product.getQuantityProduced().get();
             this.pdf = product.getPdf().get();
             this.itemGroup = ItemGroup.PROCESSED;
         } else {
-            this.quantityProduced = 0;
+            this.quantityProduced = null;
             this.pdf = null;
             this.itemGroup = ItemGroup.RAW_MATERIAL;
         }
-
-        if (product.getClass() == ProductType.class) {
-            this.isType = true;
-        } else {
-            this.isType = false;
-        }
-
     }
 
-    public abstract AbstractProduct toProduct();
+    public abstract T createProduct();
 
-    @Override
-    public String toString() {
-        String info = name + " " + itemGroup;
+    public T toProduct() {
+        T product = createProduct();
+
+        // Common fields
+        product.setName(name);
+        product.setUuid(UUID.fromString(id));
+        product.setItemGroup(itemGroup);
+
         if (itemGroup == ItemGroup.PROCESSED) {
-            info += " " + quantityProduced + " " + pdf;
+            product.setQuantityProduced(quantityProduced);
+            product.setPdf(pdf);
         }
-        return info;
+
+        return product;
     }
+
 }

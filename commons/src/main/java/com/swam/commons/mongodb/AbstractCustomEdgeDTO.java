@@ -12,14 +12,14 @@ import lombok.Getter;
 public abstract class AbstractCustomEdgeDTO {
 
     private @Id String id;
-    protected final AbstractProductDTO source;
-    protected final AbstractProductDTO target;
+    protected final String sourceId;
+    protected final String targetId;
     protected final Integer quantityRequired;
 
-    protected AbstractCustomEdgeDTO(AbstractProductDTO source, AbstractProductDTO target,
+    protected AbstractCustomEdgeDTO(String sourceId, String targetId,
             Integer quantityRequired) {
-        this.source = source;
-        this.target = target;
+        this.sourceId = sourceId;
+        this.targetId = targetId;
         this.quantityRequired = quantityRequired;
     }
 
@@ -27,7 +27,7 @@ public abstract class AbstractCustomEdgeDTO {
 
     @Override
     public String toString() {
-        return "( " + source + " -> " + target + " )";
+        return "( " + sourceId + " -> " + targetId + " )";
     }
 
 }
