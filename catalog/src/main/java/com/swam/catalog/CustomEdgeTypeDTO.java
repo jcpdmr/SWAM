@@ -1,10 +1,11 @@
-package com.swam.commons;
+package com.swam.catalog;
 
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.qesm.CustomEdge;
 import com.qesm.ProductType;
+import com.swam.commons.AbstractCustomEdgeDTO;
 
 import lombok.Getter;
 

@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.swam.commons.OrchestratorInfo.TargetMicroservices;
+import com.swam.commons.RoutingInstructions.TargetMicroservices;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +18,8 @@ import lombok.ToString;
 @ToString
 public class CustomMessage {
     private String msg;
-    private OrchestratorInfo orchestratorInfo;
+    private String deferredResultId;
+    private RoutingInstructions routingInstructions;
     private TargetMicroservices sender;
     private MessageType messageType;
     private Integer responseStatusCode;
@@ -31,13 +32,14 @@ public class CustomMessage {
     public enum MessageType {
         ACK,
         TO_BE_FORWARDED,
-        END_MESSAGE
+        END_MESSAGE,
+        ERROR
     }
 
-    public CustomMessage(String msg, OrchestratorInfo orchestratorInfo, TargetMicroservices sender,
-            MessageType messageType, ResponseEntity<String> responseEntity) {
+    public CustomMessage(String msg, RoutingInstructions routingInstructions, TargetMicroservices sender,
+            MessageType messageType, ResponseEntity<Object> responseEntity) {
         this.msg = msg;
-        this.orchestratorInfo = orchestratorInfo;
+        this.routingInstructions = routingInstructions;
         this.sender = sender;
         this.messageType = messageType;
         this.responseStatusCode = responseEntity.getStatusCode().value();
@@ -45,15 +47,21 @@ public class CustomMessage {
     }
 
     @JsonCreator
-    public CustomMessage(String msg, OrchestratorInfo orchestratorInfo, TargetMicroservices sender,
+    public CustomMessage(String msg, RoutingInstructions routingInstructions, TargetMicroservices sender,
             MessageType messageType) {
         this.msg = msg;
-        this.orchestratorInfo = orchestratorInfo;
+        this.routingInstructions = routingInstructions;
         this.sender = sender;
         this.messageType = messageType;
     }
 
     public ResponseEntity<Object> getResponseEntity() {
         return new ResponseEntity<>(responseBody, HttpStatusCode.valueOf(responseStatusCode));
+    }
+
+    public void setError(Object responseBody, Integer responseStatusCode) {
+        this.responseStatusCode = responseStatusCode;
+        this.responseBody = responseBody;
+        this.messageType = MessageType.ERROR;
     }
 }

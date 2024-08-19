@@ -5,17 +5,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-import com.swam.commons.MessageHandler;
+import com.swam.commons.MessageDispatcher;
 
 @SpringBootApplication
-@EnableMongoRepositories(basePackages = "com.swam.commons")
+@EnableMongoRepositories(basePackages = "com.swam.operation")
 @ComponentScan(basePackages = { "com.swam.commons", "com.swam.operation" })
 public class OperationApplication {
 
     @SuppressWarnings("unused")
-    private final MessageHandler requestHandler;
+    private final MessageDispatcher requestHandler;
 
-    public OperationApplication(MessageHandler requestHandler) {
+    public OperationApplication(MessageDispatcher requestHandler) {
         this.requestHandler = requestHandler;
     }
 

@@ -1,58 +1,49 @@
 package com.swam.gateway;
 
-import java.util.UUID;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.swam.commons.CustomMessage;
-import com.swam.commons.OrchestratorInfo;
-import com.swam.commons.OrchestratorInfo.TargetTasks;
+import com.swam.commons.RoutingInstructions.TargetTasks;
 
 import lombok.AllArgsConstructor;
 
 import com.swam.commons.CustomMessage.MessageType;
-import com.swam.commons.MessageHandler.TaskExecutor;
+import com.swam.commons.MessageDispatcher.TaskExecutor;
 
 @AllArgsConstructor
 @Service
 public class MicroserviceResponseHandler implements TaskExecutor {
 
-    private final Dispatcher dispatcher;
+    private final AsyncResponseHandler asyncResponseHandler;
 
     @Override
-    public void execute(CustomMessage context) {
+    public void execute(CustomMessage context, TargetTasks triggeredBinding) {
         System.out.println("Execute HandleACK");
 
-        UUID orchestrationUUID = context.getOrchestratorInfo().getUuid();
+        // TODO: monitor response progress with ackHop
+        if (context.getMessageType().equals(MessageType.END_MESSAGE)) {
+            Integer ackHop = context.getRoutingInstructions().getHopCounter();
+            System.out.println("Recived END_MESSAGE from: " + context.getSender());
+            System.out.println("Request completed");
 
-        if (dispatcher.getActiveOrchestratorInfo(orchestrationUUID).isPresent()) {
-            OrchestratorInfo orchestratorInfo = dispatcher.getActiveOrchestratorInfo(orchestrationUUID).get();
+            asyncResponseHandler.setDeferredResult(context.getDeferredResultId(), context.getResponseEntity());
 
-            if (context.getMessageType().equals(MessageType.END_MESSAGE)) {
-                Integer lastHop = context.getOrchestratorInfo().getHopCounter();
+        } else if (context.getMessageType().equals(MessageType.ACK)) {
+            Integer ackHop = context.getAckHop().get();
+            System.out.println("Recived ACK from: " + context.getSender());
 
-                System.out.println("Recived END_MESSAGE from: " + context.getSender());
-                System.out.println("Progress: [" + lastHop + "/" + (orchestratorInfo.getMaxHop() - 1) + "]");
-                System.out.println("Request completed");
-                dispatcher.removeActiveOrchestration(orchestrationUUID);
-
-                // TODO: handle response and notification to client
-            } else if (context.getMessageType().equals(MessageType.ACK)) {
-                Integer ackHop = context.getAckHop().get();
-
-                System.out.println("Recived ACK from: " + context.getSender());
-                System.out.println("Progress: [" + ackHop + "/" + (orchestratorInfo.getMaxHop() - 1) + "]");
-            }
-        } else {
-            System.out.println("No active orchestration with uuid: " + orchestrationUUID);
-            // TODO: handle error
+        } else if (context.getMessageType().equals(MessageType.ERROR)) {
+            System.out.println("Error message: " + context);
+            asyncResponseHandler.setDeferredResult(context.getDeferredResultId(), context.getResponseEntity());
         }
 
     }
 
     @Override
-    public TargetTasks getBinding() {
-        return TargetTasks.CHECK_ACK;
+    public List<TargetTasks> getBinding() {
+        return List.of(TargetTasks.CHECK_ACK);
     }
 
 }

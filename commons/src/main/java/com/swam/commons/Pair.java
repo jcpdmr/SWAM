@@ -16,4 +16,5 @@ public class Pair<K, V> {
     public static <K, V> Pair<K, V> of(K key, V value) {
         return new Pair<K, V>(key, value);
     }
+
 }

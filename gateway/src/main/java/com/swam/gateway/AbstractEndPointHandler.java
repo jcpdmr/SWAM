@@ -11,9 +11,9 @@ import org.springframework.http.ResponseEntity;
 import com.swam.commons.ApiTemplateVariables;
 import com.swam.commons.CustomMessage;
 import com.swam.commons.CustomMessage.MessageType;
-import com.swam.commons.OrchestratorInfo;
-import com.swam.commons.OrchestratorInfo.TargetMicroservices;
-import com.swam.commons.OrchestratorInfoBuilder;
+import com.swam.commons.RoutingInstructions;
+import com.swam.commons.RoutingInstructions.TargetMicroservices;
+import com.swam.commons.RoutingInstructionsBuilder;
 import com.swam.gateway.EndPoint.MethodInfo;
 import com.swam.gateway.EndPoint.Requirement;
 import com.swam.gateway.EndPoint.TargetType;
@@ -99,10 +99,11 @@ public abstract class AbstractEndPointHandler {
         }
 
         // build orchestration
-        OrchestratorInfo orchestratorInfo = OrchestratorInfoBuilder.newBuild()
+        RoutingInstructions routingInstructions = RoutingInstructionsBuilder.newBuild()
                 .setTargets(methodInfo.getRoutingMap()).build();
 
-        return buildFinalMessage(orchestratorInfo, ResponseEntity.ok(null), uriTemplateVariables, requestParams,
+        return buildFinalMessage(routingInstructions, ResponseEntity.ok(null), MessageType.TO_BE_FORWARDED,
+                uriTemplateVariables, requestParams,
                 requestBody);
 
     }
@@ -112,15 +113,16 @@ public abstract class AbstractEndPointHandler {
                 new ResponseEntity<>(
                         errorMsg,
                         HttpStatusCode.valueOf(httpStatusCode)),
+                MessageType.ERROR,
                 null, null, null);
     }
 
-    private CustomMessage buildFinalMessage(OrchestratorInfo orchestratorInfo,
-            ResponseEntity<String> responseEntity, Map<String, String> uriTemplateVariables,
+    private CustomMessage buildFinalMessage(RoutingInstructions routingInstructions,
+            ResponseEntity<Object> responseEntity, MessageType messageType, Map<String, String> uriTemplateVariables,
             Optional<Map<String, String>> requestParams, Optional<String> requestBody) {
-        CustomMessage apiMessage = new CustomMessage("test api", orchestratorInfo,
+        CustomMessage apiMessage = new CustomMessage("test api", routingInstructions,
                 TargetMicroservices.GATEWAY,
-                MessageType.TO_BE_FORWARDED, responseEntity);
+                messageType, responseEntity);
         apiMessage.setUriTemplateVariables(uriTemplateVariables);
         apiMessage.setRequestParams(requestParams);
         apiMessage.setRequestBody(requestBody);

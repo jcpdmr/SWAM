@@ -7,74 +7,108 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.swam.commons.CustomMessage.MessageType;
-import com.swam.commons.OrchestratorInfo.TargetTasks;
-import com.swam.commons.OrchestratorInfo.TargetMicroservices;
+import com.swam.commons.RoutingInstructions.TargetTasks;
+
+import lombok.RequiredArgsConstructor;
+
+import com.swam.commons.RoutingInstructions.TargetMicroservices;
 
 @Service
+@RequiredArgsConstructor
 public class RabbitMQSender {
 
     private final RabbitTemplate rabbitTemplate;
 
-    public RabbitMQSender(RabbitTemplate rabbitTemplate) {
-        this.rabbitTemplate = rabbitTemplate;
-    }
-
     public void sendToNextHop(CustomMessage message, Boolean isFromGateway) {
 
-        OrchestratorInfo orchestratorInfo = message.getOrchestratorInfo();
-
-        TargetMicroservices sender = null;
-        OrchestratorInfo ackOrchestratorInfo = null;
-        CustomMessage ackMessage = null;
-
-        if (!isFromGateway) {
-            sender = orchestratorInfo.getTargetMicroservice();
-            message.setSender(sender);
-
-            orchestratorInfo.increaseHop();
-
-            ackOrchestratorInfo = OrchestratorInfoBuilder.newBuild()
-                    .withUUID(orchestratorInfo.getUuid())
-                    .addTargets(TargetMicroservices.GATEWAY, TargetTasks.CHECK_ACK)
-                    .build();
-
-            ackMessage = new CustomMessage("ACK", ackOrchestratorInfo, sender, MessageType.ACK,
-                    ResponseEntity.ok(null));
-            ackMessage.setAckHop(Optional.of(orchestratorInfo.getHopCounter()));
+        RoutingInstructions routingInstructions = message.getRoutingInstructions();
+        // Find current sender
+        TargetMicroservices sender;
+        if (isFromGateway) {
+            sender = TargetMicroservices.GATEWAY;
+        } else {
+            sender = routingInstructions.getTargetMicroservice();
         }
 
-        TargetMicroservices nextMicroservice = orchestratorInfo.getTargetMicroservice();
+        if (message.getMessageType().equals(MessageType.ERROR)) {
+            // If ERROR, send it directly to gateway
+            sendToGateway(generateErrorMessage(message, sender));
+            return;
+        } else if (message.getMessageType().equals(MessageType.END_MESSAGE)) {
+            // If END_MESSAGE, do nothing(it means that it has already completed the hop
+            // sequence and it's been already received by gateway)
+            return;
+        }
+
+        // Update hop and sender
+        if (!isFromGateway) {
+            message.setSender(sender);
+            routingInstructions.increaseHop();
+        }
+
+        TargetMicroservices nextMicroservice = routingInstructions.getTargetMicroservice();
 
         switch (nextMicroservice) {
             case TargetMicroservices.CATALOG:
                 sendToCatalog(message, "swam.microservices");
                 if (!isFromGateway) {
-                    sendToGateway(ackMessage);
+                    sendToGateway(generateAckMessage(message, sender));
                 }
                 break;
             case TargetMicroservices.OPERATION:
                 sendToOperation(message, "swam.microservices");
                 if (!isFromGateway) {
-                    sendToGateway(ackMessage);
+                    sendToGateway(generateAckMessage(message, sender));
                 }
                 break;
             case TargetMicroservices.ANALYSIS:
                 sendToAnalysis(message, "swam.microservices");
                 if (!isFromGateway) {
-                    sendToGateway(ackMessage);
+                    sendToGateway(generateAckMessage(message, sender));
                 }
                 break;
             case TargetMicroservices.GATEWAY:
+                // set type to flag the correct termination of hop sequence (last hop to
+                // gateway)
                 message.setMessageType(MessageType.END_MESSAGE);
                 sendToGateway(message);
                 break;
             case TargetMicroservices.END:
+                // TODO: handle missed return to gateway in the hop sequence errors
                 break;
             default:
                 // TODO: handle errors
                 break;
         }
 
+    }
+
+    private CustomMessage generateAckMessage(CustomMessage originalMessage, TargetMicroservices sender) {
+
+        RoutingInstructions ackRoutingInstructions = RoutingInstructionsBuilder.newBuild()
+                .addTargets(TargetMicroservices.GATEWAY, TargetTasks.CHECK_ACK)
+                .build();
+
+        CustomMessage ackMessage = new CustomMessage("ACK", ackRoutingInstructions, sender, MessageType.ACK,
+                ResponseEntity.ok(null));
+
+        ackMessage.setAckHop(Optional.of(originalMessage.getRoutingInstructions().getHopCounter()));
+        ackMessage.setDeferredResultId(originalMessage.getDeferredResultId());
+        return ackMessage;
+    }
+
+    private CustomMessage generateErrorMessage(CustomMessage originalMessage, TargetMicroservices sender) {
+        RoutingInstructions errorRoutingInstructions = RoutingInstructionsBuilder.newBuild()
+                .addTargets(TargetMicroservices.GATEWAY, TargetTasks.CHECK_ACK)
+                .build();
+
+        CustomMessage errorMessage = new CustomMessage("ERROR", errorRoutingInstructions,
+                sender,
+                MessageType.ERROR,
+                originalMessage.getResponseEntity());
+
+        errorMessage.setDeferredResultId(originalMessage.getDeferredResultId());
+        return errorMessage;
     }
 
     private void sendToCatalog(CustomMessage message, String exchange) {

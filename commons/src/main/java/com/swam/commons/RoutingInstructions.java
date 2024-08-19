@@ -1,14 +1,17 @@
 package com.swam.commons;
 
 import java.util.List;
-import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Setter
 @Getter
-public class OrchestratorInfo {
+@ToString
+public class RoutingInstructions {
 
     public enum TargetTasks {
 
@@ -43,37 +46,25 @@ public class OrchestratorInfo {
         END
     }
 
-    private final UUID uuid;
     private Integer hopCounter;
-    private List<Pair<TargetMicroservices, TargetTasks>> pipeline;
+    private List<Pair<TargetMicroservices, TargetTasks>> hopSequence;
 
-    public OrchestratorInfo(List<Pair<TargetMicroservices, TargetTasks>> pipeline) {
-        this.uuid = UUID.randomUUID();
+    @JsonCreator
+    public RoutingInstructions(List<Pair<TargetMicroservices, TargetTasks>> hopSequence) {
         this.hopCounter = 0;
-        this.pipeline = pipeline;
-    }
-
-    public OrchestratorInfo(List<Pair<TargetMicroservices, TargetTasks>> pipeline, UUID uuid) {
-        this.uuid = uuid;
-        this.hopCounter = 0;
-        this.pipeline = pipeline;
-    }
-
-    @Override
-    public String toString() {
-        return "OrchestratorInfo [uuid=" + uuid + ", hopCounter=" + hopCounter + ", pipeline=" + pipeline + "]";
+        this.hopSequence = hopSequence;
     }
 
     public TargetMicroservices getTargetMicroservice() {
-        if (hopCounter.equals(pipeline.size())) {
+        if (hopCounter.equals(hopSequence.size())) {
             return TargetMicroservices.END;
         } else {
-            return pipeline.get(hopCounter).getKey();
+            return hopSequence.get(hopCounter).getKey();
         }
     }
 
     public TargetTasks getTargetMethod() {
-        return pipeline.get(hopCounter).getValue();
+        return hopSequence.get(hopCounter).getValue();
     }
 
     public Integer increaseHop() {
@@ -82,6 +73,6 @@ public class OrchestratorInfo {
     }
 
     public Integer getMaxHop() {
-        return pipeline.size();
+        return hopSequence.size();
     }
 }

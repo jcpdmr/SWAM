@@ -1,4 +1,4 @@
-package com.swam.commons;
+package com.swam.operation;
 
 import java.util.UUID;
 
@@ -6,6 +6,8 @@ import org.oristool.eulero.modeling.stochastictime.StochasticTime;
 import org.springframework.data.annotation.PersistenceCreator;
 
 import com.qesm.ProductIstance;
+import com.swam.commons.AbstractProductDTO;
+import com.swam.commons.AbstractProductDTO.ItemGroup;
 
 public class ProductIstanceDTO extends AbstractProductDTO {
 

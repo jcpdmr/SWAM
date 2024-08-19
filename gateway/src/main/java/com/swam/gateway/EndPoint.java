@@ -8,8 +8,8 @@ import java.util.Map;
 import org.springframework.http.HttpMethod;
 
 import com.swam.commons.Pair;
-import com.swam.commons.OrchestratorInfo.TargetTasks;
-import com.swam.commons.OrchestratorInfo.TargetMicroservices;
+import com.swam.commons.RoutingInstructions.TargetTasks;
+import com.swam.commons.RoutingInstructions.TargetMicroservices;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

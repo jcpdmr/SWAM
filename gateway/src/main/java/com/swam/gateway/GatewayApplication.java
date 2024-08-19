@@ -4,16 +4,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-import com.swam.commons.MessageHandler;
+import com.swam.commons.MessageDispatcher;
 
 @SpringBootApplication
 @ComponentScan(basePackages = { "com.swam.commons", "com.swam.gateway" })
 public class GatewayApplication {
 
 	@SuppressWarnings("unused")
-	private final MessageHandler requestHandler;
+	private final MessageDispatcher requestHandler;
 
-	public GatewayApplication(MessageHandler requestHandler) {
+	public GatewayApplication(MessageDispatcher requestHandler) {
 		this.requestHandler = requestHandler;
 	}
 

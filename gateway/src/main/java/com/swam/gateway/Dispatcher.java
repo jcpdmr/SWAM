@@ -1,11 +1,9 @@
 package com.swam.gateway;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
 
 import com.swam.commons.CustomMessage;
-import com.swam.commons.OrchestratorInfo;
 import com.swam.commons.RabbitMQSender;
 
 @Service
@@ -24,20 +21,21 @@ public class Dispatcher {
 
     private final Map<List<String>, AbstractEndPointHandler> endPointMap;
     private final RabbitMQSender rabbitMQSender;
-    private final Map<UUID, OrchestratorInfo> activeOrchestration;
     private final AntPathMatcher antPathMatcher;
+    private final AsyncResponseHandler asyncResponseHandler;
 
-    public Dispatcher(List<AbstractEndPointHandler> orchestratorSuppliers, RabbitMQSender rabbitMQSender) {
-        this.endPointMap = orchestratorSuppliers.stream()
+    public Dispatcher(List<AbstractEndPointHandler> endPointList, RabbitMQSender rabbitMQSender,
+            AsyncResponseHandler asyncResponseHandler) {
+        this.endPointMap = endPointList.stream()
                 .collect(Collectors.toMap(AbstractEndPointHandler::getBindingPaths, Function.identity()));
         this.rabbitMQSender = rabbitMQSender;
-        this.activeOrchestration = new HashMap<>();
+        this.asyncResponseHandler = asyncResponseHandler;
         this.antPathMatcher = new AntPathMatcher();
     }
 
-    public ResponseEntity<Object> dispatchRequest(HttpMethod httpMethod, String uriPath,
+    public void dispatchRequest(HttpMethod httpMethod, String uriPath,
             Optional<Map<String, String>> requestParams,
-            Optional<String> requestBody) {
+            Optional<String> requestBody, String deferredResultId) {
 
         CustomMessage apiMessage = null;
         // Look for a match in all bindingPaths provided by AbstractEndPointHandler's
@@ -53,42 +51,27 @@ public class Dispatcher {
                             uriPath);
                     apiMessage = entry.getValue().handle(httpMethod, variables, requestParams,
                             requestBody);
+                    break;
                 }
+            }
+            if (apiMessage != null) {
+                break;
             }
         }
 
-        // Check if any Errors occured during Orchestration and forward it
+        // Check if there wasn't matching path for the request
         if (apiMessage == null) {
-            return new ResponseEntity<>("Path: " + uriPath + " not found", HttpStatusCode.valueOf(404));
-        } else if (apiMessage.getResponseEntity().getStatusCode().isError()) {
-            return apiMessage.getResponseEntity();
+            asyncResponseHandler.setDeferredResult(deferredResultId,
+                    new ResponseEntity<Object>("Path: " + uriPath + " not found", HttpStatusCode.valueOf(404)));
+            return;
         }
 
-        // Save orchestration as an active orchestration (related to a request that need
+        // Set defferedResultId (related to a request that need
         // to be resolved)
-        activeOrchestration.put(apiMessage.getOrchestratorInfo().getUuid(), apiMessage.getOrchestratorInfo());
+        apiMessage.setDeferredResultId(deferredResultId);
 
         rabbitMQSender.sendToNextHop(apiMessage, true);
 
-        return ResponseEntity.ok("Request handled correctly");
-
-    }
-
-    public Optional<OrchestratorInfo> getActiveOrchestratorInfo(UUID orchestrationUUID) {
-        if (activeOrchestration.containsKey(orchestrationUUID)) {
-            return Optional.of(activeOrchestration.get(orchestrationUUID));
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    public Boolean removeActiveOrchestration(UUID orchestrationUUID) {
-        if (activeOrchestration.containsKey(orchestrationUUID)) {
-            activeOrchestration.remove(orchestrationUUID);
-            return true;
-        } else {
-            return false;
-        }
     }
 
 }

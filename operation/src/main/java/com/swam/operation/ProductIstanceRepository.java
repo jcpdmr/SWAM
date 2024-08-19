@@ -1,4 +1,4 @@
-package com.swam.commons;
+package com.swam.operation;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

@@ -17,7 +17,7 @@ public abstract class AbstractProductDTO {
     private final Boolean isType;
 
     // TODO: is it possible to remove these duplicated lines of code?
-    enum ItemGroup {
+    public enum ItemGroup {
         RAW_MATERIAL,
         PROCESSED
     }
