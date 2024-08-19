@@ -37,6 +37,7 @@ public class MicroserviceResponseHandler implements TaskExecutor {
         } else if (context.getMessageType().equals(MessageType.ERROR)) {
             System.out.println("Error message: " + context);
             asyncResponseHandler.setDeferredResult(context.getDeferredResultId(), context.getResponseEntity());
+            context.setMessageType(MessageType.END_MESSAGE);
         }
 
     }

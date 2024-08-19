@@ -13,7 +13,7 @@
 # curl -X DELETE http://localhost:8080/api/workflow/operation/2
 # echo ""
 
-curl -X POST http://localhost:8080/api/workflow/catalog/1\
+curl -X POST http://localhost:8080/api/workflow/catalog\
      -H "Content-Type: application/json" \
      -d @./client-data.json
 

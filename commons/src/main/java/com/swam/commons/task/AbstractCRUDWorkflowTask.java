@@ -27,15 +27,19 @@ public abstract class AbstractCRUDWorkflowTask<P extends AbstractProductDTO, E e
         System.out.println("Execute CRUD");
         switch (triggeredBinding) {
             case TargetTasks.GET_WORKFLOW:
+                System.out.println("GET");
                 getWorkflow(context);
                 break;
             case TargetTasks.POST_WORKFLOW:
+                System.out.println("POST");
                 postWorkflow(context);
                 break;
             case TargetTasks.PUT_WORKFLOW:
+                System.out.println("PUT");
                 putWorkflow(context);
                 break;
             case TargetTasks.DELETE_WORKFLOW:
+                System.out.println("DELETE");
                 deleteWorkflow(context);
                 break;
             default:
@@ -69,7 +73,8 @@ public abstract class AbstractCRUDWorkflowTask<P extends AbstractProductDTO, E e
     }
 
     private void postWorkflow(CustomMessage context) {
-        System.out.println("post");
+
+        System.out.println(context.getRequestBody());
     }
 
     private void putWorkflow(CustomMessage context) {
