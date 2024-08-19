@@ -2,7 +2,6 @@ package com.swam.commons;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +17,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class CustomMessage {
-    /**
-     * UUID associated with the [client] request (it's the same that directly
-     * matches to a single deferredResult)
-     */
-    private final UUID requestUuid;
     /**
      * Field used in testing phase, just to pass simple example messages
      */
@@ -53,7 +47,6 @@ public class CustomMessage {
         this.messageType = messageType;
         this.responseStatusCode = responseEntity.getStatusCode().value();
         this.responseBody = responseEntity.getBody();
-        this.requestUuid = requestUuid;
     }
 
     @JsonCreator
@@ -63,7 +56,6 @@ public class CustomMessage {
         this.routingInstructions = routingInstructions;
         this.sender = sender;
         this.messageType = messageType;
-        this.requestUuid = uuid;
     }
 
     /**
