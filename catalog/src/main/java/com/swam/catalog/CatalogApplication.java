@@ -7,15 +7,19 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import com.qesm.RandomDAGGenerator.PdfType;
+import com.qesm.ProductType;
 import com.qesm.WorkflowType;
+import com.qesm.AbstractProduct.ItemGroup;
 import com.swam.commons.MessageDispatcher;
-import com.swam.commons.mongodb.WorkflowTypeDTO;
-import com.swam.commons.mongodb.WorkflowTypeRepository;
+import com.swam.commons.mongodb.type.CustomEdgeTypeDTO;
+import com.swam.commons.mongodb.type.ProductTypeDTO;
+import com.swam.commons.mongodb.type.WorkflowTypeDTO;
+import com.swam.commons.mongodb.type.WorkflowTypeRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @SpringBootApplication()
-@EnableMongoRepositories(basePackages = "com.swam.catalog")
+@EnableMongoRepositories(basePackages = "com.swam.commons.mongodb.type")
 @ComponentScan(basePackages = { "com.swam.commons", "com.swam.catalog" })
 @RequiredArgsConstructor
 public class CatalogApplication implements CommandLineRunner {
@@ -33,7 +37,10 @@ public class CatalogApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		// System.out.println("test");
+		// ProductTypeDTO productTypeDTO = new ProductTypeDTO("a", "b", 0, null,
+		// ItemGroup.RAW_MATERIAL);
+		// ProductType p1 = (ProductType) productTypeDTO.toProduct();
+		// System.out.println(p1);
 
 		WorkflowType w1 = new WorkflowType();
 		w1.generateRandomDAG(5, 5, 3, 3, 50, PdfType.UNIFORM);

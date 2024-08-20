@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import com.swam.commons.MessageDispatcher;
 
 @SpringBootApplication
-@EnableMongoRepositories(basePackages = "com.swam.operation")
+@EnableMongoRepositories(basePackages = "com.swam.commons.mongodb.istance")
 @ComponentScan(basePackages = { "com.swam.commons", "com.swam.operation" })
 public class OperationApplication {
 

@@ -4,29 +4,27 @@ import java.util.UUID;
 
 import org.oristool.eulero.modeling.stochastictime.StochasticTime;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceCreator;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.qesm.AbstractProduct;
 import com.qesm.AbstractProduct.ItemGroup;
 
 import lombok.AllArgsConstructor;
-
+import lombok.Getter;
 import lombok.Setter;
 
-@AllArgsConstructor(onConstructor = @__({ @PersistenceCreator }))
+@AllArgsConstructor
 @Setter
+@Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Document
-public abstract class AbstractProductDTO<T extends AbstractProduct> {
+public abstract class AbstractProductDTO<V extends AbstractProduct> {
     private String name;
     private @Id String id;
     private Integer quantityProduced;
     private transient StochasticTime pdf;
     private ItemGroup itemGroup;
 
-    public AbstractProductDTO(T product) {
+    protected AbstractProductDTO(V product) {
         this.name = product.getName();
         this.id = product.getUuid().toString();
         if (product.isProcessed()) {
@@ -40,14 +38,13 @@ public abstract class AbstractProductDTO<T extends AbstractProduct> {
         }
     }
 
-    public abstract T createProduct();
+    protected abstract V createProduct(UUID uuid);
 
-    public T toProduct() {
-        T product = createProduct();
+    public V toProduct() {
+        V product = createProduct(UUID.fromString(id));
 
         // Common fields
         product.setName(name);
-        product.setUuid(UUID.fromString(id));
         product.setItemGroup(itemGroup);
 
         if (itemGroup == ItemGroup.PROCESSED) {

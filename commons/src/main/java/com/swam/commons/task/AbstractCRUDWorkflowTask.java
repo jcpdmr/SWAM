@@ -5,20 +5,17 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.qesm.AbstractProduct;
 import com.swam.commons.ApiTemplateVariables;
 import com.swam.commons.CustomMessage;
 import com.swam.commons.MessageDispatcher.TaskExecutor;
 import com.swam.commons.RoutingInstructions.TargetTasks;
-import com.swam.commons.mongodb.AbstractCustomEdgeDTO;
-import com.swam.commons.mongodb.AbstractProductDTO;
 import com.swam.commons.mongodb.AbstractWorkflowDTO;
 import com.swam.commons.mongodb.WorkflowRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public abstract class AbstractCRUDWorkflowTask<P extends AbstractProductDTO, E extends AbstractCustomEdgeDTO, T extends AbstractProduct, D extends AbstractWorkflowDTO<P, E, T>, R extends WorkflowRepository<D>>
+public abstract class AbstractCRUDWorkflowTask<R extends WorkflowRepository<W>, W extends AbstractWorkflowDTO<?, ?>>
         implements TaskExecutor {
 
     private final R workflowRepository;
@@ -61,7 +58,7 @@ public abstract class AbstractCRUDWorkflowTask<P extends AbstractProductDTO, E e
         String workflowId = uriTemplateVariables.get(ApiTemplateVariables.WORKFLOW_ID);
 
         if (workflowId != null) {
-            Optional<D> workflowDTO = workflowRepository.findById(workflowId);
+            Optional<W> workflowDTO = workflowRepository.findById(workflowId);
             if (workflowDTO.isEmpty()) {
                 context.setError("Workflow with workflowId: " + workflowId + " not found", 404);
             } else {
