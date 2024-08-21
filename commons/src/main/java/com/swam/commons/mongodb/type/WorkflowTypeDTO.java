@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Document
+@Document("Workflow")
 @Getter
 @Setter
 @ToString

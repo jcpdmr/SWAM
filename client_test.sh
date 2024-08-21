@@ -2,7 +2,7 @@
 
 curl -X GET http://localhost:8080/api/workflow/catalog
 echo ""
-# curl -X GET http://localhost:8080/api/workflow/catalog/12
+# curl -X GET http://localhost:8080/api/workflow/catalog/66c5c2a377c20125e95973b9
 # echo ""
 # curl -X GET http://localhost:8080/api/workflow/operation
 # echo ""
