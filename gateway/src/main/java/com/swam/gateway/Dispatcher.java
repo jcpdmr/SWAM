@@ -19,15 +19,18 @@ import com.swam.commons.RabbitMQSender;
 @Service
 public class Dispatcher {
 
-    private final Map<List<String>, AbstractEndPointHandler> endPointMap;
+    private final Map<List<String>, EndPoint> endPointMap;
+    private final MessageInitializer messageInitializer;
     private final RabbitMQSender rabbitMQSender;
     private final AntPathMatcher antPathMatcher;
     private final AsyncResponseHandler asyncResponseHandler;
 
-    public Dispatcher(List<AbstractEndPointHandler> endPointList, RabbitMQSender rabbitMQSender,
+    public Dispatcher(List<EndPoint> endPointList, MessageInitializer messageInitializer, RabbitMQSender rabbitMQSender,
             AsyncResponseHandler asyncResponseHandler) {
+
         this.endPointMap = endPointList.stream()
-                .collect(Collectors.toMap(AbstractEndPointHandler::getBindingPaths, Function.identity()));
+                .collect(Collectors.toMap(EndPoint::getBindingPaths, Function.identity()));
+        this.messageInitializer = messageInitializer;
         this.rabbitMQSender = rabbitMQSender;
         this.asyncResponseHandler = asyncResponseHandler;
         this.antPathMatcher = new AntPathMatcher();
@@ -38,9 +41,9 @@ public class Dispatcher {
             Optional<String> requestBody, String deferredResultId) {
 
         CustomMessage apiMessage = null;
-        // Look for a match in all bindingPaths provided by AbstractEndPointHandler's
+        // Look for a match in all bindingPaths provided by Endpoint's
         // Beans
-        for (Entry<List<String>, AbstractEndPointHandler> entry : endPointMap.entrySet()) {
+        for (Entry<List<String>, EndPoint> entry : endPointMap.entrySet()) {
             for (String bindingPath : entry.getKey()) {
                 // System.out.println("Check bindingPath: " + bindingPath);
                 if (antPathMatcher.match(bindingPath, uriPath)) {
@@ -49,7 +52,7 @@ public class Dispatcher {
                     Map<String, String> variables = antPathMatcher.extractUriTemplateVariables(
                             bindingPath,
                             uriPath);
-                    apiMessage = entry.getValue().handle(httpMethod, variables, requestParams,
+                    apiMessage = messageInitializer.buildMessage(entry.getValue(), httpMethod, variables, requestParams,
                             requestBody);
                     break;
                 }

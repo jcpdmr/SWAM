@@ -1,4 +1,4 @@
-package com.swam.commons.task;
+package com.swam.commons.messageHandlers;
 
 import java.util.List;
 import java.util.Map;
@@ -7,36 +7,36 @@ import java.util.Optional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swam.commons.ApiTemplateVariables;
 import com.swam.commons.CustomMessage;
-import com.swam.commons.MessageDispatcher.TaskExecutor;
-import com.swam.commons.RoutingInstructions.TargetTasks;
+import com.swam.commons.MessageDispatcher.MessageHandler;
+import com.swam.commons.RoutingInstructions.TargetMessageHandler;
 import com.swam.commons.mongodb.AbstractWorkflowDTO;
 import com.swam.commons.mongodb.WorkflowRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public abstract class AbstractCRUDWorkflowTask<R extends WorkflowRepository<W>, W extends AbstractWorkflowDTO<?, ?>>
-        implements TaskExecutor {
+public abstract class AbstractCRUDWorkflowHandler<R extends WorkflowRepository<W>, W extends AbstractWorkflowDTO<?, ?>>
+        implements MessageHandler {
 
     private final R workflowRepository;
 
     @Override
-    public void execute(CustomMessage context, TargetTasks triggeredBinding) {
+    public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) {
         System.out.println("Execute CRUD");
         switch (triggeredBinding) {
-            case TargetTasks.GET_WORKFLOW:
+            case TargetMessageHandler.GET_WORKFLOW:
                 System.out.println("GET");
                 getWorkflow(context);
                 break;
-            case TargetTasks.POST_WORKFLOW:
+            case TargetMessageHandler.POST_WORKFLOW:
                 System.out.println("POST");
                 postWorkflow(context);
                 break;
-            case TargetTasks.PUT_WORKFLOW:
+            case TargetMessageHandler.PUT_WORKFLOW:
                 System.out.println("PUT");
                 putWorkflow(context);
                 break;
-            case TargetTasks.DELETE_WORKFLOW:
+            case TargetMessageHandler.DELETE_WORKFLOW:
                 System.out.println("DELETE");
                 deleteWorkflow(context);
                 break;
@@ -48,9 +48,10 @@ public abstract class AbstractCRUDWorkflowTask<R extends WorkflowRepository<W>, 
     }
 
     @Override
-    public List<TargetTasks> getBinding() {
-        return List.of(TargetTasks.GET_WORKFLOW, TargetTasks.POST_WORKFLOW, TargetTasks.PUT_WORKFLOW,
-                TargetTasks.DELETE_WORKFLOW);
+    public List<TargetMessageHandler> getBinding() {
+        return List.of(TargetMessageHandler.GET_WORKFLOW, TargetMessageHandler.POST_WORKFLOW,
+                TargetMessageHandler.PUT_WORKFLOW,
+                TargetMessageHandler.DELETE_WORKFLOW);
     }
 
     private void getWorkflow(CustomMessage context) {

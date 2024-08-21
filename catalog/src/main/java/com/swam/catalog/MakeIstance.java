@@ -1,7 +1,7 @@
 package com.swam.catalog;
 
-import com.swam.commons.MessageDispatcher.TaskExecutor;
-import com.swam.commons.RoutingInstructions.TargetTasks;
+import com.swam.commons.MessageDispatcher.MessageHandler;
+import com.swam.commons.RoutingInstructions.TargetMessageHandler;
 
 import java.util.List;
 
@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 import com.swam.commons.CustomMessage;
 
 @Service
-public class MakeIstance implements TaskExecutor {
+public class MakeIstance implements MessageHandler {
 
     @Override
-    public void execute(CustomMessage context, TargetTasks triggeredBinding) {
+    public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) {
         // TODO: implement method
         System.out.println("Execute MakeIstance");
         if (context.getRequestBody().isPresent()) {
@@ -25,8 +25,8 @@ public class MakeIstance implements TaskExecutor {
     }
 
     @Override
-    public List<TargetTasks> getBinding() {
-        return List.of(TargetTasks.ISTANCE_TEMPLATE);
+    public List<TargetMessageHandler> getBinding() {
+        return List.of(TargetMessageHandler.ISTANCE_TEMPLATE);
     }
 
 }

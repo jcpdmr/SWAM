@@ -5,21 +5,21 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.swam.commons.CustomMessage;
-import com.swam.commons.RoutingInstructions.TargetTasks;
+import com.swam.commons.RoutingInstructions.TargetMessageHandler;
 
 import lombok.AllArgsConstructor;
 
 import com.swam.commons.CustomMessage.MessageType;
-import com.swam.commons.MessageDispatcher.TaskExecutor;
+import com.swam.commons.MessageDispatcher.MessageHandler;
 
 @AllArgsConstructor
 @Service
-public class MicroserviceResponseHandler implements TaskExecutor {
+public class MicroserviceResponseHandler implements MessageHandler {
 
     private final AsyncResponseHandler asyncResponseHandler;
 
     @Override
-    public void execute(CustomMessage context, TargetTasks triggeredBinding) {
+    public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) {
         System.out.println("Execute HandleACK");
 
         // TODO: monitor response progress with ackHop
@@ -43,8 +43,8 @@ public class MicroserviceResponseHandler implements TaskExecutor {
     }
 
     @Override
-    public List<TargetTasks> getBinding() {
-        return List.of(TargetTasks.CHECK_ACK);
+    public List<TargetMessageHandler> getBinding() {
+        return List.of(TargetMessageHandler.CHECK_ACK);
     }
 
 }

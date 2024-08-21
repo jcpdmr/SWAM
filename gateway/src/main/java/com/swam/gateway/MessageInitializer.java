@@ -1,12 +1,12 @@
 package com.swam.gateway;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import com.swam.commons.ApiTemplateVariables;
 import com.swam.commons.CustomMessage;
@@ -21,16 +21,10 @@ import com.swam.gateway.EndPoint.TargetType;
 import lombok.Getter;
 import lombok.Setter;
 
+@Service
 @Setter
 @Getter
-public abstract class AbstractEndPointHandler {
-
-    // Should return a list of uriPath to with the bean will be bound
-    public abstract List<String> getBindingPaths();
-
-    // Main method called on each beans by Dispatcher
-    public abstract CustomMessage handle(HttpMethod httpMethod, Map<String, String> uriTemplateVariables,
-            Optional<Map<String, String>> requestParams, Optional<String> requestBody);
+public class MessageInitializer {
 
     // Perform conversion to TargetType
     private Optional<TargetType> convertToTargetType(String type) {
@@ -45,7 +39,7 @@ public abstract class AbstractEndPointHandler {
         }
     }
 
-    protected CustomMessage buildMessage(EndPoint endPoint, HttpMethod httpMethod,
+    public CustomMessage buildMessage(EndPoint endPoint, HttpMethod httpMethod,
             Map<String, String> uriTemplateVariables,
             Optional<Map<String, String>> requestParams, Optional<String> requestBody) {
 

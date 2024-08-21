@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.swam.commons.CustomMessage.MessageType;
-import com.swam.commons.RoutingInstructions.TargetTasks;
+import com.swam.commons.RoutingInstructions.TargetMessageHandler;
 
 import lombok.RequiredArgsConstructor;
 
@@ -86,7 +86,7 @@ public class RabbitMQSender {
     private CustomMessage generateAckMessage(CustomMessage originalMessage, TargetMicroservices sender) {
 
         RoutingInstructions ackRoutingInstructions = RoutingInstructionsBuilder.newBuild()
-                .addTargets(TargetMicroservices.GATEWAY, TargetTasks.CHECK_ACK)
+                .addTargets(TargetMicroservices.GATEWAY, TargetMessageHandler.CHECK_ACK)
                 .build();
 
         CustomMessage ackMessage = new CustomMessage("ACK", ackRoutingInstructions, sender, MessageType.ACK,
@@ -99,7 +99,7 @@ public class RabbitMQSender {
 
     private CustomMessage generateErrorMessage(CustomMessage originalMessage, TargetMicroservices sender) {
         RoutingInstructions errorRoutingInstructions = RoutingInstructionsBuilder.newBuild()
-                .addTargets(TargetMicroservices.GATEWAY, TargetTasks.CHECK_ACK)
+                .addTargets(TargetMicroservices.GATEWAY, TargetMessageHandler.CHECK_ACK)
                 .build();
 
         CustomMessage errorMessage = new CustomMessage("ERROR", errorRoutingInstructions,

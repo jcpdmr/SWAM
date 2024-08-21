@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 public class RoutingInstructions {
 
-    public enum TargetTasks {
+    public enum TargetMessageHandler {
 
         ANALYZE,
         ISTANCE_TEMPLATE,
@@ -47,10 +47,10 @@ public class RoutingInstructions {
     }
 
     private Integer hopCounter;
-    private List<Pair<TargetMicroservices, TargetTasks>> hopSequence;
+    private List<Pair<TargetMicroservices, TargetMessageHandler>> hopSequence;
 
     @JsonCreator
-    public RoutingInstructions(List<Pair<TargetMicroservices, TargetTasks>> hopSequence) {
+    public RoutingInstructions(List<Pair<TargetMicroservices, TargetMessageHandler>> hopSequence) {
         this.hopCounter = 0;
         this.hopSequence = hopSequence;
     }
@@ -63,7 +63,7 @@ public class RoutingInstructions {
         }
     }
 
-    public TargetTasks getTargetMethod() {
+    public TargetMessageHandler getTargetMethod() {
         return hopSequence.get(hopCounter).getValue();
     }
 

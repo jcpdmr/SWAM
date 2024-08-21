@@ -8,19 +8,20 @@ import java.util.Map;
 import org.springframework.http.HttpMethod;
 
 import com.swam.commons.Pair;
-import com.swam.commons.RoutingInstructions.TargetTasks;
+import com.swam.commons.RoutingInstructions.TargetMessageHandler;
 import com.swam.commons.RoutingInstructions.TargetMicroservices;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Getter
 public class EndPoint {
 
-    private Map<TargetType, Map<HttpMethod, MethodInfo>> endPointData;
+    private final List<String> bindingPaths;
+    private final Map<TargetType, Map<HttpMethod, MethodInfo>> endPointData;
 
     // To specify request target
     enum TargetType {
@@ -41,7 +42,7 @@ public class EndPoint {
     @Getter
     @ToString
     protected static class MethodInfo {
-        private List<Pair<TargetMicroservices, TargetTasks>> routingMap;
+        private List<Pair<TargetMicroservices, TargetMessageHandler>> routingMap;
         private final Map<Requirement, List<String>> idsRequirementsMap;
 
         public MethodInfo() {
@@ -59,8 +60,12 @@ public class EndPoint {
     }
 
     // Defining stepInterfaces to force using EndPointBuilder in a specific order
-    public static EndPointBuilderStep1 builder() {
+    public static EndPointBuilderStep0 builder() {
         return new EndPointBuilder();
+    }
+
+    public interface EndPointBuilderStep0 {
+        EndPointBuilderStep1 setBindingPaths(List<String> bindingPaths);
     }
 
     public interface EndPointBuilderStep1 {
@@ -78,7 +83,7 @@ public class EndPoint {
 
         EndPointBuilderStep3 withForbiddenIds(String... forbiddenIds);
 
-        EndPointBuilderStep4 withRouting(List<Pair<TargetMicroservices, TargetTasks>> routingEntries);
+        EndPointBuilderStep4 withRouting(List<Pair<TargetMicroservices, TargetMessageHandler>> routingEntries);
 
     }
 
@@ -91,11 +96,19 @@ public class EndPoint {
     }
 
     public static class EndPointBuilder
-            implements EndPointBuilderStep1, EndPointBuilderStep2, EndPointBuilderStep3, EndPointBuilderStep4 {
+            implements EndPointBuilderStep0, EndPointBuilderStep1, EndPointBuilderStep2, EndPointBuilderStep3,
+            EndPointBuilderStep4 {
 
+        private List<String> bindingPaths;
         private Map<TargetType, Map<HttpMethod, MethodInfo>> endPointData;
         private TargetType currentTargetType;
         private HttpMethod currenHttpMethod;
+
+        @Override
+        public EndPointBuilderStep1 setBindingPaths(List<String> bindingPaths) {
+            this.bindingPaths = new ArrayList<>(bindingPaths);
+            return this;
+        }
 
         @Override
         public EndPointBuilderStep2 withTargetType(TargetType targetType) {
@@ -138,7 +151,7 @@ public class EndPoint {
         }
 
         @Override
-        public EndPointBuilderStep4 withRouting(List<Pair<TargetMicroservices, TargetTasks>> routingEntries) {
+        public EndPointBuilderStep4 withRouting(List<Pair<TargetMicroservices, TargetMessageHandler>> routingEntries) {
             endPointData.get(currentTargetType).get(currenHttpMethod).setRoutingMap(new ArrayList<>(routingEntries));
             return this;
         }
@@ -163,11 +176,12 @@ public class EndPoint {
             // Adding final return to gateway to all route
             for (Map<HttpMethod, MethodInfo> metodMap : endPointData.values()) {
                 for (MethodInfo methodInfo : metodMap.values()) {
-                    methodInfo.getRoutingMap().add(Pair.of(TargetMicroservices.GATEWAY, TargetTasks.CHECK_ACK));
+                    methodInfo.getRoutingMap()
+                            .add(Pair.of(TargetMicroservices.GATEWAY, TargetMessageHandler.CHECK_ACK));
                 }
             }
 
-            return new EndPoint(endPointData);
+            return new EndPoint(bindingPaths, endPointData);
         }
 
     }

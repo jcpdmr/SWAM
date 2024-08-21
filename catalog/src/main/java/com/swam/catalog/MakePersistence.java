@@ -1,25 +1,25 @@
 package com.swam.catalog;
 
-import com.swam.commons.MessageDispatcher.TaskExecutor;
+import com.swam.commons.MessageDispatcher.MessageHandler;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.swam.commons.CustomMessage;
-import com.swam.commons.RoutingInstructions.TargetTasks;
+import com.swam.commons.RoutingInstructions.TargetMessageHandler;
 import com.swam.commons.mongodb.type.WorkflowTypeRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class MakePersistence implements TaskExecutor {
+public class MakePersistence implements MessageHandler {
 
     private final WorkflowTypeRepository workflowTypeRepository;
 
     @Override
-    public void execute(CustomMessage context, TargetTasks triggeredBinding) {
+    public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) {
         // TODO: implement method
         // System.out.println("Execute MakePersistence");
         // if (context.getRequestBody().isPresent()) {
@@ -74,8 +74,8 @@ public class MakePersistence implements TaskExecutor {
     }
 
     @Override
-    public List<TargetTasks> getBinding() {
-        return List.of(TargetTasks.MAKE_PERSISTENCE);
+    public List<TargetMessageHandler> getBinding() {
+        return List.of(TargetMessageHandler.MAKE_PERSISTENCE);
     }
 
 }

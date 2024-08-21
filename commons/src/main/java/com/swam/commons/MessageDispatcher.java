@@ -9,19 +9,19 @@ import java.util.stream.Collectors;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
-import com.swam.commons.RoutingInstructions.TargetTasks;
+import com.swam.commons.RoutingInstructions.TargetMessageHandler;
 
 @Service
 public class MessageDispatcher {
 
-    private final Map<List<TargetTasks>, TaskExecutor> taskMap;
+    private final Map<List<TargetMessageHandler>, MessageHandler> messageHandlerMap;
     private final RabbitMQSender rabbitMQSender;
 
-    public MessageDispatcher(RabbitMQSender rabbitMQSender, List<TaskExecutor> methodExecutors) {
+    public MessageDispatcher(RabbitMQSender rabbitMQSender, List<MessageHandler> messageHandlers) {
         this.rabbitMQSender = rabbitMQSender;
-        this.taskMap = methodExecutors.stream()
-                .collect(Collectors.toMap(TaskExecutor::getBinding, Function.identity()));
-        taskMap.put(List.of(TargetTasks.NULL), null);
+        this.messageHandlerMap = messageHandlers.stream()
+                .collect(Collectors.toMap(MessageHandler::getBinding, Function.identity()));
+        messageHandlerMap.put(List.of(TargetMessageHandler.NULL), null);
     }
 
     @RabbitListener(queues = "${spring.rabbitmq.in-queue}")
@@ -36,34 +36,35 @@ public class MessageDispatcher {
         RoutingInstructions routingInstructions = message.getRoutingInstructions();
         // System.out.println(message.getroutingInstructions());
 
-        TargetTasks targetTask = routingInstructions.getTargetMethod();
+        TargetMessageHandler targetMessageHandler = routingInstructions.getTargetMethod();
 
         // System.out.println("Lista di bindings dei metodi: " + methodsMap);
         // System.out.println("Nome del motodo da eseguire: " + method);
 
-        if (targetTask.equals(TargetTasks.NULL)) {
+        if (targetMessageHandler.equals(TargetMessageHandler.NULL)) {
             System.out.println("execute NULL method");
         } else {
 
-            TaskExecutor taskExecutor = null;
+            MessageHandler messageHandler = null;
 
-            for (Entry<List<TargetTasks>, TaskExecutor> bindingsEntry : taskMap.entrySet()) {
-                for (TargetTasks binding : bindingsEntry.getKey()) {
-                    if (binding.equals(targetTask)) {
-                        taskExecutor = bindingsEntry.getValue();
+            for (Entry<List<TargetMessageHandler>, MessageHandler> bindingsEntry : messageHandlerMap.entrySet()) {
+                for (TargetMessageHandler binding : bindingsEntry.getKey()) {
+                    if (binding.equals(targetMessageHandler)) {
+                        messageHandler = bindingsEntry.getValue();
                         break;
                     }
                 }
-                if (taskExecutor != null) {
+                if (messageHandler != null) {
                     break;
                 }
             }
 
-            if (taskExecutor != null) {
-                taskExecutor.execute(message, targetTask);
+            if (messageHandler != null) {
+                messageHandler.handle(message, targetMessageHandler);
             } else {
-                System.out.println("Method: [" + targetTask + "] not binded, current bindings: " + taskMap
-                        + " . Have you added @Service to Method?");
+                System.out.println(
+                        "Method: [" + targetMessageHandler + "] not binded, current bindings: " + messageHandlerMap
+                                + " . Have you added @Service to Method?");
 
                 message.setError("Internal server error", 500);
             }
@@ -77,9 +78,9 @@ public class MessageDispatcher {
         return rabbitMQSender;
     }
 
-    public interface TaskExecutor {
-        public void execute(CustomMessage context, TargetTasks triggeredBinding);
+    public interface MessageHandler {
+        public void handle(CustomMessage context, TargetMessageHandler triggeredBinding);
 
-        public List<TargetTasks> getBinding();
+        public List<TargetMessageHandler> getBinding();
     }
 }

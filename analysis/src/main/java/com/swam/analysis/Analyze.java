@@ -1,19 +1,19 @@
 package com.swam.analysis;
 
-import com.swam.commons.MessageDispatcher.TaskExecutor;
+import com.swam.commons.MessageDispatcher.MessageHandler;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.swam.commons.CustomMessage;
-import com.swam.commons.RoutingInstructions.TargetTasks;
+import com.swam.commons.RoutingInstructions.TargetMessageHandler;
 
 @Service
-public class Analyze implements TaskExecutor {
+public class Analyze implements MessageHandler {
 
     @Override
-    public void execute(CustomMessage context, TargetTasks triggeredBinding) {
+    public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) {
         // TODO: implement method
         System.out.println("Execute Analyze");
         if (context.getRequestBody().isPresent()) {
@@ -25,8 +25,8 @@ public class Analyze implements TaskExecutor {
     }
 
     @Override
-    public List<TargetTasks> getBinding() {
-        return List.of(TargetTasks.ANALYZE);
+    public List<TargetMessageHandler> getBinding() {
+        return List.of(TargetMessageHandler.ANALYZE);
     }
 
 }
