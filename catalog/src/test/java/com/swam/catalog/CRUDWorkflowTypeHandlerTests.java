@@ -21,10 +21,10 @@ import com.qesm.RandomDAGGenerator.PdfType;
 import com.mongodb.ExplainVerbosity;
 import com.qesm.ProductType;
 import com.qesm.WorkflowType;
-import com.swam.commons.MessageDispatcher;
+import com.swam.commons.intercommunication.MessageDispatcher;
 import com.swam.commons.mongodb.AbstractWorkflowDTO;
 import com.swam.commons.mongodb.type.WorkflowTypeDTO;
-import com.swam.commons.mongodb.type.WorkflowTypeRepository;
+import com.swam.commons.mongodb.type.WorkflowTypeDTORepository;
 
 @ActiveProfiles("test")
 @SpringBootTest()
@@ -34,7 +34,7 @@ public class CRUDWorkflowTypeHandlerTests {
     private MongoTemplate mongoTemplate;
 
     @Autowired
-    private WorkflowTypeRepository workflowTypeRepository;
+    private WorkflowTypeDTORepository workflowTypeDTORepository;
 
     @MockBean
     private MessageDispatcher messageDispatcher;
@@ -50,7 +50,7 @@ public class CRUDWorkflowTypeHandlerTests {
         w1.generateRandomDAG(5, 5, 3, 3, 50, PdfType.UNIFORM);
 
         WorkflowTypeDTO workflowTypeDTO = new WorkflowTypeDTO(w1);
-        workflowTypeRepository.save(workflowTypeDTO);
+        workflowTypeDTORepository.save(workflowTypeDTO);
 
         // Query query = new Query(
         // Criteria.where("_id").is("66c72346c543a265761e16cc")
@@ -61,7 +61,7 @@ public class CRUDWorkflowTypeHandlerTests {
 
         // System.out.println(result.getSubWorkflowDTOList());
 
-        System.out.println(workflowTypeRepository.findByIdAndSubWorkflowDTOListId("66c72346c543a265761e16cc",
+        System.out.println(workflowTypeDTORepository.findByIdAndSubWorkflowDTOListId("66c72346c543a265761e16cc",
                 "433b4070-0b8d-42a0-a1c9-470f1260d459"));
 
         // ExplainVerbosity verbosity = ExplainVerbosity.EXECUTION_STATS;

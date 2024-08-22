@@ -7,7 +7,6 @@ import com.swam.commons.intercommunication.MessageDispatcher.MessageHandler;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
 import com.swam.commons.mongodb.type.WorkflowTypeDTORepository;
-import com.swam.commons.mongodb.type.WorkflowTypeRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MakePersistence implements MessageHandler {
 
-    private final WorkflowTypeDTORepository workflowTypeRepository;
+    private final WorkflowTypeDTORepository workflowTypeDTORepository;
 
     @Override
     public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) {

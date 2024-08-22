@@ -24,8 +24,10 @@ public class StochasticTimeReadConverter implements Converter<Document, Stochast
         boolean containsK = source.containsKey("k");
         boolean containsRate = source.containsKey("rate");
         boolean containsValue = source.containsKey("value");
+        Double.valueOf("111");
         if (sirioType.equals(SIRIOType.UNI)) {
-            return new UniformTime(source.getDouble("EFT"), source.getDouble("LFT"));
+            return new UniformTime(Double.parseDouble(source.getString("EFT")),
+                    Double.parseDouble(source.getString("LFT")));
         } else if (sirioType.equals(SIRIOType.DET) && containsValue) {
             return new DeterministicTime((new BigDecimal(source.getString("EFT"))));
         } else if (sirioType.equals(SIRIOType.EXP) && (!containsK) && (containsRate)) {
