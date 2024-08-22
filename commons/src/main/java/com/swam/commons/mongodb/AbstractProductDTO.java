@@ -12,10 +12,12 @@ import com.qesm.AbstractProduct.ItemGroup;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @AllArgsConstructor
 @Setter
 @Getter
+@ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class AbstractProductDTO<V extends AbstractProduct> {
     private String name;

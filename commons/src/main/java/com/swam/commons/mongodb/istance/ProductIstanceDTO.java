@@ -4,11 +4,13 @@ import java.util.UUID;
 
 import org.oristool.eulero.modeling.stochastictime.StochasticTime;
 import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.qesm.AbstractProduct.ItemGroup;
 import com.qesm.ProductIstance;
 import com.swam.commons.mongodb.AbstractProductDTO;
 
+@Document
 public class ProductIstanceDTO extends AbstractProductDTO<ProductIstance> {
 
     @PersistenceCreator

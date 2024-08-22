@@ -1,5 +1,6 @@
 package com.swam.commons.mongodb.istance;
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.annotation.PersistenceCreator;
@@ -15,18 +16,21 @@ import com.swam.commons.mongodb.AbstractWorkflowDTO;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Document
 @Getter
 @Setter
-@ToString
 public class WorkflowIstanceDTO extends AbstractWorkflowDTO<ProductIstance, WorkflowIstance> {
 
     @PersistenceCreator
     public WorkflowIstanceDTO(String id, Set<ProductIstanceDTO> vertexSet,
-            Set<CustomEdgeIstanceDTO> edgeSet) {
-        super(id, vertexSet, edgeSet);
+            Set<CustomEdgeIstanceDTO> edgeSet,
+            List<AbstractWorkflowDTO<ProductIstance, WorkflowIstance>> subWorkflowDTOList) {
+        super(id, vertexSet, edgeSet, subWorkflowDTOList);
+    }
+
+    public WorkflowIstanceDTO(WorkflowIstance workflowIstance) {
+        super(workflowIstance);
     }
 
     @Override
@@ -42,6 +46,14 @@ public class WorkflowIstanceDTO extends AbstractWorkflowDTO<ProductIstance, Work
     @Override
     protected WorkflowIstance createWorkflow(ListenableDAG<ProductIstance, CustomEdge> dag) {
         return new WorkflowIstance(dag);
+    }
+
+    @Override
+    protected AbstractWorkflowDTO<ProductIstance, WorkflowIstance> createWorkflowDTO(WorkflowIstance workflow,
+            String id) {
+        WorkflowIstanceDTO workflowIstanceDTO = new WorkflowIstanceDTO(workflow);
+        workflowIstanceDTO.setId(id);
+        return workflowIstanceDTO;
     }
 
 }
