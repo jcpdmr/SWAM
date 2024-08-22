@@ -1,6 +1,7 @@
 package com.swam.catalog;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeAll;
@@ -10,11 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Field;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.qesm.RandomDAGGenerator.PdfType;
@@ -22,8 +18,9 @@ import com.mongodb.ExplainVerbosity;
 import com.qesm.ProductType;
 import com.qesm.WorkflowType;
 import com.swam.commons.intercommunication.MessageDispatcher;
-import com.swam.commons.mongodb.AbstractWorkflowDTO;
-import com.swam.commons.mongodb.type.WorkflowTypeDTO;
+import com.swam.commons.mongodb.AbstractBaseWorkflowDTO;
+import com.swam.commons.mongodb.AbstractHeadWorkflowDTO;
+import com.swam.commons.mongodb.type.HeadWorkflowTypeDTO;
 import com.swam.commons.mongodb.type.WorkflowTypeDTORepository;
 
 @ActiveProfiles("test")
@@ -31,13 +28,13 @@ import com.swam.commons.mongodb.type.WorkflowTypeDTORepository;
 public class CRUDWorkflowTypeHandlerTests {
 
     @Autowired
-    private MongoTemplate mongoTemplate;
-
-    @Autowired
     private WorkflowTypeDTORepository workflowTypeDTORepository;
 
     @MockBean
     private MessageDispatcher messageDispatcher;
+
+    @MockBean
+    private CRUDWorkflowTypeHandler crudWorkflowTypeHandler;
 
     @BeforeAll
     private static void dropDb(@Autowired MongoTemplate mongoTemplate) {
@@ -46,23 +43,22 @@ public class CRUDWorkflowTypeHandlerTests {
 
     @Test
     public void prova() {
-        WorkflowType w1 = new WorkflowType();
-        w1.generateRandomDAG(5, 5, 3, 3, 50, PdfType.UNIFORM);
+        // WorkflowType w1 = new WorkflowType();
+        // w1.generateRandomDAG(5, 5, 3, 3, 50, PdfType.UNIFORM);
 
-        WorkflowTypeDTO workflowTypeDTO = new WorkflowTypeDTO(w1);
-        workflowTypeDTORepository.save(workflowTypeDTO);
+        // HeadWorkflowTypeDTO workflowTypeDTO = new HeadWorkflowTypeDTO(w1);
+        // workflowTypeDTORepository.save(workflowTypeDTO);
 
-        // Query query = new Query(
-        // Criteria.where("_id").is("66c72346c543a265761e16cc")
-        // .and("subWorkflowDTOList._id").is("433b4070-0b8d-42a0-a1c9-470f1260d459"));
-        // query.fields().include("subWorkflowDTOList.$");
+        System.out.println(workflowTypeDTORepository.findSpecificSubWorkflow("66c76bf6c2e10d6b8f800a34",
+                "76a739d2-87d7-493d-90ca-5694aa7c1876"));
 
-        // WorkflowTypeDTO result = mongoTemplate.findOne(query, WorkflowTypeDTO.class);
+        Optional<HeadWorkflowTypeDTO> headWorkflowTypeDTO = workflowTypeDTORepository
+                .findById("66c76bf6c2e10d6b8f800a34");
+        System.out.println(headWorkflowTypeDTO.get());
 
-        // System.out.println(result.getSubWorkflowDTOList());
-
-        System.out.println(workflowTypeDTORepository.findByIdAndSubWorkflowDTOListId("66c72346c543a265761e16cc",
-                "433b4070-0b8d-42a0-a1c9-470f1260d459"));
+        // List<AbstractBaseWorkflowDTO<ProductType>> subWorkflows =
+        // headWorkflowTypeDTO.get().getSubWorkflowDTOList();
+        // System.out.println("Sub-workflows: " + subWorkflows);
 
         // ExplainVerbosity verbosity = ExplainVerbosity.EXECUTION_STATS;
         // Document explainResult = mongoTemplate.getCollection("Workflow")

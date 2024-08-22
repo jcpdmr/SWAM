@@ -13,7 +13,7 @@ import com.qesm.AbstractProduct.ItemGroup;
 import com.swam.commons.intercommunication.MessageDispatcher;
 import com.swam.commons.mongodb.type.CustomEdgeTypeDTO;
 import com.swam.commons.mongodb.type.ProductTypeDTO;
-import com.swam.commons.mongodb.type.WorkflowTypeDTO;
+import com.swam.commons.mongodb.type.HeadWorkflowTypeDTO;
 import com.swam.commons.mongodb.type.WorkflowTypeDTORepository;
 
 import lombok.RequiredArgsConstructor;
@@ -45,7 +45,7 @@ public class CatalogApplication implements CommandLineRunner {
 		WorkflowType w1 = new WorkflowType();
 		w1.generateRandomDAG(5, 5, 3, 3, 50, PdfType.UNIFORM);
 
-		WorkflowTypeDTO workflowTypeDTO = new WorkflowTypeDTO(w1);
+		HeadWorkflowTypeDTO workflowTypeDTO = new HeadWorkflowTypeDTO(w1);
 		workflowTypeRepository.save(workflowTypeDTO);
 
 		// List<WorkflowTypeDTO> resultList = workflowTypeRepository.findAll();

@@ -11,13 +11,13 @@ import com.swam.commons.intercommunication.ApiTemplateVariables;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.MessageDispatcher.MessageHandler;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
-import com.swam.commons.mongodb.AbstractWorkflowDTO;
+import com.swam.commons.mongodb.AbstractHeadWorkflowDTO;
 import com.swam.commons.mongodb.WorkflowDTORepository;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflowDTO<? extends AbstractProduct>>
+public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractHeadWorkflowDTO<? extends AbstractProduct>>
         implements MessageHandler {
 
     private final WorkflowDTORepository<WFDTO> workflowRepository;

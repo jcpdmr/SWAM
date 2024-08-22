@@ -1,6 +1,5 @@
 package com.swam.commons.mongodb.type;
 
-import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.annotation.PersistenceCreator;
@@ -13,7 +12,7 @@ import com.qesm.CustomEdge;
 import com.qesm.ListenableDAG;
 import com.qesm.ProductType;
 import com.qesm.WorkflowType;
-import com.swam.commons.mongodb.AbstractWorkflowDTO;
+import com.swam.commons.mongodb.AbstractBaseWorkflowDTO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,17 +20,16 @@ import lombok.Setter;
 @Document("Workflow")
 @Getter
 @Setter
-public class WorkflowTypeDTO extends AbstractWorkflowDTO<ProductType> {
+public class BaseWorkflowTypeDTO extends AbstractBaseWorkflowDTO<ProductType> {
 
     @PersistenceCreator
     @JsonCreator
-    public WorkflowTypeDTO(@JsonProperty("id") String id, @JsonProperty("vertexSet") Set<ProductTypeDTO> vertexSet,
-            @JsonProperty("edgeSet") Set<CustomEdgeTypeDTO> edgeSet,
-            List<AbstractWorkflowDTO<ProductType>> subWorkflowDTOList) {
-        super(id, vertexSet, edgeSet, subWorkflowDTOList);
+    public BaseWorkflowTypeDTO(@JsonProperty("id") String id, @JsonProperty("vertexSet") Set<ProductTypeDTO> vertexSet,
+            @JsonProperty("edgeSet") Set<CustomEdgeTypeDTO> edgeSet) {
+        super(id, vertexSet, edgeSet);
     }
 
-    public WorkflowTypeDTO(WorkflowType workflowType) {
+    public BaseWorkflowTypeDTO(WorkflowType workflowType) {
         super(workflowType);
     }
 
@@ -51,8 +49,8 @@ public class WorkflowTypeDTO extends AbstractWorkflowDTO<ProductType> {
     }
 
     @Override
-    protected WorkflowTypeDTO createWorkflowDTO(AbstractWorkflow<ProductType> workflow, String id) {
-        WorkflowTypeDTO workflowTypeDTO = new WorkflowTypeDTO((WorkflowType) workflow);
+    protected HeadWorkflowTypeDTO createWorkflowDTO(AbstractWorkflow<ProductType> workflow, String id) {
+        HeadWorkflowTypeDTO workflowTypeDTO = new HeadWorkflowTypeDTO((WorkflowType) workflow);
         workflowTypeDTO.setId(id);
         return workflowTypeDTO;
     }

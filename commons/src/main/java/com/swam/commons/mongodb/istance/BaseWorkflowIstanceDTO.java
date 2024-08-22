@@ -1,6 +1,5 @@
 package com.swam.commons.mongodb.istance;
 
-import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.annotation.PersistenceCreator;
@@ -12,10 +11,9 @@ import com.qesm.ListenableDAG;
 import com.qesm.ProductIstance;
 
 import com.qesm.WorkflowIstance;
-
+import com.swam.commons.mongodb.AbstractBaseWorkflowDTO;
 import com.swam.commons.mongodb.AbstractCustomEdgeDTO;
 import com.swam.commons.mongodb.AbstractProductDTO;
-import com.swam.commons.mongodb.AbstractWorkflowDTO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,16 +21,15 @@ import lombok.Setter;
 @Document
 @Getter
 @Setter
-public class WorkflowIstanceDTO extends AbstractWorkflowDTO<ProductIstance> {
+public class BaseWorkflowIstanceDTO extends AbstractBaseWorkflowDTO<ProductIstance> {
 
     @PersistenceCreator
-    public WorkflowIstanceDTO(String id, Set<ProductIstanceDTO> vertexSet,
-            Set<CustomEdgeIstanceDTO> edgeSet,
-            List<AbstractWorkflowDTO<ProductIstance>> subWorkflowDTOList) {
-        super(id, vertexSet, edgeSet, subWorkflowDTOList);
+    public BaseWorkflowIstanceDTO(String id, Set<ProductIstanceDTO> vertexSet,
+            Set<CustomEdgeIstanceDTO> edgeSet) {
+        super(id, vertexSet, edgeSet);
     }
 
-    public WorkflowIstanceDTO(WorkflowIstance workflowIstance) {
+    public BaseWorkflowIstanceDTO(WorkflowIstance workflowIstance) {
         super(workflowIstance);
     }
 
@@ -52,8 +49,8 @@ public class WorkflowIstanceDTO extends AbstractWorkflowDTO<ProductIstance> {
     }
 
     @Override
-    protected WorkflowIstanceDTO createWorkflowDTO(AbstractWorkflow<ProductIstance> workflow, String id) {
-        WorkflowIstanceDTO workflowIstanceDTO = new WorkflowIstanceDTO((WorkflowIstance) workflow);
+    protected HeadWorkflowIstanceDTO createWorkflowDTO(AbstractWorkflow<ProductIstance> workflow, String id) {
+        HeadWorkflowIstanceDTO workflowIstanceDTO = new HeadWorkflowIstanceDTO((WorkflowIstance) workflow);
         workflowIstanceDTO.setId(id);
         return workflowIstanceDTO;
     }
