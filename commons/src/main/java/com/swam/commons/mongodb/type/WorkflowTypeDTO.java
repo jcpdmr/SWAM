@@ -17,12 +17,10 @@ import com.swam.commons.mongodb.AbstractWorkflowDTO;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Document("Workflow")
 @Getter
 @Setter
-@ToString
 public class WorkflowTypeDTO extends AbstractWorkflowDTO<ProductType> {
 
     @PersistenceCreator

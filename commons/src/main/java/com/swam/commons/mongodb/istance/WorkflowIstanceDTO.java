@@ -19,12 +19,10 @@ import com.swam.commons.mongodb.AbstractWorkflowDTO;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Document
 @Getter
 @Setter
-@ToString
 public class WorkflowIstanceDTO extends AbstractWorkflowDTO<ProductIstance> {
 
     @PersistenceCreator
