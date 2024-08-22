@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-import com.swam.commons.MessageDispatcher;
+import com.swam.commons.intercommunication.MessageDispatcher;
 
 @SpringBootApplication
 @EnableMongoRepositories(basePackages = "com.swam.commons.mongodb.istance")

@@ -16,6 +16,9 @@ echo ""
 # curl -X POST http://localhost:8080/api/workflow/catalog\
 #      -H "Content-Type: application/json" \
 #      -d @./client-data.json
+# curl -X POST http://localhost:8080/api/workflow/catalog\
+#      -H "Content-Type: application/json" \
+#      -d @./client-data.json
 
 # echo ""
 

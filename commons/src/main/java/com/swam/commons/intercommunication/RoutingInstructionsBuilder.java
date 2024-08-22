@@ -1,10 +1,10 @@
-package com.swam.commons;
+package com.swam.commons.intercommunication;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.swam.commons.RoutingInstructions.TargetMessageHandler;
-import com.swam.commons.RoutingInstructions.TargetMicroservices;
+import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
+import com.swam.commons.intercommunication.RoutingInstructions.TargetMicroservices;
 
 public class RoutingInstructionsBuilder {
 

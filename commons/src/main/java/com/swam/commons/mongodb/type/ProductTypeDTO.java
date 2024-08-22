@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.qesm.AbstractProduct.ItemGroup;
 import com.swam.commons.mongodb.AbstractProductDTO;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.qesm.ProductType;
 
 import lombok.Getter;
@@ -17,7 +19,10 @@ import lombok.Getter;
 public class ProductTypeDTO extends AbstractProductDTO<ProductType> {
 
     @PersistenceCreator
-    public ProductTypeDTO(String name, String id, Integer quantityProduced, StochasticTime pdf, ItemGroup itemGroup) {
+    @JsonCreator
+    public ProductTypeDTO(@JsonProperty("name") String name, @JsonProperty("id") String id,
+            @JsonProperty("quantityProduced") Integer quantityProduced, @JsonProperty("pdf") StochasticTime pdf,
+            @JsonProperty("itemGroup") ItemGroup itemGroup) {
         super(name, id, quantityProduced, pdf, itemGroup);
     }
 

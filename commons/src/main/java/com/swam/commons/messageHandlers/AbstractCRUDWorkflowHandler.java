@@ -4,21 +4,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.swam.commons.ApiTemplateVariables;
-import com.swam.commons.CustomMessage;
-import com.swam.commons.MessageDispatcher.MessageHandler;
-import com.swam.commons.RoutingInstructions.TargetMessageHandler;
+import com.qesm.AbstractProduct;
+import com.swam.commons.intercommunication.ApiTemplateVariables;
+import com.swam.commons.intercommunication.CustomMessage;
+import com.swam.commons.intercommunication.MessageDispatcher.MessageHandler;
+import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
 import com.swam.commons.mongodb.AbstractWorkflowDTO;
-import com.swam.commons.mongodb.WorkflowRepository;
+import com.swam.commons.mongodb.WorkflowDTORepository;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public abstract class AbstractCRUDWorkflowHandler<R extends WorkflowRepository<W>, W extends AbstractWorkflowDTO<?, ?>>
+public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflowDTO<? extends AbstractProduct>>
         implements MessageHandler {
 
-    private final R workflowRepository;
+    private final WorkflowDTORepository<WFDTO> workflowRepository;
+    private final Class<WFDTO> clazz;
 
     @Override
     public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) {
@@ -57,9 +60,10 @@ public abstract class AbstractCRUDWorkflowHandler<R extends WorkflowRepository<W
     private void getWorkflow(CustomMessage context) {
         Map<String, String> uriTemplateVariables = context.getUriTemplateVariables();
         String workflowId = uriTemplateVariables.get(ApiTemplateVariables.WORKFLOW_ID);
+        System.out.println("ID: " + workflowId);
 
         if (workflowId != null) {
-            Optional<W> workflowDTO = workflowRepository.findById(workflowId);
+            Optional<WFDTO> workflowDTO = workflowRepository.findById(workflowId);
             if (workflowDTO.isEmpty()) {
                 context.setError("Workflow with workflowId: " + workflowId + " not found", 404);
             } else {
@@ -73,8 +77,32 @@ public abstract class AbstractCRUDWorkflowHandler<R extends WorkflowRepository<W
 
     private void postWorkflow(CustomMessage context) {
 
-        System.out.println(context.getRequestBody());
-        ObjectMapper objectMapper = new ObjectMapper();
+        // System.out.println(context.getRequestBody());
+        if (context.getRequestBody().isEmpty()) {
+            System.out.println("POST request with empty body, skipped...");
+            context.setError("POST request with empty body", 400);
+            return;
+        }
+
+        WFDTO receivedWorkflowDTO = null;
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            receivedWorkflowDTO = objectMapper.readValue(context.getRequestBody().get(), clazz);
+        } catch (JsonProcessingException e) {
+            // TODO: need to handle problems in JSON to Object conversion
+            e.printStackTrace();
+
+        }
+
+        if (receivedWorkflowDTO == null) {
+            System.out.println("Problems with JSON to Object conversion");
+            return;
+        }
+
+        workflowRepository.save(receivedWorkflowDTO);
+        System.out.println("POSTed Workflow correctly");
+
+        context.setResponseStatusCode(200);
 
     }
 

@@ -13,8 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
 
-import com.swam.commons.CustomMessage;
-import com.swam.commons.RabbitMQSender;
+import com.swam.commons.intercommunication.CustomMessage;
+import com.swam.commons.intercommunication.RabbitMQSender;
 
 @Service
 public class Dispatcher {

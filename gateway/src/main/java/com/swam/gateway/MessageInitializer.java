@@ -8,12 +8,12 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.swam.commons.ApiTemplateVariables;
-import com.swam.commons.CustomMessage;
-import com.swam.commons.CustomMessage.MessageType;
-import com.swam.commons.RoutingInstructions;
-import com.swam.commons.RoutingInstructions.TargetMicroservices;
-import com.swam.commons.RoutingInstructionsBuilder;
+import com.swam.commons.intercommunication.ApiTemplateVariables;
+import com.swam.commons.intercommunication.CustomMessage;
+import com.swam.commons.intercommunication.RoutingInstructions;
+import com.swam.commons.intercommunication.RoutingInstructionsBuilder;
+import com.swam.commons.intercommunication.CustomMessage.MessageType;
+import com.swam.commons.intercommunication.RoutingInstructions.TargetMicroservices;
 import com.swam.gateway.EndPoint.MethodInfo;
 import com.swam.gateway.EndPoint.Requirement;
 import com.swam.gateway.EndPoint.TargetType;

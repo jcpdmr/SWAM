@@ -1,4 +1,4 @@
-package com.swam.commons;
+package com.swam.commons.intercommunication;
 
 import java.util.Map;
 import java.util.Optional;
@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.swam.commons.RoutingInstructions.TargetMicroservices;
+import com.swam.commons.intercommunication.RoutingInstructions.TargetMicroservices;
 
 import lombok.Getter;
 import lombok.Setter;

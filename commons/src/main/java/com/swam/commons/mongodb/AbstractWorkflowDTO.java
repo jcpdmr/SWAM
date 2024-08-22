@@ -25,26 +25,26 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class AbstractWorkflowDTO<V extends AbstractProduct, W extends AbstractWorkflow<V>> {
+public abstract class AbstractWorkflowDTO<P extends AbstractProduct> {
 
     protected @Id String id;
-    protected final Set<? extends AbstractProductDTO<V>> vertexSet;
+    protected final Set<? extends AbstractProductDTO<P>> vertexSet;
     protected final Set<? extends AbstractCustomEdgeDTO> edgeSet;
-    protected final List<AbstractWorkflowDTO<V, W>> subWorkflowDTOList;
+    protected final List<AbstractWorkflowDTO<P>> subWorkflowDTOList;
     @JsonIgnore
     @Transient
-    protected final HashMap<String, V> idToProductMap;
+    protected final HashMap<String, P> idToProductMap;
 
-    protected AbstractWorkflowDTO(String id, Set<? extends AbstractProductDTO<V>> vertexSet,
-            Set<? extends AbstractCustomEdgeDTO> edgeSet, List<AbstractWorkflowDTO<V, W>> subWorkflowDTOMap) {
+    protected AbstractWorkflowDTO(String id, Set<? extends AbstractProductDTO<P>> vertexSet,
+            Set<? extends AbstractCustomEdgeDTO> edgeSet, List<AbstractWorkflowDTO<P>> subWorkflowDTOList) {
         this.id = id;
         this.vertexSet = vertexSet;
         this.edgeSet = edgeSet;
-        this.subWorkflowDTOList = subWorkflowDTOMap;
+        this.subWorkflowDTOList = subWorkflowDTOList;
         this.idToProductMap = new HashMap<>();
     }
 
-    protected AbstractWorkflowDTO(W workflow) {
+    protected AbstractWorkflowDTO(AbstractWorkflow<P> workflow) {
 
         this.vertexSet = workflow.getDag().vertexSet().stream().map(vertex -> createProductDTO(vertex))
                 .collect(Collectors.toSet());
@@ -55,9 +55,9 @@ public abstract class AbstractWorkflowDTO<V extends AbstractProduct, W extends A
         // recursive repetition of data)
         if (workflow.isTopTier()) {
             this.subWorkflowDTOList = new ArrayList<>();
-            for (Entry<V, AbstractWorkflow<V>> entry : workflow.getProductToSubWorkflowMap().entrySet()) {
+            for (Entry<P, AbstractWorkflow<P>> entry : workflow.getProductToSubWorkflowMap().entrySet()) {
                 subWorkflowDTOList.add(
-                        createWorkflowDTO(castAbstractWorkflow(entry.getValue()), entry.getKey().getUuid().toString()));
+                        createWorkflowDTO(entry.getValue(), entry.getKey().getUuid().toString()));
             }
         } else {
             this.subWorkflowDTOList = null;
@@ -66,11 +66,11 @@ public abstract class AbstractWorkflowDTO<V extends AbstractProduct, W extends A
         this.idToProductMap = new HashMap<>();
     }
 
-    public W toWorkflow() {
-        ListenableDAG<V, CustomEdge> dag = new ListenableDAG<>(CustomEdge.class);
+    public AbstractWorkflow<P> toWorkflow() {
+        ListenableDAG<P, CustomEdge> dag = new ListenableDAG<>(CustomEdge.class);
 
-        for (AbstractProductDTO<V> producDTO : vertexSet) {
-            V product = producDTO.toProduct();
+        for (AbstractProductDTO<P> producDTO : vertexSet) {
+            P product = producDTO.toProduct();
             idToProductMap.put(producDTO.getId(), product);
             dag.addVertex(product);
         }
@@ -84,16 +84,11 @@ public abstract class AbstractWorkflowDTO<V extends AbstractProduct, W extends A
         return createWorkflow(dag);
     }
 
-    protected abstract AbstractProductDTO<V> createProductDTO(V vertex);
+    protected abstract AbstractProductDTO<P> createProductDTO(P vertex);
 
     protected abstract AbstractCustomEdgeDTO createCustomEdgeDTO(CustomEdge edge);
 
-    protected abstract W createWorkflow(ListenableDAG<V, CustomEdge> dag);
+    protected abstract AbstractWorkflow<P> createWorkflow(ListenableDAG<P, CustomEdge> dag);
 
-    protected abstract AbstractWorkflowDTO<V, W> createWorkflowDTO(W workflow, String id);
-
-    @SuppressWarnings("unchecked")
-    private W castAbstractWorkflow(AbstractWorkflow<V> workflow) {
-        return (W) workflow;
-    }
+    protected abstract AbstractWorkflowDTO<P> createWorkflowDTO(AbstractWorkflow<P> workflow, String id);
 }

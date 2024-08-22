@@ -10,11 +10,11 @@ import com.qesm.RandomDAGGenerator.PdfType;
 import com.qesm.ProductType;
 import com.qesm.WorkflowType;
 import com.qesm.AbstractProduct.ItemGroup;
-import com.swam.commons.MessageDispatcher;
+import com.swam.commons.intercommunication.MessageDispatcher;
 import com.swam.commons.mongodb.type.CustomEdgeTypeDTO;
 import com.swam.commons.mongodb.type.ProductTypeDTO;
 import com.swam.commons.mongodb.type.WorkflowTypeDTO;
-import com.swam.commons.mongodb.type.WorkflowTypeRepository;
+import com.swam.commons.mongodb.type.WorkflowTypeDTORepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class CatalogApplication implements CommandLineRunner {
 
 	// private final ProductTypeRepository productTypeRepository;
-	private final WorkflowTypeRepository workflowTypeRepository;
+	private final WorkflowTypeDTORepository workflowTypeRepository;
 
 	@SuppressWarnings("unused")
 	private final MessageDispatcher requestHandler;

@@ -1,4 +1,4 @@
-package com.swam.commons;
+package com.swam.commons.intercommunication;
 
 import java.util.List;
 

@@ -4,13 +4,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.swam.commons.CustomMessage;
-import com.swam.commons.RoutingInstructions.TargetMessageHandler;
+import com.swam.commons.intercommunication.CustomMessage;
+import com.swam.commons.intercommunication.CustomMessage.MessageType;
+import com.swam.commons.intercommunication.MessageDispatcher.MessageHandler;
+import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
 
 import lombok.AllArgsConstructor;
-
-import com.swam.commons.CustomMessage.MessageType;
-import com.swam.commons.MessageDispatcher.MessageHandler;
 
 @AllArgsConstructor
 @Service

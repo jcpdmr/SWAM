@@ -1,4 +1,4 @@
-package com.swam.commons;
+package com.swam.commons.intercommunication;
 
 import java.util.Optional;
 
@@ -6,12 +6,11 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.swam.commons.CustomMessage.MessageType;
-import com.swam.commons.RoutingInstructions.TargetMessageHandler;
+import com.swam.commons.intercommunication.CustomMessage.MessageType;
+import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
+import com.swam.commons.intercommunication.RoutingInstructions.TargetMicroservices;
 
 import lombok.RequiredArgsConstructor;
-
-import com.swam.commons.RoutingInstructions.TargetMicroservices;
 
 @Service
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package com.swam.commons;
+package com.swam.commons.intercommunication;
 
 import java.util.List;
 import java.util.Map;
@@ -9,11 +9,10 @@ import java.util.stream.Collectors;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
-import com.swam.commons.RoutingInstructions.TargetMessageHandler;
+import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
 
 @Service
 public class MessageDispatcher {
-
     private final Map<List<TargetMessageHandler>, MessageHandler> messageHandlerMap;
     private final RabbitMQSender rabbitMQSender;
 
@@ -26,7 +25,13 @@ public class MessageDispatcher {
 
     @RabbitListener(queues = "${spring.rabbitmq.in-queue}")
     protected void listener(CustomMessage message) {
-        this.dispatchMessage(message);
+        try {
+            this.dispatchMessage(message);
+        } catch (RuntimeException e) {
+            // TODO: handle the generic expection
+            e.printStackTrace();
+        }
+
     }
 
     protected void dispatchMessage(CustomMessage message) {

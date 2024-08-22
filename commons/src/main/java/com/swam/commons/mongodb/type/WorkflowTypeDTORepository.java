@@ -5,14 +5,12 @@ import java.util.Optional;
 import org.springframework.data.mongodb.repository.Query;
 
 import com.qesm.ProductType;
-import com.qesm.WorkflowType;
 import com.swam.commons.mongodb.AbstractWorkflowDTO;
-import com.swam.commons.mongodb.WorkflowRepository;
+import com.swam.commons.mongodb.WorkflowDTORepository;
 
-public interface WorkflowTypeRepository extends WorkflowRepository<WorkflowTypeDTO> {
+public interface WorkflowTypeDTORepository extends WorkflowDTORepository<WorkflowTypeDTO> {
 
     @Query("{ '_id': ?0, 'subWorkflowDTOList.id': ?1 }")
-    Optional<AbstractWorkflowDTO<ProductType, WorkflowType>> findByIdAndSubWorkflowDTOListId(String workflowId,
+    Optional<AbstractWorkflowDTO<ProductType>> findByIdAndSubWorkflowDTOListId(String workflowId,
             String subWorkflowId);
-
 }
