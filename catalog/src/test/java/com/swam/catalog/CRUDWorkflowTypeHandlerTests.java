@@ -18,9 +18,7 @@ import com.mongodb.ExplainVerbosity;
 import com.qesm.ProductType;
 import com.qesm.WorkflowType;
 import com.swam.commons.intercommunication.MessageDispatcher;
-import com.swam.commons.mongodb.AbstractBaseWorkflowDTO;
-import com.swam.commons.mongodb.AbstractHeadWorkflowDTO;
-import com.swam.commons.mongodb.type.HeadWorkflowTypeDTO;
+import com.swam.commons.mongodb.AbstractWorkflowDTO;
 import com.swam.commons.mongodb.type.WorkflowTypeDTORepository;
 
 @ActiveProfiles("test")
@@ -49,12 +47,12 @@ public class CRUDWorkflowTypeHandlerTests {
         // HeadWorkflowTypeDTO workflowTypeDTO = new HeadWorkflowTypeDTO(w1);
         // workflowTypeDTORepository.save(workflowTypeDTO);
 
-        System.out.println(workflowTypeDTORepository.findSpecificSubWorkflow("66c76bf6c2e10d6b8f800a34",
-                "76a739d2-87d7-493d-90ca-5694aa7c1876"));
+        // System.out.println(workflowTypeDTORepository.findSpecificSubWorkflow("66c76bf6c2e10d6b8f800a34",
+        // "76a739d2-87d7-493d-90ca-5694aa7c1876"));
 
-        Optional<HeadWorkflowTypeDTO> headWorkflowTypeDTO = workflowTypeDTORepository
-                .findById("66c76bf6c2e10d6b8f800a34");
-        System.out.println(headWorkflowTypeDTO.get());
+        // Optional<HeadWorkflowTypeDTO> headWorkflowTypeDTO = workflowTypeDTORepository
+        // .findById("66c76bf6c2e10d6b8f800a34");
+        // System.out.println(headWorkflowTypeDTO.get());
 
         // List<AbstractBaseWorkflowDTO<ProductType>> subWorkflows =
         // headWorkflowTypeDTO.get().getSubWorkflowDTOList();

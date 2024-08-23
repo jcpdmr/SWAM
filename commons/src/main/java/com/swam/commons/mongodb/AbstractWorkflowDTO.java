@@ -22,7 +22,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class AbstractBaseWorkflowDTO<P extends AbstractProduct> {
+public abstract class AbstractWorkflowDTO<P extends AbstractProduct> {
 
     protected @Id String id;
     protected final Set<? extends AbstractProductDTO<P>> vertexSet;
@@ -31,7 +31,7 @@ public abstract class AbstractBaseWorkflowDTO<P extends AbstractProduct> {
     @Transient
     protected final HashMap<String, P> idToProductMap;
 
-    protected AbstractBaseWorkflowDTO(String id, Set<? extends AbstractProductDTO<P>> vertexSet,
+    protected AbstractWorkflowDTO(String id, Set<? extends AbstractProductDTO<P>> vertexSet,
             Set<? extends AbstractCustomEdgeDTO> edgeSet) {
         this.id = id;
         this.vertexSet = vertexSet;
@@ -39,7 +39,7 @@ public abstract class AbstractBaseWorkflowDTO<P extends AbstractProduct> {
         this.idToProductMap = new HashMap<>();
     }
 
-    protected AbstractBaseWorkflowDTO(AbstractWorkflow<P> workflow) {
+    protected AbstractWorkflowDTO(AbstractWorkflow<P> workflow) {
 
         this.vertexSet = workflow.getDag().vertexSet().stream().map(vertex -> createProductDTO(vertex))
                 .collect(Collectors.toSet());
@@ -72,6 +72,4 @@ public abstract class AbstractBaseWorkflowDTO<P extends AbstractProduct> {
     protected abstract AbstractCustomEdgeDTO createCustomEdgeDTO(CustomEdge edge);
 
     protected abstract AbstractWorkflow<P> createWorkflow(ListenableDAG<P, CustomEdge> dag);
-
-    protected abstract AbstractBaseWorkflowDTO<P> createWorkflowDTO(AbstractWorkflow<P> workflow, String id);
 }

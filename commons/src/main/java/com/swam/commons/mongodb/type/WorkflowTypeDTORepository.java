@@ -5,10 +5,10 @@ import java.util.Optional;
 import org.springframework.data.mongodb.repository.Aggregation;
 
 import com.qesm.ProductType;
-import com.swam.commons.mongodb.AbstractBaseWorkflowDTO;
+import com.swam.commons.mongodb.AbstractWorkflowDTO;
 import com.swam.commons.mongodb.WorkflowDTORepository;
 
-public interface WorkflowTypeDTORepository extends WorkflowDTORepository<HeadWorkflowTypeDTO> {
+public interface WorkflowTypeDTORepository extends WorkflowDTORepository<WorkflowTypeDTO> {
 
     @Aggregation(pipeline = {
             "{ $match: { '_id': ?0 } }",
@@ -16,5 +16,5 @@ public interface WorkflowTypeDTORepository extends WorkflowDTORepository<HeadWor
             "{ $match: { 'subWorkflowDTOList._id': ?1 } }",
             "{ $replaceRoot: { newRoot: '$subWorkflowDTOList' } }"
     })
-    Optional<AbstractBaseWorkflowDTO<ProductType>> findSpecificSubWorkflow(String workflowId, String subWorkflowId);
+    Optional<AbstractWorkflowDTO<ProductType>> findSpecificSubWorkflow(String workflowId, String subWorkflowId);
 }
