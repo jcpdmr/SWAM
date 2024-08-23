@@ -26,7 +26,8 @@ public class MicroserviceResponseHandler implements MessageHandler {
             Integer ackHop = context.getRoutingInstructions().getHopCounter();
             System.out.println("Recived END_MESSAGE from: " + context.getSender());
             System.out.println("Request completed");
-
+            // Set status OK and notify Client setting DeferredResult
+            context.setResponseStatusCode(200);
             asyncResponseHandler.setDeferredResult(context.getDeferredResultId(), context.getResponseEntity());
 
         } else if (context.getMessageType().equals(MessageType.ACK)) {

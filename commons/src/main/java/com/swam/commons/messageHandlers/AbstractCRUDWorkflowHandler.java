@@ -89,19 +89,19 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
             ObjectMapper objectMapper = new ObjectMapper();
             receivedWorkflowDTO = objectMapper.readValue(context.getRequestBody().get(), clazz);
         } catch (JsonProcessingException e) {
-            // TODO: need to handle problems in JSON to Object conversion
             e.printStackTrace();
+            context.setError("POST request with bad body", 400);
+            return;
         }
 
         if (receivedWorkflowDTO == null) {
             System.out.println("Problems with JSON to Object conversion");
+            context.setError("POST request with bad body", 400);
             return;
         }
 
         workflowRepository.save(receivedWorkflowDTO);
         System.out.println("POSTed Workflow correctly");
-
-        context.setResponseStatusCode(200);
 
     }
 
