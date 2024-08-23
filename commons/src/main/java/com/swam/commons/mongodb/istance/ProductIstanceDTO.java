@@ -1,22 +1,27 @@
 package com.swam.commons.mongodb.istance;
 
-import java.util.UUID;
-
 import org.oristool.eulero.modeling.stochastictime.StochasticTime;
 import org.springframework.data.annotation.PersistenceCreator;
-import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.qesm.AbstractProduct.ItemGroup;
 import com.qesm.ProductIstance;
 import com.swam.commons.mongodb.AbstractProductDTO;
 
-@Document
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ProductIstanceDTO extends AbstractProductDTO<ProductIstance> {
 
     @PersistenceCreator
-    public ProductIstanceDTO(String name, String id, Integer quantityProduced, StochasticTime pdf,
-            ItemGroup itemGroup) {
-        super(name, id, quantityProduced, pdf, itemGroup);
+    @JsonCreator
+    public ProductIstanceDTO(@JsonProperty("name") String name,
+            @JsonProperty("quantityProduced") Integer quantityProduced, @JsonProperty("pdf") StochasticTime pdf,
+            @JsonProperty("itemGroup") ItemGroup itemGroup) {
+        super(name, quantityProduced, pdf, itemGroup);
     }
 
     public ProductIstanceDTO(ProductIstance product) {
@@ -24,8 +29,8 @@ public class ProductIstanceDTO extends AbstractProductDTO<ProductIstance> {
     }
 
     @Override
-    public ProductIstance createProduct(UUID uuid) {
-        return new ProductIstance(uuid);
+    public ProductIstance createProduct() {
+        return new ProductIstance();
     }
 
 }

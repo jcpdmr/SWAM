@@ -22,10 +22,15 @@ import lombok.Setter;
 public class WorkflowTypeDTO extends AbstractWorkflowDTO<ProductType> {
 
     @PersistenceCreator
-    @JsonCreator
-    public WorkflowTypeDTO(@JsonProperty("id") String id, @JsonProperty("vertexSet") Set<ProductTypeDTO> vertexSet,
-            @JsonProperty("edgeSet") Set<CustomEdgeTypeDTO> edgeSet) {
+    public WorkflowTypeDTO(String id, Set<ProductTypeDTO> vertexSet,
+            Set<CustomEdgeTypeDTO> edgeSet) {
         super(id, vertexSet, edgeSet);
+    }
+
+    @JsonCreator
+    public WorkflowTypeDTO(@JsonProperty("vertexSet") Set<ProductTypeDTO> vertexSet,
+            @JsonProperty("edgeSet") Set<CustomEdgeTypeDTO> edgeSet) {
+        super(vertexSet, edgeSet);
     }
 
     public WorkflowTypeDTO(WorkflowType workflowType) {

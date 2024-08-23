@@ -24,29 +24,37 @@ import lombok.ToString;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class AbstractWorkflowDTO<P extends AbstractProduct> {
 
-    protected @Id String id;
+    protected final @Id String id;
     protected final Set<? extends AbstractProductDTO<P>> vertexSet;
     protected final Set<? extends AbstractCustomEdgeDTO> edgeSet;
     @JsonIgnore
     @Transient
-    protected final HashMap<String, P> idToProductMap;
+    protected final HashMap<String, P> nameToProductMap;
 
     protected AbstractWorkflowDTO(String id, Set<? extends AbstractProductDTO<P>> vertexSet,
             Set<? extends AbstractCustomEdgeDTO> edgeSet) {
         this.id = id;
         this.vertexSet = vertexSet;
         this.edgeSet = edgeSet;
-        this.idToProductMap = new HashMap<>();
+        this.nameToProductMap = new HashMap<>();
+    }
+
+    protected AbstractWorkflowDTO(Set<? extends AbstractProductDTO<P>> vertexSet,
+            Set<? extends AbstractCustomEdgeDTO> edgeSet) {
+        this.id = null;
+        this.vertexSet = vertexSet;
+        this.edgeSet = edgeSet;
+        this.nameToProductMap = new HashMap<>();
     }
 
     protected AbstractWorkflowDTO(AbstractWorkflow<P> workflow) {
-
+        this.id = null;
         this.vertexSet = workflow.getDag().vertexSet().stream().map(vertex -> createProductDTO(vertex))
                 .collect(Collectors.toSet());
         this.edgeSet = workflow.getDag().edgeSet().stream().map(edge -> createCustomEdgeDTO(edge))
                 .collect(Collectors.toSet());
 
-        this.idToProductMap = new HashMap<>();
+        this.nameToProductMap = new HashMap<>();
     }
 
     public AbstractWorkflow<P> toWorkflow() {
@@ -54,13 +62,13 @@ public abstract class AbstractWorkflowDTO<P extends AbstractProduct> {
 
         for (AbstractProductDTO<P> producDTO : vertexSet) {
             P product = producDTO.toProduct();
-            idToProductMap.put(producDTO.getId(), product);
+            nameToProductMap.put(producDTO.getName(), product);
             dag.addVertex(product);
         }
 
         for (AbstractCustomEdgeDTO customEdgeDTO : edgeSet) {
-            CustomEdge customEdge = dag.addEdge(idToProductMap.get(customEdgeDTO.getSourceId()),
-                    idToProductMap.get(customEdgeDTO.getTargetId()));
+            CustomEdge customEdge = dag.addEdge(nameToProductMap.get(customEdgeDTO.getSourceName()),
+                    nameToProductMap.get(customEdgeDTO.getTargetName()));
             customEdge.setQuantityRequired(customEdgeDTO.getQuantityRequired());
         }
 

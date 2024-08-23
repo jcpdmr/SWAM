@@ -1,53 +1,189 @@
 {
-  "id": "66c7050bdd3eb2294704e506",
   "vertexSet": [
     {
-      "name": "v3",
-      "id": "18f6f867-8162-45d0-bf21-30aed4344b3e",
+      "name": "v11",
       "itemGroup": "RAW_MATERIAL"
     },
     {
-      "name": "v1",
-      "id": "5d6ea897-6f45-4287-903a-bcfb8202b30a",
-      "itemGroup": "RAW_MATERIAL"
-    },
-    {
-      "name": "v0",
-      "id": "12864744-bd25-4937-b529-0acb343b8554",
+      "name": "v2",
       "quantityProduced": 1,
       "pdf": {
-        "type": "EXPO",
-        "eft": 0,
-        "lft": 1.7976931348623157E308,
-        "k": 8,
-        "rate": 0.3447896727617281
+        "type": "UNI",
+        "eft": 3.0,
+        "lft": 5.0
       },
       "itemGroup": "PROCESSED"
     },
     {
-      "name": "v2",
-      "id": "39b74de2-306b-4f06-a21d-990a9fdeedfd",
+      "name": "v5",
+      "quantityProduced": 7,
+      "pdf": {
+        "type": "UNI",
+        "eft": 8.0,
+        "lft": 13.0
+      },
+      "itemGroup": "PROCESSED"
+    },
+    {
+      "name": "v8",
       "itemGroup": "RAW_MATERIAL"
+    },
+    {
+      "name": "v4",
+      "quantityProduced": 6,
+      "pdf": {
+        "type": "UNI",
+        "eft": 9.0,
+        "lft": 19.0
+      },
+      "itemGroup": "PROCESSED"
+    },
+    {
+      "name": "v7",
+      "quantityProduced": 8,
+      "pdf": {
+        "type": "UNI",
+        "eft": 9.0,
+        "lft": 12.0
+      },
+      "itemGroup": "PROCESSED"
+    },
+    {
+      "name": "v14",
+      "itemGroup": "RAW_MATERIAL"
+    },
+    {
+      "name": "v3",
+      "itemGroup": "RAW_MATERIAL"
+    },
+    {
+      "name": "v6",
+      "quantityProduced": 15,
+      "pdf": {
+        "type": "UNI",
+        "eft": 6.0,
+        "lft": 11.0
+      },
+      "itemGroup": "PROCESSED"
+    },
+    {
+      "name": "v13",
+      "itemGroup": "RAW_MATERIAL"
+    },
+    {
+      "name": "v1",
+      "itemGroup": "RAW_MATERIAL"
+    },
+    {
+      "name": "v12",
+      "itemGroup": "RAW_MATERIAL"
+    },
+    {
+      "name": "v10",
+      "itemGroup": "RAW_MATERIAL"
+    },
+    {
+      "name": "v9",
+      "quantityProduced": 7,
+      "pdf": {
+        "type": "UNI",
+        "eft": 7.0,
+        "lft": 11.0
+      },
+      "itemGroup": "PROCESSED"
+    },
+    {
+      "name": "v0",
+      "quantityProduced": 10,
+      "pdf": {
+        "type": "UNI",
+        "eft": 9.0,
+        "lft": 12.0
+      },
+      "itemGroup": "PROCESSED"
     }
   ],
   "edgeSet": [
     {
-      "id": null,
-      "sourceId": "5d6ea897-6f45-4287-903a-bcfb8202b30a",
-      "targetId": "12864744-bd25-4937-b529-0acb343b8554",
+      "sourceName": "v13",
+      "targetName": "v9",
+      "quantityRequired": 1
+    },
+    {
+      "sourceName": "v1",
+      "targetName": "v0",
+      "quantityRequired": 10
+    },
+    {
+      "sourceName": "v3",
+      "targetName": "v2",
+      "quantityRequired": 2
+    },
+    {
+      "sourceName": "v3",
+      "targetName": "v0",
+      "quantityRequired": 7
+    },
+    {
+      "sourceName": "v11",
+      "targetName": "v6",
+      "quantityRequired": 4
+    },
+    {
+      "sourceName": "v5",
+      "targetName": "v2",
+      "quantityRequired": 7
+    },
+    {
+      "sourceName": "v9",
+      "targetName": "v6",
+      "quantityRequired": 7
+    },
+    {
+      "sourceName": "v14",
+      "targetName": "v9",
+      "quantityRequired": 7
+    },
+    {
+      "sourceName": "v7",
+      "targetName": "v4",
       "quantityRequired": 8
     },
     {
-      "id": null,
-      "sourceId": "18f6f867-8162-45d0-bf21-30aed4344b3e",
-      "targetId": "12864744-bd25-4937-b529-0acb343b8554",
+      "sourceName": "v2",
+      "targetName": "v0",
       "quantityRequired": 1
     },
     {
-      "id": null,
-      "sourceId": "39b74de2-306b-4f06-a21d-990a9fdeedfd",
-      "targetId": "12864744-bd25-4937-b529-0acb343b8554",
-      "quantityRequired": 1
+      "sourceName": "v6",
+      "targetName": "v5",
+      "quantityRequired": 10
+    },
+    {
+      "sourceName": "v6",
+      "targetName": "v4",
+      "quantityRequired": 5
+    },
+    {
+      "sourceName": "v10",
+      "targetName": "v5",
+      "quantityRequired": 8
+    },
+    {
+      "sourceName": "v8",
+      "targetName": "v4",
+      "quantityRequired": 10
+    },
+    {
+      "sourceName": "v4",
+      "targetName": "v2",
+      "quantityRequired": 6
+    },
+    {
+      "sourceName": "v12",
+      "targetName": "v7",
+      "quantityRequired": 8
     }
-  ]
+  ],
+  "id": "66c8c830e9b44657ce20eec7"
 }

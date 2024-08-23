@@ -2,7 +2,7 @@
 
 # curl -X GET http://localhost:8080/api/workflow/catalog
 # echo ""
-# curl -X GET http://localhost:8080/api/workflow/catalog/66c5c2a377c20125e95973b9
+# curl -X GET http://localhost:8080/api/workflow/catalog/66c8c830e9b44657ce20eec7
 # echo ""
 # curl -X GET http://localhost:8080/api/workflow/operation
 # echo ""
@@ -16,10 +16,12 @@
 # curl -X POST http://localhost:8080/api/workflow/catalog\
 #      -H "Content-Type: application/json" \
 #      -d @./client-data.json
+# echo ""
 
-# curl -X POST http://localhost:8080/api/workflow/catalog\
-#      -H "Content-Type: application/json" \
-#      -d @./client-data2.json
+curl -X POST http://localhost:8080/api/workflow/catalog\
+     -H "Content-Type: application/json" \
+     -d @./client-data2.json
+
 
 # echo ""
 

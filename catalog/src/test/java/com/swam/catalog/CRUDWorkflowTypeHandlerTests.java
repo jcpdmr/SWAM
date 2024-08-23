@@ -19,6 +19,8 @@ import com.qesm.ProductType;
 import com.qesm.WorkflowType;
 import com.swam.commons.intercommunication.MessageDispatcher;
 import com.swam.commons.mongodb.AbstractWorkflowDTO;
+import com.swam.commons.mongodb.istance.ProductIstanceDTO;
+import com.swam.commons.mongodb.type.ProductTypeDTO;
 import com.swam.commons.mongodb.type.WorkflowTypeDTORepository;
 
 @ActiveProfiles("test")
@@ -41,6 +43,7 @@ public class CRUDWorkflowTypeHandlerTests {
 
     @Test
     public void prova() {
+
         // WorkflowType w1 = new WorkflowType();
         // w1.generateRandomDAG(5, 5, 3, 3, 50, PdfType.UNIFORM);
 

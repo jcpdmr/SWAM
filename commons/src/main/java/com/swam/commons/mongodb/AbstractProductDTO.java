@@ -1,9 +1,6 @@
 package com.swam.commons.mongodb;
 
-import java.util.UUID;
-
 import org.oristool.eulero.modeling.stochastictime.StochasticTime;
-import org.springframework.data.annotation.Id;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -13,19 +10,18 @@ import com.qesm.AbstractProduct.ItemGroup;
 import com.swam.commons.intercommunication.StochasticTimeDeserializer;
 import com.swam.commons.intercommunication.StochasticTimeSerializer;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Setter
 @Getter
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class AbstractProductDTO<V extends AbstractProduct> {
     private final String name;
-    private final @Id String id;
     private final Integer quantityProduced;
     @JsonDeserialize(using = StochasticTimeDeserializer.class)
     @JsonSerialize(using = StochasticTimeSerializer.class)
@@ -34,7 +30,6 @@ public abstract class AbstractProductDTO<V extends AbstractProduct> {
 
     protected AbstractProductDTO(V product) {
         this.name = product.getName();
-        this.id = product.getUuid().toString();
         if (product.isProcessed()) {
             this.quantityProduced = product.getQuantityProduced().get();
             this.pdf = product.getPdf().get();
@@ -48,20 +43,18 @@ public abstract class AbstractProductDTO<V extends AbstractProduct> {
 
     /**
      * Delegate the responsability to create the right type of object to the class
-     * that inherit from AbstractProductDTO. The implementation also need to set
-     * UUID of Product.
+     * that inherit from AbstractProductDTO.
      * 
-     * @param uuid UUID to be assigned to the Product object
      * @return Object of a type that extends AbstractProductDTO
      */
-    protected abstract V createProduct(UUID uuid);
+    protected abstract V createProduct();
 
     /**
      * 
      * @return
      */
     public V toProduct() {
-        V product = createProduct(UUID.fromString(id));
+        V product = createProduct();
 
         // Set common fields
         product.setName(name);

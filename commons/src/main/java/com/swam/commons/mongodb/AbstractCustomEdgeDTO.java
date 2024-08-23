@@ -1,29 +1,26 @@
 package com.swam.commons.mongodb;
 
-import org.springframework.data.annotation.Id;
-
 import com.qesm.AbstractProduct;
 import com.qesm.CustomEdge;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Getter
 @Setter
 @ToString
 public abstract class AbstractCustomEdgeDTO {
 
-    private @Id String id;
-    protected final String sourceId;
-    protected final String targetId;
+    protected final String sourceName;
+    protected final String targetName;
     protected final Integer quantityRequired;
 
     protected AbstractCustomEdgeDTO(CustomEdge customEdge) {
-        this.sourceId = ((AbstractProduct) customEdge.getSource()).getUuid().toString();
-        this.targetId = ((AbstractProduct) customEdge.getTarget()).getUuid().toString();
+        this.sourceName = ((AbstractProduct) customEdge.getSource()).getName();
+        this.targetName = ((AbstractProduct) customEdge.getTarget()).getName();
         this.quantityRequired = customEdge.getQuantityRequired();
     }
 

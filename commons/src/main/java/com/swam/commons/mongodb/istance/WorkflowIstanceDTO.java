@@ -5,6 +5,8 @@ import java.util.Set;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.qesm.CustomEdge;
 import com.qesm.ListenableDAG;
 import com.qesm.ProductIstance;
@@ -26,6 +28,12 @@ public class WorkflowIstanceDTO extends AbstractWorkflowDTO<ProductIstance> {
     public WorkflowIstanceDTO(String id, Set<ProductIstanceDTO> vertexSet,
             Set<CustomEdgeIstanceDTO> edgeSet) {
         super(id, vertexSet, edgeSet);
+    }
+
+    @JsonCreator
+    public WorkflowIstanceDTO(@JsonProperty("vertexSet") Set<ProductIstanceDTO> vertexSet,
+            @JsonProperty("edgeSet") Set<CustomEdgeIstanceDTO> edgeSet) {
+        super(vertexSet, edgeSet);
     }
 
     public WorkflowIstanceDTO(WorkflowIstance workflowIstance) {

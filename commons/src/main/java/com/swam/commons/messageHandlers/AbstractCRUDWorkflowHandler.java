@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qesm.AbstractProduct;
+import com.qesm.WorkflowType;
 import com.swam.commons.intercommunication.ApiTemplateVariables;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.MessageDispatcher.MessageHandler;
@@ -90,17 +91,22 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
             receivedWorkflowDTO = objectMapper.readValue(context.getRequestBody().get(), clazz);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            context.setError("POST request with bad body", 400);
+            context.setError("POST request with malformed body", 400);
             return;
         }
 
         if (receivedWorkflowDTO == null) {
             System.out.println("Problems with JSON to Object conversion");
-            context.setError("POST request with bad body", 400);
+            context.setError("POST request with malformed body", 400);
             return;
         }
 
+        // WorkflowType workflowType = (WorkflowType) receivedWorkflowDTO.toWorkflow();
+        // System.out.println(workflowType);
         workflowRepository.save(receivedWorkflowDTO);
+        System.out.println(receivedWorkflowDTO.getId());
+        workflowRepository.save(receivedWorkflowDTO);
+        System.out.println(receivedWorkflowDTO.getId());
         System.out.println("POSTed Workflow correctly");
 
     }
