@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qesm.WorkflowIstance;
 import com.qesm.WorkflowType;
-import com.swam.commons.intercommunication.ApiTemplateVariables;
+import com.swam.commons.intercommunication.ApiTemplateVariable;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.MessageDispatcher.MessageHandler;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
@@ -54,7 +54,7 @@ public class MakeIstanceHandler implements MessageHandler {
     private void istanceTemplate(CustomMessage context) {
         try {
             Map<String, String> uriTemplateVariables = context.getUriTemplateVariables();
-            String workflowId = uriTemplateVariables.get(ApiTemplateVariables.WORKFLOW_ID);
+            String workflowId = uriTemplateVariables.get(ApiTemplateVariable.WORKFLOW_ID.value());
             System.out.println("ID: " + workflowId);
 
             Optional<WorkflowTypeDTO> resultDTO = workflowTypeDTORepository.findById(workflowId);
