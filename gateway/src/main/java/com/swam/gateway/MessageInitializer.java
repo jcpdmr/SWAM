@@ -32,7 +32,8 @@ public class MessageInitializer {
             return Optional.of(TargetType.CATALOG);
         } else if (type.equalsIgnoreCase("OPERATION")) {
             return Optional.of(TargetType.OPERATION);
-        } else if (type.equalsIgnoreCase("TOBEISTANTIATED")) {
+            // TODO: IMPORTANT -> INSTANCE, not ISTANCE!
+        } else if (type.equalsIgnoreCase("TOBEINSTANTIATED")) {
             return Optional.of(TargetType.TO_BE_ISTANTIATED);
         } else {
             return Optional.empty();

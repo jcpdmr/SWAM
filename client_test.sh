@@ -3,6 +3,13 @@
 # curl -X GET http://localhost:8080/api/workflow/catalog
 # echo ""
 
+curl -X GET http://localhost:8080/api/workflow/tobeinstantiated/66ca0b8e70c55e1ab83b5eb4
+echo ""
+
+curl -X GET http://localhost:8080/api/workflow/tobeinstantiated/66ca0b8e70c55e1ab83b5eb4
+echo ""
+
+
 curl -X GET http://localhost:8080/api/workflow/catalog/66ca140340f089794e33de04
 echo ""
 
