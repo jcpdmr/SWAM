@@ -26,6 +26,8 @@ public class CustomMessage {
     private TargetMicroservices sender;
     private MessageType messageType;
     private Integer responseStatusCode;
+    // TODO: maybe we can change responseBody to be String? Sender can serialize to
+    // a String and receiver can deserialize the string
     private Object responseBody;
     private Map<String, String> uriTemplateVariables;
     private Optional<String> requestBody;

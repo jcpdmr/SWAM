@@ -3,6 +3,9 @@
 # curl -X GET http://localhost:8080/api/workflow/catalog
 # echo ""
 
+curl -X GET http://localhost:8080/api/workflow/tobeinstantiated/66ca0b8e70c55e1ab83b5eb4
+echo ""
+
 # curl -X GET http://localhost:8080/api/workflow/catalog/66c8c830e9b44657ce20eec7
 # echo ""
 # curl -X GET http://localhost:8080/api/workflow/operation
@@ -19,12 +22,12 @@
 #      -d @./client-data.json
 # echo ""
 
-curl -X POST http://localhost:8080/api/workflow/catalog\
-     -H "Content-Type: application/json" \
-     -d @./client-data2.json
+# curl -X GET http://localhost:8080/api/workflow/catalog\
+#      -H "Content-Type: application/json" \
+#      -d @./client-data2.json
 
 
-echo ""
+# echo ""
 
 # curl -X POST http://localhost:8080/api/workflow/operation\
 #      -H "Content-Type: application/json" \

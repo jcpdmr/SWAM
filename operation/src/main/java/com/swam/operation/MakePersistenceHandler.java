@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class MakePersistence implements MessageHandler {
+public class MakePersistenceHandler implements MessageHandler {
 
     private final WorkflowIstanceDTORepository workflowIstanceDTORepository;
 
@@ -33,7 +33,7 @@ public class MakePersistence implements MessageHandler {
         switch (triggeredBinding) {
             case TargetMessageHandler.MAKE_PERSISTENCE:
                 System.out.println("MAKE_PERSISTENCE");
-                makePersistence(context);
+                makePersistenceFromTemplate(context);
                 break;
             default:
                 // TODO: handle error (maybe internal server error)
@@ -43,7 +43,7 @@ public class MakePersistence implements MessageHandler {
 
     }
 
-    private void makePersistence(CustomMessage context) {
+    private void makePersistenceFromTemplate(CustomMessage context) {
         try {
             if (context.getResponseBody() == null) {
                 System.out.println("MAKE PERSISTENCE -> ResponseBody null...");
