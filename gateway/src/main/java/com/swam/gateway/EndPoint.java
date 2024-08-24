@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpMethod;
 
+import com.swam.commons.intercommunication.ApiTemplateVariable;
 import com.swam.commons.intercommunication.Pair;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMicroservices;
@@ -43,14 +44,14 @@ public class EndPoint {
     @ToString
     protected static class MethodInfo {
         private List<Pair<TargetMicroservices, TargetMessageHandler>> routingMap;
-        private final Map<Requirement, List<String>> idsRequirementsMap;
+        private final Map<Requirement, List<ApiTemplateVariable>> idsRequirementsMap;
 
         public MethodInfo() {
             this.routingMap = new ArrayList<>();
             this.idsRequirementsMap = new HashMap<>();
         }
 
-        public void addIdRequirement(Requirement requirement, String id) {
+        public void addIdRequirement(Requirement requirement, ApiTemplateVariable id) {
             if (!idsRequirementsMap.containsKey(requirement)) {
                 idsRequirementsMap.put(requirement, new ArrayList<>(List.of(id)));
             } else {
@@ -77,11 +78,11 @@ public class EndPoint {
     }
 
     public interface EndPointBuilderStep3 {
-        EndPointBuilderStep3 withNeededIds(String... neededIds);
+        EndPointBuilderStep3 withNeededIds(ApiTemplateVariable... neededIds);
 
-        EndPointBuilderStep3 withOptionalIds(String... optionalIds);
+        EndPointBuilderStep3 withOptionalIds(ApiTemplateVariable... optionalIds);
 
-        EndPointBuilderStep3 withForbiddenIds(String... forbiddenIds);
+        EndPointBuilderStep3 withForbiddenIds(ApiTemplateVariable... forbiddenIds);
 
         EndPointBuilderStep4 withRouting(List<Pair<TargetMicroservices, TargetMessageHandler>> routingEntries);
 
@@ -125,27 +126,28 @@ public class EndPoint {
         }
 
         @Override
-        public EndPointBuilderStep3 withNeededIds(String... neededIds) {
-            for (String string : neededIds) {
-                endPointData.get(currentTargetType).get(currenHttpMethod).addIdRequirement(Requirement.NEEDED, string);
+        public EndPointBuilderStep3 withNeededIds(ApiTemplateVariable... neededIds) {
+            for (ApiTemplateVariable neededId : neededIds) {
+                endPointData.get(currentTargetType).get(currenHttpMethod).addIdRequirement(Requirement.NEEDED,
+                        neededId);
             }
             return this;
         }
 
         @Override
-        public EndPointBuilderStep3 withOptionalIds(String... optionalIds) {
-            for (String string : optionalIds) {
+        public EndPointBuilderStep3 withOptionalIds(ApiTemplateVariable... optionalIds) {
+            for (ApiTemplateVariable optionalId : optionalIds) {
                 endPointData.get(currentTargetType).get(currenHttpMethod).addIdRequirement(Requirement.OPTIONAL,
-                        string);
+                        optionalId);
             }
             return this;
         }
 
         @Override
-        public EndPointBuilderStep3 withForbiddenIds(String... forbiddenIds) {
-            for (String string : forbiddenIds) {
+        public EndPointBuilderStep3 withForbiddenIds(ApiTemplateVariable... forbiddenIds) {
+            for (ApiTemplateVariable forbiddenId : forbiddenIds) {
                 endPointData.get(currentTargetType).get(currenHttpMethod).addIdRequirement(Requirement.FORBIDDEN,
-                        string);
+                        forbiddenId);
             }
             return this;
         }

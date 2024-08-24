@@ -73,7 +73,14 @@ public class Dispatcher {
         // to be resolved)
         apiMessage.setDeferredResultId(deferredResultId);
 
-        rabbitMQSender.sendToNextHop(apiMessage, true);
+        try {
+            rabbitMQSender.sendToNextHop(apiMessage, true);
+        } catch (Exception e) {
+            // Catch all json serialization and rabbitMQ exceptions
+            e.printStackTrace();
+            asyncResponseHandler.setDeferredResult(deferredResultId,
+                    new ResponseEntity<Object>("Internal server error", HttpStatusCode.valueOf(500)));
+        }
 
     }
 

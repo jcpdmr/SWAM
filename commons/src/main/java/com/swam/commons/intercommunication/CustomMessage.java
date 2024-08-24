@@ -3,10 +3,13 @@ package com.swam.commons.intercommunication;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMicroservices;
 
 import lombok.Getter;
@@ -27,6 +30,7 @@ public class CustomMessage {
     private MessageType messageType;
     private Integer responseStatusCode;
     private Object responseBody;
+    private String requestMethod;
     private Map<String, String> uriTemplateVariables;
     private Optional<String> requestBody;
     private Optional<Map<String, String>> requestParams;
@@ -69,5 +73,33 @@ public class CustomMessage {
         this.responseStatusCode = responseStatusCode;
         this.responseBody = responseBody;
         this.messageType = MessageType.ERROR;
+    }
+
+    @JsonProperty("requestMethod")
+    public void setRequestMethodFromString(String httpMethod) {
+        this.requestMethod = httpMethod;
+    }
+
+    @JsonProperty("requestMethod")
+    public String getRequestMethodFromString() {
+        return this.requestMethod;
+    }
+
+    @JsonIgnore
+    public void setRequestMethod(HttpMethod httpMethod) {
+        if (httpMethod == null) {
+            this.requestMethod = null;
+        } else {
+            this.requestMethod = httpMethod.name();
+        }
+    }
+
+    @JsonIgnore
+    public HttpMethod getRequestMethod() {
+        if (requestMethod != null) {
+            return HttpMethod.valueOf(requestMethod);
+        } else {
+            return null;
+        }
     }
 }

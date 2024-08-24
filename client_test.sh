@@ -3,8 +3,9 @@
 # curl -X GET http://localhost:8080/api/workflow/catalog
 # echo ""
 
-# curl -X GET http://localhost:8080/api/workflow/catalog/66c8c830e9b44657ce20eec7
-# echo ""
+curl -X GET http://localhost:8080/api/workflow/catalog/66ca140340f089794e33de04
+echo ""
+
 # curl -X GET http://localhost:8080/api/workflow/operation
 # echo ""
 
@@ -14,17 +15,15 @@
 # curl -X DELETE http://localhost:8080/api/workflow/operation/2
 # echo ""
 
-# curl -X POST http://localhost:8080/api/workflow/catalog\
+# curl -X POST http://localhost:8080/api/workflow/catalog/1\
 #      -H "Content-Type: application/json" \
 #      -d @./client-data.json
 # echo ""
 
-curl -X POST http://localhost:8080/api/workflow/catalog\
-     -H "Content-Type: application/json" \
-     -d @./client-data2.json
-
-
-echo ""
+# curl -X POST http://localhost:8080/api/workflow/catalog\
+#      -H "Content-Type: application/json" \
+#      -d @./client-data2.json
+# echo ""
 
 # curl -X POST http://localhost:8080/api/workflow/operation\
 #      -H "Content-Type: application/json" \

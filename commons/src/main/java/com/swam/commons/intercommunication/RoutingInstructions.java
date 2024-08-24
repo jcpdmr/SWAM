@@ -15,27 +15,14 @@ public class RoutingInstructions {
 
     public enum TargetMessageHandler {
 
-        ANALYZE,
         ISTANCE_TEMPLATE,
         CHECK_ACK,
         NULL,
         MAKE_PERSISTENCE,
 
-        GET_WORKFLOW,
-        GET_PRODUCT,
-        GET_ANALYSIS,
-
-        PUT_WORKFLOW,
-        PUT_PRODUCT,
-        PUT_ANALYSIS,
-
-        POST_WORKFLOW,
-        POST_PRODUCT,
-        POST_ANALYSIS,
-
-        DELETE_WORKFLOW,
-        DELETE_PRODUCT,
-        DELETE_ANALYSIS,
+        WORKFLOW,
+        PRODUCT,
+        ANALYSIS,
     }
 
     public enum TargetMicroservices {

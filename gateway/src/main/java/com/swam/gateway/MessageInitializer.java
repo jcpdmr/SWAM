@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.swam.commons.intercommunication.ApiTemplateVariables;
+import com.swam.commons.intercommunication.ApiTemplateVariable;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.RoutingInstructions;
 import com.swam.commons.intercommunication.RoutingInstructionsBuilder;
@@ -44,7 +44,7 @@ public class MessageInitializer {
             Optional<Map<String, String>> requestParams, Optional<String> requestBody) {
 
         // Check if targetType is valid and defined in the current endPoint
-        String type = uriTemplateVariables.get(ApiTemplateVariables.TARGET_TYPE);
+        String type = uriTemplateVariables.get(ApiTemplateVariable.TARGET_TYPE.value());
 
         TargetType targetType;
         if (convertToTargetType(type).isEmpty()) {
@@ -76,18 +76,18 @@ public class MessageInitializer {
 
         // Check needed ids requirements
         if (methodInfo.getIdsRequirementsMap().containsKey(Requirement.NEEDED)) {
-            for (String id : methodInfo.getIdsRequirementsMap().get(Requirement.NEEDED)) {
-                if (uriTemplateVariables.get(id) == null) {
-                    return buildErrorResponse("Field: \"" + id + "\" required", 400);
+            for (ApiTemplateVariable requiredId : methodInfo.getIdsRequirementsMap().get(Requirement.NEEDED)) {
+                if (uriTemplateVariables.get(requiredId.value()) == null) {
+                    return buildErrorResponse("Field: \"" + requiredId + "\" required", 400);
                 }
             }
         }
 
         // Check forbidden ids requirements
         if (methodInfo.getIdsRequirementsMap().containsKey(Requirement.FORBIDDEN)) {
-            for (String id : methodInfo.getIdsRequirementsMap().get(Requirement.FORBIDDEN)) {
-                if (uriTemplateVariables.get(id) != null) {
-                    return buildErrorResponse("Field: \"" + id + "\" not allowed", 400);
+            for (ApiTemplateVariable forbiddenId : methodInfo.getIdsRequirementsMap().get(Requirement.FORBIDDEN)) {
+                if (uriTemplateVariables.get(forbiddenId.value()) != null) {
+                    return buildErrorResponse("Field: \"" + forbiddenId + "\" not allowed", 400);
                 }
             }
         }
@@ -97,7 +97,7 @@ public class MessageInitializer {
                 .setTargets(methodInfo.getRoutingMap()).build();
 
         return buildFinalMessage(routingInstructions, ResponseEntity.ok(null), MessageType.TO_BE_FORWARDED,
-                uriTemplateVariables, requestParams,
+                uriTemplateVariables, httpMethod, requestParams,
                 requestBody);
 
     }
@@ -108,16 +108,23 @@ public class MessageInitializer {
                         errorMsg,
                         HttpStatusCode.valueOf(httpStatusCode)),
                 MessageType.ERROR,
-                null, null, null);
+                null, null, null, null);
     }
 
-    private CustomMessage buildFinalMessage(RoutingInstructions routingInstructions,
-            ResponseEntity<Object> responseEntity, MessageType messageType, Map<String, String> uriTemplateVariables,
-            Optional<Map<String, String>> requestParams, Optional<String> requestBody) {
+    private CustomMessage buildFinalMessage(
+            RoutingInstructions routingInstructions,
+            ResponseEntity<Object> responseEntity,
+            MessageType messageType,
+            Map<String, String> uriTemplateVariables,
+            HttpMethod httpMethod,
+            Optional<Map<String, String>> requestParams,
+            Optional<String> requestBody) {
+
         CustomMessage apiMessage = new CustomMessage("test api", routingInstructions,
                 TargetMicroservices.GATEWAY,
                 messageType, responseEntity);
         apiMessage.setUriTemplateVariables(uriTemplateVariables);
+        apiMessage.setRequestMethod(httpMethod);
         apiMessage.setRequestParams(requestParams);
         apiMessage.setRequestBody(requestBody);
 

@@ -1,6 +1,7 @@
 package com.swam.commons.mongodb;
 
 import org.oristool.eulero.modeling.stochastictime.StochasticTime;
+import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -20,7 +21,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class AbstractProductDTO<V extends AbstractProduct> {
+public abstract class AbstractProductDTO<V extends AbstractProduct> implements MongodbDTO {
     private final String name;
     private final Integer quantityProduced;
     @JsonDeserialize(using = StochasticTimeDeserializer.class)
@@ -68,4 +69,17 @@ public abstract class AbstractProductDTO<V extends AbstractProduct> {
         return product;
     }
 
+    @Override
+    public Boolean isValid() {
+        try {
+            V abstractProduct = toProduct();
+            Assert.notNull(abstractProduct.getName(), "Validation error: Product name is null");
+            Assert.notNull(abstractProduct.getItemGroup(), "Validation error: Product itemGroup is null");
+        } catch (Exception e) {
+            System.out.println("Validation error: cannot convert DTO to Product");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 }

@@ -23,7 +23,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class AbstractWorkflowDTO<P extends AbstractProduct> {
+public abstract class AbstractWorkflowDTO<P extends AbstractProduct> implements MongodbDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     protected final @Id String id;
@@ -75,6 +75,22 @@ public abstract class AbstractWorkflowDTO<P extends AbstractProduct> {
         }
 
         return createWorkflow(dag);
+    }
+
+    @Override
+    public Boolean isValid() {
+        try {
+            AbstractWorkflow<P> abstractWorkflow = toWorkflow();
+            if (!abstractWorkflow.isDagConnected()) {
+                System.out.println("Validation error: Workflow is not connected");
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println("Validation error: cannot convert DTO to Workflow");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     protected abstract AbstractProductDTO<P> createProductDTO(P vertex);
