@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.util.Assert;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qesm.AbstractProduct;
-import com.qesm.WorkflowType;
+import com.qesm.AbstractWorkflow;
 import com.swam.commons.intercommunication.ApiTemplateVariables;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.MessageDispatcher.MessageHandler;
@@ -78,13 +80,14 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
 
     private void postWorkflow(CustomMessage context) {
 
-        // System.out.println(context.getRequestBody());
+        // RequestBody Check
         if (context.getRequestBody().isEmpty()) {
             System.out.println("POST request with empty body, skipped...");
             context.setError("POST request with empty body", 400);
             return;
         }
 
+        // DTO deserialization
         WFDTO receivedWorkflowDTO = null;
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -95,26 +98,79 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
             return;
         }
 
-        if (receivedWorkflowDTO == null) {
-            System.out.println("Problems with JSON to Object conversion");
-            context.setError("POST request with malformed body", 400);
-            return;
-        }
+        // DTO validation and saving
+        if (isDTOValid(receivedWorkflowDTO)) {
+            WFDTO savedWorkflowDTO = workflowRepository.save(receivedWorkflowDTO);
+            context.setResponseBody("Workflow correctly saved with id: " + savedWorkflowDTO.getId());
 
-        // WorkflowType workflowType = (WorkflowType) receivedWorkflowDTO.toWorkflow();
-        // System.out.println(workflowType);
-        workflowRepository.save(receivedWorkflowDTO);
-        System.out.println(receivedWorkflowDTO.getId());
-        workflowRepository.save(receivedWorkflowDTO);
-        System.out.println(receivedWorkflowDTO.getId());
-        System.out.println("POSTed Workflow correctly");
+            System.out.println("POSTed Workflow correctly");
+        } else {
+            context.setError("POST request with malformed body", 400);
+        }
 
     }
 
     private void putWorkflow(CustomMessage context) {
+        if (context.getRequestBody().isEmpty()) {
+            System.out.println("PUT request with empty body, skipped...");
+            context.setError("PUT request with empty body", 400);
+            return;
+        }
+
+        Map<String, String> uriTemplateVariables = context.getUriTemplateVariables();
+        String workflowId = uriTemplateVariables.get(ApiTemplateVariables.WORKFLOW_ID);
+        System.out.println("ID: " + workflowId);
+
+        Assert.notNull(workflowId, "Put with null workflowId");
+
+        if (workflowRepository.existsById(workflowId)) {
+            // DTO deserialization
+            WFDTO receivedWorkflowDTO = null;
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                receivedWorkflowDTO = objectMapper.readValue(context.getRequestBody().get(), clazz);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                context.setError("POST request with malformed body", 400);
+                return;
+            }
+
+            // DTO validation and saving
+            if (isDTOValid(receivedWorkflowDTO)) {
+                WFDTO savedWorkflowDTO = workflowRepository.save(receivedWorkflowDTO);
+                context.setResponseBody("Workflow correctly saved with id: " + savedWorkflowDTO.getId());
+
+                System.out.println("POSTed Workflow correctly");
+            } else {
+                context.setError("POST request with malformed body", 400);
+            }
+        } else {
+
+        }
+
     }
 
     private void deleteWorkflow(CustomMessage context) {
+    }
+
+    private Boolean isDTOValid(WFDTO workflowDTO) {
+        if (workflowDTO == null) {
+            System.out.println("Validation error: null DTO");
+            return false;
+        } else {
+            try {
+                AbstractWorkflow<?> abstractWorkflow = workflowDTO.toWorkflow();
+                if (!abstractWorkflow.isDagConnected()) {
+                    System.out.println("Validation error: Workflow is not connected");
+                    return false;
+                }
+            } catch (Exception e) {
+                System.out.println("Validation error: cannot convert DTO to Workflow");
+                return false;
+            }
+            return true;
+        }
+
     }
 
 }

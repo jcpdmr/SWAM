@@ -28,8 +28,9 @@ public class MessageDispatcher {
         try {
             this.dispatchMessage(message);
         } catch (RuntimeException e) {
-            // TODO: handle the generic expection
             e.printStackTrace();
+            message.setError("Internal server Error", 500);
+            rabbitMQSender.sendToNextHop(message, false);
         }
 
     }
@@ -77,10 +78,6 @@ public class MessageDispatcher {
 
         rabbitMQSender.sendToNextHop(message, false);
 
-    }
-
-    protected RabbitMQSender getRabbitMQSender() {
-        return rabbitMQSender;
     }
 
     public interface MessageHandler {

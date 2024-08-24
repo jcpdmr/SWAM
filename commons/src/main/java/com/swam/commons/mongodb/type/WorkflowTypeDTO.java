@@ -22,7 +22,8 @@ import lombok.Setter;
 public class WorkflowTypeDTO extends AbstractWorkflowDTO<ProductType> {
 
     @PersistenceCreator
-    public WorkflowTypeDTO(String id, Set<ProductTypeDTO> vertexSet,
+    public WorkflowTypeDTO(String id,
+            Set<ProductTypeDTO> vertexSet,
             Set<CustomEdgeTypeDTO> edgeSet) {
         super(id, vertexSet, edgeSet);
     }

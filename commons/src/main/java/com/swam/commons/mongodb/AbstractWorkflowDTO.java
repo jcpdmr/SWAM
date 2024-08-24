@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.qesm.AbstractProduct;
 import com.qesm.AbstractWorkflow;
 import com.qesm.CustomEdge;
@@ -24,6 +25,7 @@ import lombok.ToString;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class AbstractWorkflowDTO<P extends AbstractProduct> {
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     protected final @Id String id;
     protected final Set<? extends AbstractProductDTO<P>> vertexSet;
     protected final Set<? extends AbstractCustomEdgeDTO> edgeSet;
