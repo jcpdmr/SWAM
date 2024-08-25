@@ -26,7 +26,7 @@ import lombok.ToString;
 public abstract class AbstractWorkflowDTO<P extends AbstractProduct> implements MongodbDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    protected final @Id String id;
+    protected @Id String id;
     protected final Set<? extends AbstractProductDTO<P>> vertexSet;
     protected final Set<? extends AbstractCustomEdgeDTO> edgeSet;
     @JsonIgnore

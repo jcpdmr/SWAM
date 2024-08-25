@@ -36,12 +36,14 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
             if (workflowDTO.isEmpty()) {
                 throw new ProcessingMessageException("Workflow with workflowId: " + workflowId + " not found", 404);
             } else {
-                context.setResponseBody(workflowDTO);
+                context.setResponse(workflowDTO, 200);
             }
         } else {
             // TODO: implement paging and filtering opt
             context.setResponseBody(workflowRepository.findAll());
         }
+
+        System.out.println("GET Workflow correctly");
     }
 
     @Override
@@ -51,9 +53,9 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
 
         // Saving workflow to mongoDB
         WFDTO savedWorkflowDTO = workflowRepository.save(receivedWorkflowDTO);
-        context.setResponseBody("Workflow correctly saved with id: " + savedWorkflowDTO.getId());
+        context.setResponse("Workflow correctly saved with id: " + savedWorkflowDTO.getId(), 201);
 
-        System.out.println("POSTed Workflow correctly");
+        System.out.println("POST Workflow correctly");
     }
 
     @Override
@@ -64,11 +66,12 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
         if (workflowRepository.existsById(workflowId)) {
 
             WFDTO receivedWorkflowDTO = convertBodyWithValidation(context, clazz);
+            receivedWorkflowDTO.setId(workflowId);
 
             WFDTO savedWorkflowDTO = workflowRepository.save(receivedWorkflowDTO);
-            context.setResponseBody("Workflow correctly saved with id: " + savedWorkflowDTO.getId());
+            context.setResponse("Workflow with id: " + savedWorkflowDTO.getId() + " updated correctly", 200);
 
-            System.out.println("POSTed Workflow correctly");
+            System.out.println("PUT Workflow correctly");
 
         } else {
             throw new ProcessingMessageException("Workflow with workflowId: " + workflowId + " not found", 404);
@@ -77,6 +80,17 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
 
     @Override
     protected void delete(CustomMessage context) throws ProcessingMessageException {
-    }
+        String workflowId = getUriId(context, ApiTemplateVariable.WORKFLOW_ID, true);
 
+        if (workflowRepository.existsById(workflowId)) {
+
+            workflowRepository.deleteById(workflowId);
+            context.setResponse("Workflow with workflowId: " + workflowId + " deleted correctly", 200);
+
+            System.out.println("DELETE Workflow correctly");
+
+        } else {
+            throw new ProcessingMessageException("Workflow with workflowId: " + workflowId + " not found", 404);
+        }
+    }
 }

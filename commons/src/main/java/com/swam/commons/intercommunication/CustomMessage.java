@@ -72,9 +72,13 @@ public class CustomMessage {
     }
 
     public void setError(Object responseBody, Integer responseStatusCode) {
+        setResponse(responseBody, responseStatusCode);
+        this.messageType = MessageType.ERROR;
+    }
+
+    public void setResponse(Object responseBody, Integer responseStatusCode) {
         this.responseStatusCode = responseStatusCode;
         this.responseBody = responseBody;
-        this.messageType = MessageType.ERROR;
     }
 
     @JsonProperty("requestMethod")
