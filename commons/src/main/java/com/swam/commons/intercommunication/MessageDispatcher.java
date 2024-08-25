@@ -72,11 +72,11 @@ public class MessageDispatcher {
             if (messageHandler != null) {
                 messageHandler.handle(message, targetMessageHandler);
             } else {
-                System.out.println(
-                        "Method: [" + targetMessageHandler + "] not binded, current bindings: " + messageHandlerMap
-                                + " . Have you added @Service to Method?");
 
-                message.setError("Internal server error", 500);
+                throw new ProcessingMessageException(
+                        "Method: [" + targetMessageHandler + "] not binded, current bindings: " + messageHandlerMap
+                                + " . Have you added @Service to Method?",
+                        "Internal server error", 500);
             }
         }
 

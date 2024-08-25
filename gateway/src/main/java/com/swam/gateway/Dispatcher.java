@@ -8,12 +8,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
 
 import com.swam.commons.intercommunication.CustomMessage;
+import com.swam.commons.intercommunication.ProcessingMessageException;
 import com.swam.commons.intercommunication.RabbitMQSender;
 
 @Service
@@ -23,22 +22,20 @@ public class Dispatcher {
     private final MessageInitializer messageInitializer;
     private final RabbitMQSender rabbitMQSender;
     private final AntPathMatcher antPathMatcher;
-    private final AsyncResponseHandler asyncResponseHandler;
 
-    public Dispatcher(List<EndPoint> endPointList, MessageInitializer messageInitializer, RabbitMQSender rabbitMQSender,
-            AsyncResponseHandler asyncResponseHandler) {
+    public Dispatcher(List<EndPoint> endPointList, MessageInitializer messageInitializer,
+            RabbitMQSender rabbitMQSender) {
 
         this.endPointMap = endPointList.stream()
                 .collect(Collectors.toMap(EndPoint::getBindingPaths, Function.identity()));
         this.messageInitializer = messageInitializer;
         this.rabbitMQSender = rabbitMQSender;
-        this.asyncResponseHandler = asyncResponseHandler;
         this.antPathMatcher = new AntPathMatcher();
     }
 
     public void dispatchRequest(HttpMethod httpMethod, String uriPath,
             Optional<Map<String, String>> requestParams,
-            Optional<String> requestBody, String deferredResultId) {
+            Optional<String> requestBody, String deferredResultId) throws ProcessingMessageException {
 
         CustomMessage apiMessage = null;
         // Look for a match in all bindingPaths provided by Endpoint's
@@ -52,6 +49,7 @@ public class Dispatcher {
                     Map<String, String> variables = antPathMatcher.extractUriTemplateVariables(
                             bindingPath,
                             uriPath);
+
                     apiMessage = messageInitializer.buildMessage(entry.getValue(), httpMethod, variables, requestParams,
                             requestBody);
                     break;
@@ -64,23 +62,14 @@ public class Dispatcher {
 
         // Check if there wasn't matching path for the request
         if (apiMessage == null) {
-            asyncResponseHandler.setDeferredResult(deferredResultId,
-                    new ResponseEntity<Object>("Path: " + uriPath + " not found", HttpStatusCode.valueOf(404)));
-            return;
+            throw new ProcessingMessageException("Path: " + uriPath + " not found", 404);
         }
 
         // Set defferedResultId (related to a request that need
         // to be resolved)
         apiMessage.setDeferredResultId(deferredResultId);
 
-        try {
-            rabbitMQSender.sendToNextHop(apiMessage, true);
-        } catch (Exception e) {
-            // Catch all json serialization and rabbitMQ exceptions
-            e.printStackTrace();
-            asyncResponseHandler.setDeferredResult(deferredResultId,
-                    new ResponseEntity<Object>("Internal server error", HttpStatusCode.valueOf(500)));
-        }
+        rabbitMQSender.sendToNextHop(apiMessage, true);
 
     }
 

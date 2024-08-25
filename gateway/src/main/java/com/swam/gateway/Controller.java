@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import com.swam.commons.intercommunication.ProcessingMessageException;
+
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -50,8 +52,21 @@ public class Controller {
             return deferredResultEntry.getValue();
         }
 
-        dispatcher.dispatchRequest(httpMethod, path, Optional.ofNullable(requestParams),
-                Optional.ofNullable(requestBody), deferredResultEntry.getKey());
+        try {
+            dispatcher.dispatchRequest(httpMethod, path, Optional.ofNullable(requestParams),
+                    Optional.ofNullable(requestBody), deferredResultEntry.getKey());
+        } catch (ProcessingMessageException e) {
+            System.err.println("ProcessingMessageException: " + e.getMessage());
+            asyncResponseHandler.setDeferredResult(deferredResultEntry.getKey(),
+                    new ResponseEntity<Object>(e.getResponseError(),
+                            HttpStatusCode.valueOf(e.getHttpStatusCode())));
+        } catch (Exception e) {
+            // Catch all generics exceptions (eg. related to rabbitMQ or Jackson
+            // serialization/deserialization)
+            e.printStackTrace();
+            asyncResponseHandler.setDeferredResult(deferredResultEntry.getKey(),
+                    new ResponseEntity<Object>("Internal server error", HttpStatusCode.valueOf(500)));
+        }
 
         return deferredResultEntry.getValue();
     }

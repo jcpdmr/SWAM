@@ -19,6 +19,9 @@
 # curl -X PUT http://localhost:8080/api/workflow/operation/1
 # echo ""
 
+curl -X POST http://localhost:8080/api/workflow/operation/1
+echo ""
+
 # curl -X DELETE http://localhost:8080/api/workflow/operation/2
 # echo ""
 
@@ -27,10 +30,10 @@
 #      -d @./client-data.json
 # echo ""
 
-curl -X POST http://localhost:8080/api/workflow/catalog\
-     -H "Content-Type: application/json" \
-     -d @./client-data2.json
-echo ""
+# curl -X POST http://localhost:8080/api/workflow/catalog\
+#      -H "Content-Type: application/json" \
+#      -d @./client-data2.json
+# echo ""
 
 # curl -X POST http://localhost:8080/api/workflow/operation\
 #      -H "Content-Type: application/json" \

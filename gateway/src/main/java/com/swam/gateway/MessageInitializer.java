@@ -4,12 +4,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.swam.commons.intercommunication.ApiTemplateVariable;
 import com.swam.commons.intercommunication.CustomMessage;
+import com.swam.commons.intercommunication.ProcessingMessageException;
 import com.swam.commons.intercommunication.RoutingInstructions;
 import com.swam.commons.intercommunication.RoutingInstructionsBuilder;
 import com.swam.commons.intercommunication.CustomMessage.MessageType;
@@ -42,32 +42,29 @@ public class MessageInitializer {
 
     public CustomMessage buildMessage(EndPoint endPoint, HttpMethod httpMethod,
             Map<String, String> uriTemplateVariables,
-            Optional<Map<String, String>> requestParams, Optional<String> requestBody) {
+            Optional<Map<String, String>> requestParams, Optional<String> requestBody)
+            throws ProcessingMessageException {
 
         // Check if targetType is valid and defined in the current endPoint
         String type = uriTemplateVariables.get(ApiTemplateVariable.TARGET_TYPE.value());
 
         TargetType targetType;
         if (convertToTargetType(type).isEmpty()) {
-            return buildErrorResponse(
-                    "Target type: \"" + type + "\" not valid, valid types are: "
-                            + endPoint.getEndPointData().keySet(),
-                    400);
-        } else {
-            targetType = convertToTargetType(type).get();
+            throw new ProcessingMessageException("Target type: \"" + type + "\" not valid, valid types are: "
+                    + endPoint.getEndPointData().keySet(), 400);
+
         }
+        targetType = convertToTargetType(type).get();
 
         if (!endPoint.getEndPointData().containsKey(targetType)) {
-            return buildErrorResponse(
-                    "Target type: \"" + type + "\" not allowed, allowed types are: "
-                            + endPoint.getEndPointData().keySet(),
-                    400);
+            throw new ProcessingMessageException("Target type: \"" + type + "\" not allowed, allowed types are: "
+                    + endPoint.getEndPointData().keySet(), 400);
         }
 
         // Check if method is allowed
 
         if (!endPoint.getEndPointData().get(targetType).containsKey(httpMethod)) {
-            return buildErrorResponse(
+            throw new ProcessingMessageException(
                     "Method type: \"" + httpMethod + "\" not allowed, allowed methods are: "
                             + endPoint.getEndPointData().get(targetType).keySet(),
                     400);
@@ -79,7 +76,7 @@ public class MessageInitializer {
         if (methodInfo.getIdsRequirementsMap().containsKey(Requirement.NEEDED)) {
             for (ApiTemplateVariable requiredId : methodInfo.getIdsRequirementsMap().get(Requirement.NEEDED)) {
                 if (uriTemplateVariables.get(requiredId.value()) == null) {
-                    return buildErrorResponse("Field: \"" + requiredId + "\" required", 400);
+                    throw new ProcessingMessageException("Field: \"" + requiredId + "\" required", 400);
                 }
             }
         }
@@ -88,42 +85,19 @@ public class MessageInitializer {
         if (methodInfo.getIdsRequirementsMap().containsKey(Requirement.FORBIDDEN)) {
             for (ApiTemplateVariable forbiddenId : methodInfo.getIdsRequirementsMap().get(Requirement.FORBIDDEN)) {
                 if (uriTemplateVariables.get(forbiddenId.value()) != null) {
-                    return buildErrorResponse("Field: \"" + forbiddenId + "\" not allowed", 400);
+                    throw new ProcessingMessageException("Field: \"" + forbiddenId + "\" not allowed", 400);
                 }
             }
         }
 
-        // build orchestration
+        // Build routing
         RoutingInstructions routingInstructions = RoutingInstructionsBuilder.newBuild()
                 .setTargets(methodInfo.getRoutingMap()).build();
 
-        return buildFinalMessage(routingInstructions, ResponseEntity.ok(null), MessageType.TO_BE_FORWARDED,
-                uriTemplateVariables, httpMethod, requestParams,
-                requestBody);
-
-    }
-
-    private CustomMessage buildErrorResponse(String errorMsg, Integer httpStatusCode) {
-        return buildFinalMessage(null,
-                new ResponseEntity<>(
-                        errorMsg,
-                        HttpStatusCode.valueOf(httpStatusCode)),
-                MessageType.ERROR,
-                null, null, null, null);
-    }
-
-    private CustomMessage buildFinalMessage(
-            RoutingInstructions routingInstructions,
-            ResponseEntity<Object> responseEntity,
-            MessageType messageType,
-            Map<String, String> uriTemplateVariables,
-            HttpMethod httpMethod,
-            Optional<Map<String, String>> requestParams,
-            Optional<String> requestBody) {
-
+        // Build message
         CustomMessage apiMessage = new CustomMessage("test api", routingInstructions,
                 TargetMicroservices.GATEWAY,
-                messageType, responseEntity);
+                MessageType.TO_BE_FORWARDED, ResponseEntity.ok(null));
         apiMessage.setUriTemplateVariables(uriTemplateVariables);
         apiMessage.setRequestMethod(httpMethod);
         apiMessage.setRequestParams(requestParams);
