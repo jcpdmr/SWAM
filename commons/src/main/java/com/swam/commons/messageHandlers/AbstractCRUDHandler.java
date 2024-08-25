@@ -2,14 +2,11 @@ package com.swam.commons.messageHandlers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.swam.commons.intercommunication.ApiTemplateVariable;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.ProcessingMessageException;
 import com.swam.commons.intercommunication.MessageDispatcher.MessageHandler;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
 import com.swam.commons.mongodb.MongodbDTO;
-
-import java.util.Map;
 
 import org.springframework.http.HttpMethod;
 
@@ -64,18 +61,6 @@ public abstract class AbstractCRUDHandler implements MessageHandler {
                     "Error DTO of type: " + clazz + " is null or can't be validated properly",
                     context.getRequestMethod() + " request with empty or not valid body", 400);
         }
-    }
-
-    protected String getUriId(CustomMessage context, ApiTemplateVariable apiTemplateVariable, Boolean isRequired)
-            throws ProcessingMessageException {
-        Map<String, String> uriTemplateVariables = context.getUriTemplateVariables();
-        String uriId = uriTemplateVariables.get(apiTemplateVariable.value());
-        if (isRequired && uriId == null) {
-            throw new ProcessingMessageException(context.getRequestMethod() + " with null " + apiTemplateVariable,
-                    "Internal server error", 500);
-        }
-        return uriId;
-
     }
 
     protected abstract void get(CustomMessage context) throws ProcessingMessageException;
