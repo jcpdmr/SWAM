@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.MessageDispatcher.MessageHandler;
+import com.swam.commons.intercommunication.ProcessingMessageException;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
 import com.swam.commons.mongodb.istance.WorkflowIstanceDTO;
 import com.swam.commons.mongodb.istance.WorkflowIstanceDTORepository;
@@ -20,19 +22,10 @@ public class MakePersistenceHandler implements MessageHandler {
     private final WorkflowIstanceDTORepository workflowIstanceDTORepository;
 
     @Override
-    public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) {
-        System.out.println("Execute OPERATION MAKE_PERSISTENCE");
-
-        // DEBUG
-        System.out.println("Execute MAKE_PERSISTENCE");
-        if (context.getResponseBody() != null) {
-            System.out.println(
-                    "ResponseBody: " + context.getResponseBody() + "   Class:" + context.getResponseBody().getClass());
-        }
-
+    public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) throws ProcessingMessageException {
         switch (triggeredBinding) {
             case TargetMessageHandler.MAKE_PERSISTENCE:
-                System.out.println("MAKE_PERSISTENCE");
+                System.out.println("MAKE_PERSISTENCE from template");
                 makePersistenceFromTemplate(context);
                 break;
             default:
@@ -43,28 +36,31 @@ public class MakePersistenceHandler implements MessageHandler {
 
     }
 
-    private void makePersistenceFromTemplate(CustomMessage context) {
-        try {
-            if (context.getResponseBody() == null) {
-                System.out.println("MAKE PERSISTENCE -> ResponseBody null...");
-                context.setError("Server error", 500);
-                return;
-            }
+    private void makePersistenceFromTemplate(CustomMessage context) throws ProcessingMessageException {
 
-            // TODO: do we need additional sanity checks?
-            ObjectMapper objectMapper = new ObjectMapper();
-            String serializedWorkflowIstanceDTO = (String) context.getResponseBody();
+        if (context.getResponseBody() == null) {
+            throw new ProcessingMessageException("Server error", "MAKE PERSISTENCE -> ResponseBody null...", 500);
+        }
+
+        // TODO: do we need additional sanity checks?
+        ObjectMapper objectMapper = new ObjectMapper();
+        String serializedWorkflowIstanceDTO = (String) context.getResponseBody();
+        try {
             WorkflowIstanceDTO workflowIstanceDTO = objectMapper.readValue(serializedWorkflowIstanceDTO,
                     WorkflowIstanceDTO.class);
-            System.out.println("wfIstance: " + workflowIstanceDTO);
+            System.out.println("WorkflowInstaceDTO created");
             workflowIstanceDTORepository.save(workflowIstanceDTO);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("MAKE PERSISTENCE problem...");
-            context.setError("Server error", 500);
-            return;
+        } catch (JsonProcessingException e) {
+            throw new ProcessingMessageException(e.getMessage(),
+                    "Internal Server Error", 500);
         }
+
+        // } catch (Exception e) {
+        // e.printStackTrace();
+        // System.out.println("MAKE PERSISTENCE problem...");
+        // context.setError("Server error", 500);
+        // return;
+        // }
     }
 
     @Override
