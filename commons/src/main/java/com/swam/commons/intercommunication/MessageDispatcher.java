@@ -27,6 +27,10 @@ public class MessageDispatcher {
     protected void listener(CustomMessage message) {
         try {
             this.dispatchMessage(message);
+        } catch (ProcessingMessageException e) {
+            System.err.println("ProcessingMessageException: " + e.getMessage());
+            message.setError(e.getResponseError(), e.getHttpStatusCode());
+            rabbitMQSender.sendToNextHop(message, false);
         } catch (RuntimeException e) {
             e.printStackTrace();
             message.setError("Internal server Error", 500);
@@ -35,7 +39,7 @@ public class MessageDispatcher {
 
     }
 
-    protected void dispatchMessage(CustomMessage message) {
+    protected void dispatchMessage(CustomMessage message) throws ProcessingMessageException {
 
         // System.out.println("Messaggio ricevuto dall'handler: " + message.getMsg());
 
@@ -81,7 +85,8 @@ public class MessageDispatcher {
     }
 
     public interface MessageHandler {
-        public void handle(CustomMessage context, TargetMessageHandler triggeredBinding);
+        public void handle(CustomMessage context, TargetMessageHandler triggeredBinding)
+                throws ProcessingMessageException;
 
         public List<TargetMessageHandler> getBinding();
     }

@@ -76,8 +76,9 @@ public abstract class AbstractProductDTO<V extends AbstractProduct> implements M
             Assert.notNull(abstractProduct.getName(), "Validation error: Product name is null");
             Assert.notNull(abstractProduct.getItemGroup(), "Validation error: Product itemGroup is null");
         } catch (Exception e) {
-            System.out.println("Validation error: cannot convert DTO to Product");
-            e.printStackTrace();
+            System.err.println("Validation error: cannot convert DTO to Product");
+            System.err.println(e.getMessage());
+            ;
             return false;
         }
         return true;

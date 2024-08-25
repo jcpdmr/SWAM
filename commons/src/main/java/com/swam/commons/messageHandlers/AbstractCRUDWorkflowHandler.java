@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.qesm.AbstractProduct;
 import com.swam.commons.intercommunication.ApiTemplateVariable;
 import com.swam.commons.intercommunication.CustomMessage;
+import com.swam.commons.intercommunication.ProcessingMessageException;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
 import com.swam.commons.mongodb.AbstractWorkflowDTO;
 import com.swam.commons.mongodb.WorkflowDTORepository;
@@ -25,7 +26,7 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
     }
 
     @Override
-    protected void get(CustomMessage context) {
+    protected void get(CustomMessage context) throws ProcessingMessageException {
 
         String workflowId = getUriId(context, ApiTemplateVariable.WORKFLOW_ID, false);
         System.out.println("ID: " + workflowId);
@@ -33,7 +34,7 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
         if (workflowId != null) {
             Optional<WFDTO> workflowDTO = workflowRepository.findById(workflowId);
             if (workflowDTO.isEmpty()) {
-                context.setError("Workflow with workflowId: " + workflowId + " not found", 404);
+                throw new ProcessingMessageException("Workflow with workflowId: " + workflowId + " not found", 404);
             } else {
                 context.setResponseBody(workflowDTO);
             }
@@ -44,16 +45,9 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
     }
 
     @Override
-    protected void post(CustomMessage context) {
+    protected void post(CustomMessage context) throws ProcessingMessageException {
 
-        WFDTO receivedWorkflowDTO;
-        try {
-            receivedWorkflowDTO = convertBodyWithValidation(context, clazz);
-        } catch (Exception e) {
-            // Message's error already set by convertBodyWithValidation
-            e.printStackTrace();
-            return;
-        }
+        WFDTO receivedWorkflowDTO = convertBodyWithValidation(context, clazz);
 
         // Saving workflow to mongoDB
         WFDTO savedWorkflowDTO = workflowRepository.save(receivedWorkflowDTO);
@@ -63,20 +57,13 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
     }
 
     @Override
-    protected void put(CustomMessage context) {
+    protected void put(CustomMessage context) throws ProcessingMessageException {
 
         String workflowId = getUriId(context, ApiTemplateVariable.WORKFLOW_ID, true);
 
         if (workflowRepository.existsById(workflowId)) {
 
-            WFDTO receivedWorkflowDTO;
-            try {
-                receivedWorkflowDTO = convertBodyWithValidation(context, clazz);
-            } catch (Exception e) {
-                // Message's error already set by convertBodyWithValidation
-                e.printStackTrace();
-                return;
-            }
+            WFDTO receivedWorkflowDTO = convertBodyWithValidation(context, clazz);
 
             WFDTO savedWorkflowDTO = workflowRepository.save(receivedWorkflowDTO);
             context.setResponseBody("Workflow correctly saved with id: " + savedWorkflowDTO.getId());
@@ -84,12 +71,12 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
             System.out.println("POSTed Workflow correctly");
 
         } else {
-            context.setError("Workflow with workflowId: " + workflowId + " not found", 404);
+            throw new ProcessingMessageException("Workflow with workflowId: " + workflowId + " not found", 404);
         }
     }
 
     @Override
-    protected void delete(CustomMessage context) {
+    protected void delete(CustomMessage context) throws ProcessingMessageException {
     }
 
 }

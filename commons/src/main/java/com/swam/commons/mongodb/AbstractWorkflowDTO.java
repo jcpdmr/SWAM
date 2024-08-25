@@ -82,12 +82,12 @@ public abstract class AbstractWorkflowDTO<P extends AbstractProduct> implements 
         try {
             AbstractWorkflow<P> abstractWorkflow = toWorkflow();
             if (!abstractWorkflow.isDagConnected()) {
-                System.out.println("Validation error: Workflow is not connected");
+                System.err.println("Validation error: Workflow is not connected");
                 return false;
             }
         } catch (Exception e) {
-            System.out.println("Validation error: cannot convert DTO to Workflow");
-            e.printStackTrace();
+            System.err.println("Validation error: cannot convert DTO to Workflow");
+            System.err.println(e.getMessage());
             return false;
         }
         return true;
