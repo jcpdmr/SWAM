@@ -6,7 +6,7 @@
     },
     {
       "name": "v2",
-      "quantityProduced": 1,
+      "quantityProduced": 15,
       "pdf": {
         "type": "UNI",
         "eft": 3.0,
@@ -184,6 +184,5 @@
       "targetName": "v7",
       "quantityRequired": 8
     }
-  ],
-  "id": "66c8c830e9b44657ce20eec7"
+  ]
 }
