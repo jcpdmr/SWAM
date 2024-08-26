@@ -56,8 +56,11 @@
 # curl -X GET http://localhost:8080/api/workflow/catalog/66cb6ea148269f54767faa99/product/v0
 # echo ""
 
-curl -X PUT http://localhost:8080/api/workflow/catalog/test/product/v0 \
-     -H "Content-Type: application/json" \
-     -d @./productData2.json
+# curl -X PUT http://localhost:8080/api/workflow/catalog/test/product/v0 \
+#      -H "Content-Type: application/json" \
+#      -d @./productData2.json
 
+# echo ""
+
+curl -X DELETE http://localhost:8080/api/workflow/catalog/test/product/v5
 echo ""

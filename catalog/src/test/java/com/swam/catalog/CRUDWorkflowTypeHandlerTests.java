@@ -48,8 +48,8 @@ public class CRUDWorkflowTypeHandlerTests {
         // "v0", 50,
         // new ExponentialTime(BigDecimal.valueOf(10)));
 
-        System.out.println(workflowTypeDTORepository.isProcessed("test", "prova"));
-
+        System.out.println(workflowTypeDTORepository.existVertexAndIsProcessed("test", "prova"));
+        System.out.println(workflowTypeDTORepository.findWorkflowIfVertexExists("test", "v0"));
     }
 
 }

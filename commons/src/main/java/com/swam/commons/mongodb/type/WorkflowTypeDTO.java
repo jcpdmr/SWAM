@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.qesm.AbstractWorkflow;
 import com.qesm.CustomEdge;
 import com.qesm.ListenableDAG;
 import com.qesm.ProductType;
@@ -54,6 +55,11 @@ public class WorkflowTypeDTO extends AbstractWorkflowDTO<ProductType> {
     @Override
     protected WorkflowType createWorkflow(ListenableDAG<ProductType, CustomEdge> dag) {
         return new WorkflowType(dag);
+    }
+
+    @Override
+    public AbstractWorkflowDTO<ProductType> buildFromWorkflow(AbstractWorkflow<ProductType> workflow) {
+        return new WorkflowTypeDTO((WorkflowType) workflow);
     }
 
 }

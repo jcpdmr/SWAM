@@ -92,6 +92,12 @@ public abstract class AbstractWorkflowDTO<P extends AbstractProduct> implements 
                 return false;
             }
             // TODO: check also if any RAW_MATERIAL has a child (it will be not valid)
+            for (P product : abstractWorkflow.getDag().vertexSet()) {
+                if (!product.isProcessed() && abstractWorkflow.getDag().inDegreeOf(product) != 0) {
+                    System.out.println("Validation error: there is at least one RAW_MATERIAL with incoming edge");
+                    return false;
+                }
+            }
 
         } catch (Exception e) {
             System.err.println("Validation error: cannot convert DTO to Workflow");
@@ -100,6 +106,8 @@ public abstract class AbstractWorkflowDTO<P extends AbstractProduct> implements 
         }
         return true;
     }
+
+    public abstract AbstractWorkflowDTO<P> buildFromWorkflow(AbstractWorkflow<P> workflow);
 
     protected abstract AbstractProductDTO<P> createProductDTO(P vertex);
 

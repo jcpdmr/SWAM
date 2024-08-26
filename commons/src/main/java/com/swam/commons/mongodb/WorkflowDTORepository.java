@@ -50,11 +50,17 @@ public interface WorkflowDTORepository<WFDTO extends AbstractWorkflowDTO<? exten
     Optional<AbstractWorkflowDTO<? extends AbstractProduct>> findVertexMapProjectionByWorkflowId(String workflowId);
 
     @Aggregation(pipeline = {
+            "{ $match: { _id: ?0, 'vertexMap.?1': { $exists: true } } }"
+    })
+    Optional<AbstractWorkflowDTO<AbstractProduct>> findWorkflowIfVertexExists(String workflowId,
+            String productId);
+
+    @Aggregation(pipeline = {
             "{ $match: { _id: ?0} }",
             "{ $addFields: { isProcessed: { $eq: [ '$vertexMap.?1.itemGroup', 'PROCESSED' ] } } }",
             "{ $project: { _id: 0, isProcessed: 1 } }"
     })
-    Boolean isProcessed(String workflowId, String productId);
+    Boolean existVertexAndIsProcessed(String workflowId, String productId);
 
     @Query(value = "{ '_id': ?0 }")
     @Update(update = "{ $set: { 'vertexMap.?1.quantityProduced': ?2 , 'vertexMap.?1.pdf': ?3} }")

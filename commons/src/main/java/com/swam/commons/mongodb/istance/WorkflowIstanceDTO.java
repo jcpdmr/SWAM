@@ -8,10 +8,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.qesm.AbstractWorkflow;
 import com.qesm.CustomEdge;
 import com.qesm.ListenableDAG;
 import com.qesm.ProductIstance;
-
 import com.qesm.WorkflowIstance;
 import com.swam.commons.mongodb.AbstractWorkflowDTO;
 import com.swam.commons.mongodb.AbstractCustomEdgeDTO;
@@ -58,4 +58,8 @@ public class WorkflowIstanceDTO extends AbstractWorkflowDTO<ProductIstance> {
         return new WorkflowIstance(dag);
     }
 
+    @Override
+    public AbstractWorkflowDTO<ProductIstance> buildFromWorkflow(AbstractWorkflow<ProductIstance> workflow) {
+        return new WorkflowIstanceDTO((WorkflowIstance) workflow);
+    }
 }

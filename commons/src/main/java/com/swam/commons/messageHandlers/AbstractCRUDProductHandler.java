@@ -1,11 +1,15 @@
 package com.swam.commons.messageHandlers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.oristool.eulero.modeling.stochastictime.StochasticTime;
 
 import com.qesm.AbstractProduct;
+import com.qesm.AbstractWorkflow;
+import com.qesm.CustomEdge;
+import com.qesm.ListenableDAG;
 import com.swam.commons.intercommunication.ApiTemplateVariable;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.ProcessingMessageException;
@@ -20,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowDTO<? extends AbstractProduct>>
         extends AbstractCRUDHandler {
 
-    private final WorkflowDTORepository<WFDTO, ?> workflowRepository;
+    private final WorkflowDTORepository<WFDTO, ? extends AbstractProductDTO<? extends AbstractProduct>> workflowRepository;
     private final Class<? extends AbstractProductDTO<?>> clazzP;
 
     @Override
@@ -30,12 +34,9 @@ public class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowDTO<? exte
 
     @Override
     protected void get(CustomMessage context) throws ProcessingMessageException {
-        String workflowId = getUriId(context, ApiTemplateVariable.WORKFLOW_ID, true);
-        String productId = getUriId(context, ApiTemplateVariable.PRODUCT_ID, false);
-
-        if (!workflowRepository.existsById(workflowId)) {
-            throw new ProcessingMessageException("Workflow with workflowId: " + workflowId + " not found", 404);
-        }
+        List<String> ids = getWorfklowAndProductIds(context);
+        String workflowId = ids.get(0);
+        String productId = ids.get(1);
 
         if (productId != null) {
             Optional<AbstractProductDTO<?>> receivedProduct = workflowRepository
@@ -61,16 +62,13 @@ public class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowDTO<? exte
 
     @Override
     protected void put(CustomMessage context) throws ProcessingMessageException {
-        String workflowId = getUriId(context, ApiTemplateVariable.WORKFLOW_ID, true);
-        String productId = getUriId(context, ApiTemplateVariable.PRODUCT_ID, false);
-
-        if (!workflowRepository.existsById(workflowId)) {
-            throw new ProcessingMessageException("Workflow with workflowId: " + workflowId + " not found", 404);
-        }
+        List<String> ids = getWorfklowAndProductIds(context);
+        String workflowId = ids.get(0);
+        String productId = ids.get(1);
 
         AbstractProductDTO<?> abstractProductDTO = convertBodyWithValidation(context, clazzP);
 
-        if (workflowRepository.isProcessed(workflowId, productId)) {
+        if (workflowRepository.existVertexAndIsProcessed(workflowId, productId)) {
             Integer quantityProduced = abstractProductDTO.getQuantityProduced();
             StochasticTime pdf = abstractProductDTO.getPdf();
             Integer updatedCount = 0;
@@ -102,8 +100,67 @@ public class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowDTO<? exte
 
     @Override
     protected void delete(CustomMessage context) throws ProcessingMessageException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+        List<String> ids = getWorfklowAndProductIds(context);
+        String workflowId = ids.get(0);
+        String productId = ids.get(1);
+
+        Optional<AbstractWorkflowDTO<AbstractProduct>> workflowDTO = workflowRepository
+                .findWorkflowIfVertexExists(workflowId, productId);
+        if (workflowDTO.isEmpty()) {
+            throw new ProcessingMessageException("Product with productId: " + productId + " not found", 404);
+        }
+
+        AbstractWorkflow<AbstractProduct> workflow = workflowDTO.get().toWorkflow();
+        ListenableDAG<AbstractProduct, CustomEdge> dag = workflow.getDag();
+        AbstractProduct vertexToRemove = null;
+        for (AbstractProduct vertex : dag.vertexSet()) {
+            if (productId.equals(vertex.getName())) {
+                vertexToRemove = vertex;
+                break;
+            }
+        }
+        if (vertexToRemove == null) {
+            throw new ProcessingMessageException("Vertex to remove not found", "Internal server error", 500);
+        }
+
+        AbstractProduct rootNode = workflow.computeRootNode();
+
+        // Removing rootNode means deleting the dag itself
+        if (vertexToRemove.equals(rootNode)) {
+            throw new ProcessingMessageException("Cannot remove rootVertex, delete workflow instead", 400);
+        }
+
+        // Delete vertex
+        dag.removeVertex(vertexToRemove);
+
+        // Check if dag is still connected, otherwise remove all disconnected verteces
+        if (!workflow.isDagConnected()) {
+            List<AbstractProduct> disconnectedVerteces = new ArrayList<>();
+            for (AbstractProduct node : dag) {
+                if (!dag.getAncestors(node).contains(rootNode)) {
+                    disconnectedVerteces.add(node);
+                }
+            }
+            dag.removeAllVertices(disconnectedVerteces);
+        }
+
+        System.out.println((WFDTO) workflowDTO.get().buildFromWorkflow(workflow));
+
+        // workflowRepository.save((WFDTO)
+        // workflowDTO.get().buildFromWorkflow(workflow));
+
+        context.setResponse("Product with productId: " + productId + " correctly removed", 200);
+    }
+
+    private List<String> getWorfklowAndProductIds(CustomMessage context) throws ProcessingMessageException {
+        String workflowId = getUriId(context, ApiTemplateVariable.WORKFLOW_ID, true);
+        String productId = getUriId(context, ApiTemplateVariable.PRODUCT_ID, false);
+
+        if (!workflowRepository.existsById(workflowId)) {
+            throw new ProcessingMessageException("Workflow with workflowId: " + workflowId + " not found", 404);
+        }
+
+        return List.of(workflowId, productId);
     }
 
 }
