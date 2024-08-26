@@ -1,11 +1,10 @@
 package com.swam.catalog;
 
-import java.util.List;
-import java.util.Optional;
+import java.math.BigDecimal;
 
-import org.bson.Document;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.oristool.eulero.modeling.stochastictime.ExponentialTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,16 +12,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.qesm.RandomDAGGenerator.PdfType;
-import com.mongodb.ExplainVerbosity;
 import com.qesm.ProductType;
-import com.qesm.WorkflowType;
 import com.swam.commons.intercommunication.MessageDispatcher;
-import com.swam.commons.mongodb.AbstractProductDTO;
-import com.swam.commons.mongodb.AbstractWorkflowDTO;
-import com.swam.commons.mongodb.istance.ProductIstanceDTO;
 import com.swam.commons.mongodb.type.ProductTypeDTO;
-import com.swam.commons.mongodb.type.WorkflowTypeDTO;
 import com.swam.commons.mongodb.type.WorkflowTypeDTORepository;
 
 @ActiveProfiles("test")
@@ -46,41 +38,17 @@ public class CRUDWorkflowTypeHandlerTests {
     @Test
     public void prova() {
 
-        Optional<AbstractProductDTO<?>> productTypeDTO = workflowTypeDTORepository
-                .findVertexByWorkflowIdAndVertexName("66cb606bd617dc47f248bbaa", "v0");
+        // Optional<AbstractProductDTO<?>> productTypeDTO = workflowTypeDTORepository
+        // .findVertexByWorkflowIdAndVertexName("test", "v0");
 
-        System.out.println(productTypeDTO);
+        // System.out.println(productTypeDTO);
+        // ProductTypeDTO productTypeDTO = new ProductTypeDTO(new ProductType("v0"));
 
-        // WorkflowType w1 = new WorkflowType();
-        // w1.generateRandomDAG(5, 5, 3, 3, 50, PdfType.UNIFORM);
+        // test = workflowTypeDTORepository.updateVertexQuantityProducedAndPdf("test",
+        // "v0", 50,
+        // new ExponentialTime(BigDecimal.valueOf(10)));
 
-        // HeadWorkflowTypeDTO workflowTypeDTO = new HeadWorkflowTypeDTO(w1);
-        // workflowTypeDTORepository.save(workflowTypeDTO);
-
-        // System.out.println(workflowTypeDTORepository.findSpecificSubWorkflow("66c76bf6c2e10d6b8f800a34",
-        // "76a739d2-87d7-493d-90ca-5694aa7c1876"));
-
-        // Optional<HeadWorkflowTypeDTO> headWorkflowTypeDTO = workflowTypeDTORepository
-        // .findById("66c76bf6c2e10d6b8f800a34");
-        // System.out.println(headWorkflowTypeDTO.get());
-
-        // List<AbstractBaseWorkflowDTO<ProductType>> subWorkflows =
-        // headWorkflowTypeDTO.get().getSubWorkflowDTOList();
-        // System.out.println("Sub-workflows: " + subWorkflows);
-
-        // ExplainVerbosity verbosity = ExplainVerbosity.EXECUTION_STATS;
-        // Document explainResult = mongoTemplate.getCollection("Workflow")
-        // .find(query.getQueryObject())
-        // .projection(query.getFieldsObject())
-        // .explain(verbosity);
-        // System.out.println(explainResult.toJson());
-
-        // for (AbstractWorkflowDTO<ProductType, WorkflowType> subWDTO :
-        // result.getSubWorkflowDTOList()) {
-        // System.out.println(subWDTO.getId());
-        // System.out.println(subWDTO.getVertexSet().size());
-        // System.out.println(subWDTO.getEdgeSet().size());
-        // }
+        System.out.println(workflowTypeDTORepository.isProcessed("test", "prova"));
 
     }
 

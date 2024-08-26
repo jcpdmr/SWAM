@@ -1,7 +1,6 @@
 package com.swam.commons.mongodb;
 
 import org.oristool.eulero.modeling.stochastictime.StochasticTime;
-import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -73,8 +72,6 @@ public abstract class AbstractProductDTO<V extends AbstractProduct> implements M
     public Boolean isValid() {
         try {
             V abstractProduct = toProduct();
-            Assert.notNull(abstractProduct.getName(), "Validation error: Product name is null");
-            Assert.notNull(abstractProduct.getItemGroup(), "Validation error: Product itemGroup is null");
         } catch (Exception e) {
             System.err.println("Validation error: cannot convert DTO to Product");
             System.err.println(e.getMessage());

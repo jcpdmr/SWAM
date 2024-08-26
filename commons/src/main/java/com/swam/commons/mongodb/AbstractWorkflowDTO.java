@@ -87,6 +87,12 @@ public abstract class AbstractWorkflowDTO<P extends AbstractProduct> implements 
                 System.err.println("Validation error: Workflow is not connected");
                 return false;
             }
+            if (!abstractWorkflow.checkRootNode()) {
+                System.err.println("Validation error: Workflow's root node not exists or it's not unique");
+                return false;
+            }
+            // TODO: check also if any RAW_MATERIAL has a child (it will be not valid)
+
         } catch (Exception e) {
             System.err.println("Validation error: cannot convert DTO to Workflow");
             System.err.println(e.getMessage());

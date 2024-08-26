@@ -3,8 +3,8 @@
 # curl -X GET http://localhost:8080/api/workflow/catalog
 # echo ""
 
-curl -X GET http://localhost:8080/api/workflow/tobeinstantiated/66cb4992a20535208e0238b8
-echo ""
+# curl -X GET http://localhost:8080/api/workflow/tobeinstantiated/66cb4992a20535208e0238b8
+# echo ""
 
 # curl -X GET http://localhost:8080/api/workflow/tobeinstantiated/66ca0b8e70c55e1ab83b5eb4
 # echo ""
@@ -50,8 +50,14 @@ echo ""
 
 # echo ""
 
-curl -X GET http://localhost:8080/api/workflow/catalog/test/product
-echo ""
+# curl -X GET http://localhost:8080/api/workflow/catalog/test/product
+# echo ""
 
 # curl -X GET http://localhost:8080/api/workflow/catalog/66cb6ea148269f54767faa99/product/v0
 # echo ""
+
+curl -X PUT http://localhost:8080/api/workflow/catalog/test/product/v0 \
+     -H "Content-Type: application/json" \
+     -d @./productData2.json
+
+echo ""

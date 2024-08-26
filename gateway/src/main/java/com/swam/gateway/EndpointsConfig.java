@@ -92,7 +92,8 @@ public class EndpointsConfig {
     public EndPoint productEndpoint() {
 
         String BASE_PATTERN = "/api/workflow"
-                + ApiTemplateVariable.TARGET_TYPE_PATTERN + ApiTemplateVariable.WORKFLOW_ID_PATTERN + "/product";
+                + ApiTemplateVariable.TARGET_TYPE_PATTERN + ApiTemplateVariable.WORKFLOW_ID_PATTERN
+                + "/product";
 
         EndPoint endPoint = EndPoint.builder()
 
@@ -106,12 +107,6 @@ public class EndpointsConfig {
                 .withMethod(HttpMethod.GET)
                 .withNeededIds(ApiTemplateVariable.WORKFLOW_ID)
                 .withOptionalIds(ApiTemplateVariable.PRODUCT_ID)
-                .withRouting(
-                        List.of(Pair.of(TargetMicroservices.CATALOG,
-                                TargetMessageHandler.PRODUCT)))
-                .addMethod(HttpMethod.POST)
-                .withNeededIds(ApiTemplateVariable.WORKFLOW_ID)
-                .withForbiddenIds(ApiTemplateVariable.PRODUCT_ID)
                 .withRouting(
                         List.of(Pair.of(TargetMicroservices.CATALOG,
                                 TargetMessageHandler.PRODUCT)))
