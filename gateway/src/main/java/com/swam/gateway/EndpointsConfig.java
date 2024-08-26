@@ -15,76 +15,144 @@ import com.swam.gateway.EndPoint.TargetType;
 @Configuration
 public class EndpointsConfig {
 
-        // Define all workflows related API calls
-        @Bean
-        public EndPoint workflowEndpoint() {
+    // Define all workflows related API calls
+    @Bean
+    public EndPoint workflowEndpoint() {
 
-                String BASE_PATTERN = "/api/workflow"
-                                + ApiTemplateVariable.TARGET_TYPE_PATTERN;
+        String BASE_PATTERN = "/api/workflow"
+                + ApiTemplateVariable.TARGET_TYPE_PATTERN;
 
-                EndPoint endPoint = EndPoint.builder()
+        EndPoint endPoint = EndPoint.builder()
 
-                                // Setting endpoint paths
-                                .setBindingPaths(List.of(
-                                                BASE_PATTERN,
-                                                BASE_PATTERN + ApiTemplateVariable.WORKFLOW_ID_PATTERN))
+                // Setting endpoint paths
+                .setBindingPaths(List.of(
+                        BASE_PATTERN,
+                        BASE_PATTERN + ApiTemplateVariable.WORKFLOW_ID_PATTERN))
 
-                                // /catalog path
-                                .withTargetType(TargetType.CATALOG)
-                                .withMethod(HttpMethod.GET)
-                                .withOptionalIds(ApiTemplateVariable.WORKFLOW_ID)
-                                .withRouting(
-                                                List.of(Pair.of(TargetMicroservices.CATALOG,
-                                                                TargetMessageHandler.WORKFLOW)))
-                                .addMethod(HttpMethod.POST)
-                                .withForbiddenIds(ApiTemplateVariable.WORKFLOW_ID)
-                                .withRouting(
-                                                List.of(Pair.of(TargetMicroservices.CATALOG,
-                                                                TargetMessageHandler.WORKFLOW)))
-                                .addMethod(HttpMethod.PUT)
-                                .withNeededIds(ApiTemplateVariable.WORKFLOW_ID)
-                                .withRouting(
-                                                List.of(Pair.of(TargetMicroservices.CATALOG,
-                                                                TargetMessageHandler.WORKFLOW)))
-                                .addMethod(HttpMethod.DELETE)
-                                .withNeededIds(ApiTemplateVariable.WORKFLOW_ID)
-                                .withRouting(
-                                                List.of(Pair.of(TargetMicroservices.CATALOG,
-                                                                TargetMessageHandler.WORKFLOW)))
+                // /catalog path
+                .withTargetType(TargetType.CATALOG)
+                .withMethod(HttpMethod.GET)
+                .withOptionalIds(ApiTemplateVariable.WORKFLOW_ID)
+                .withRouting(
+                        List.of(Pair.of(TargetMicroservices.CATALOG,
+                                TargetMessageHandler.WORKFLOW)))
+                .addMethod(HttpMethod.POST)
+                .withForbiddenIds(ApiTemplateVariable.WORKFLOW_ID)
+                .withRouting(
+                        List.of(Pair.of(TargetMicroservices.CATALOG,
+                                TargetMessageHandler.WORKFLOW)))
+                .addMethod(HttpMethod.PUT)
+                .withNeededIds(ApiTemplateVariable.WORKFLOW_ID)
+                .withRouting(
+                        List.of(Pair.of(TargetMicroservices.CATALOG,
+                                TargetMessageHandler.WORKFLOW)))
+                .addMethod(HttpMethod.DELETE)
+                .withNeededIds(ApiTemplateVariable.WORKFLOW_ID)
+                .withRouting(
+                        List.of(Pair.of(TargetMicroservices.CATALOG,
+                                TargetMessageHandler.WORKFLOW)))
 
-                                // /operation path
-                                .addTargetType(TargetType.OPERATION)
-                                .withMethod(HttpMethod.GET)
-                                .withOptionalIds(ApiTemplateVariable.WORKFLOW_ID)
-                                .withRouting(
-                                                List.of(Pair.of(TargetMicroservices.OPERATION,
-                                                                TargetMessageHandler.WORKFLOW)))
-                                .addMethod(HttpMethod.PUT)
-                                .withNeededIds(ApiTemplateVariable.WORKFLOW_ID)
-                                .withRouting(
-                                                List.of(Pair.of(TargetMicroservices.OPERATION,
-                                                                TargetMessageHandler.WORKFLOW)))
-                                .addMethod(HttpMethod.DELETE)
-                                .withNeededIds(ApiTemplateVariable.WORKFLOW_ID)
-                                .withRouting(List
-                                                .of(Pair.of(TargetMicroservices.OPERATION,
-                                                                TargetMessageHandler.WORKFLOW)))
+                // /operation path
+                .addTargetType(TargetType.OPERATION)
+                .withMethod(HttpMethod.GET)
+                .withOptionalIds(ApiTemplateVariable.WORKFLOW_ID)
+                .withRouting(
+                        List.of(Pair.of(TargetMicroservices.OPERATION,
+                                TargetMessageHandler.WORKFLOW)))
+                .addMethod(HttpMethod.PUT)
+                .withNeededIds(ApiTemplateVariable.WORKFLOW_ID)
+                .withRouting(
+                        List.of(Pair.of(TargetMicroservices.OPERATION,
+                                TargetMessageHandler.WORKFLOW)))
+                .addMethod(HttpMethod.DELETE)
+                .withNeededIds(ApiTemplateVariable.WORKFLOW_ID)
+                .withRouting(List
+                        .of(Pair.of(TargetMicroservices.OPERATION,
+                                TargetMessageHandler.WORKFLOW)))
 
-                                // /tobeinstantiated path
-                                .addTargetType(TargetType.TO_BE_ISTANTIATED)
-                                .withMethod(HttpMethod.GET)
-                                .withNeededIds(ApiTemplateVariable.WORKFLOW_ID)
-                                .withRouting(
-                                                List.of(Pair.of(TargetMicroservices.CATALOG,
-                                                                TargetMessageHandler.ISTANCE_TEMPLATE),
-                                                                Pair.of(
-                                                                                TargetMicroservices.OPERATION,
-                                                                                TargetMessageHandler.MAKE_PERSISTENCE)))
+                // /tobeinstantiated path
+                .addTargetType(TargetType.TO_BE_ISTANTIATED)
+                .withMethod(HttpMethod.GET)
+                .withNeededIds(ApiTemplateVariable.WORKFLOW_ID)
+                .withRouting(
+                        List.of(Pair.of(TargetMicroservices.CATALOG,
+                                TargetMessageHandler.ISTANCE_TEMPLATE),
+                                Pair.of(
+                                        TargetMicroservices.OPERATION,
+                                        TargetMessageHandler.MAKE_PERSISTENCE)))
 
-                                .build();
+                .build();
 
-                return endPoint;
+        return endPoint;
 
-        }
+    }
+
+    // Product related API
+    @Bean
+    public EndPoint productEndpoint() {
+
+        String BASE_PATTERN = "/api/workflow"
+                + ApiTemplateVariable.TARGET_TYPE_PATTERN + ApiTemplateVariable.WORKFLOW_ID_PATTERN + "/product";
+
+        EndPoint endPoint = EndPoint.builder()
+
+                // Setting endpoint paths
+                .setBindingPaths(List.of(
+                        BASE_PATTERN,
+                        BASE_PATTERN + ApiTemplateVariable.PRODUCT_ID_PATTERN))
+
+                // /catalog path
+                .withTargetType(TargetType.CATALOG)
+                .withMethod(HttpMethod.GET)
+                .withNeededIds(ApiTemplateVariable.WORKFLOW_ID)
+                .withOptionalIds(ApiTemplateVariable.PRODUCT_ID)
+                .withRouting(
+                        List.of(Pair.of(TargetMicroservices.CATALOG,
+                                TargetMessageHandler.PRODUCT)))
+                .addMethod(HttpMethod.POST)
+                .withNeededIds(ApiTemplateVariable.WORKFLOW_ID)
+                .withForbiddenIds(ApiTemplateVariable.PRODUCT_ID)
+                .withRouting(
+                        List.of(Pair.of(TargetMicroservices.CATALOG,
+                                TargetMessageHandler.PRODUCT)))
+                .addMethod(HttpMethod.PUT)
+                .withNeededIds(ApiTemplateVariable.WORKFLOW_ID)
+                .withNeededIds(ApiTemplateVariable.PRODUCT_ID)
+                .withRouting(
+                        List.of(Pair.of(TargetMicroservices.CATALOG,
+                                TargetMessageHandler.PRODUCT)))
+                .addMethod(HttpMethod.DELETE)
+                .withNeededIds(ApiTemplateVariable.WORKFLOW_ID)
+                .withNeededIds(ApiTemplateVariable.PRODUCT_ID)
+                .withRouting(
+                        List.of(Pair.of(TargetMicroservices.CATALOG,
+                                TargetMessageHandler.PRODUCT)))
+
+                // /operation path
+                .addTargetType(TargetType.OPERATION)
+                .withMethod(HttpMethod.GET)
+                .withNeededIds(ApiTemplateVariable.WORKFLOW_ID)
+                .withOptionalIds(ApiTemplateVariable.PRODUCT_ID)
+                .withRouting(
+                        List.of(Pair.of(TargetMicroservices.OPERATION,
+                                TargetMessageHandler.PRODUCT)))
+                .addMethod(HttpMethod.PUT)
+                .withNeededIds(ApiTemplateVariable.WORKFLOW_ID)
+                .withNeededIds(ApiTemplateVariable.PRODUCT_ID)
+                .withRouting(
+                        List.of(Pair.of(TargetMicroservices.OPERATION,
+                                TargetMessageHandler.PRODUCT)))
+                .addMethod(HttpMethod.DELETE)
+                .withNeededIds(ApiTemplateVariable.WORKFLOW_ID)
+                .withNeededIds(ApiTemplateVariable.PRODUCT_ID)
+                .withRouting(List
+                        .of(Pair.of(TargetMicroservices.OPERATION,
+                                TargetMessageHandler.PRODUCT)))
+
+                .build();
+
+        return endPoint;
+
+    }
 
 }

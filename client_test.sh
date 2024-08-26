@@ -44,8 +44,14 @@
 
 # echo ""
 
-curl -X PUT http://localhost:8080/api/workflow/catalog/66cb4ed6b48c8d6cc4aec99c \
-     -H "Content-Type: application/json" \
-     -d @./client-data.json
+# curl -X PUT http://localhost:8080/api/workflow/catalog/66cb4ed6b48c8d6cc4aec99c \
+#      -H "Content-Type: application/json" \
+#      -d @./client-data.json
 
+# echo ""
+
+curl -X GET http://localhost:8080/api/workflow/catalog/test/product
 echo ""
+
+# curl -X GET http://localhost:8080/api/workflow/catalog/66cb6ea148269f54767faa99/product/v0
+# echo ""

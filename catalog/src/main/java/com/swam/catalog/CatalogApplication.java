@@ -39,6 +39,7 @@ public class CatalogApplication implements CommandLineRunner {
 		w1.generateRandomDAG(5, 5, 3, 3, 50, PdfType.UNIFORM);
 
 		WorkflowTypeDTO workflowTypeDTO = new WorkflowTypeDTO(w1);
+		workflowTypeDTO.setId("test");
 		workflowTypeRepository.save(workflowTypeDTO);
 
 	}

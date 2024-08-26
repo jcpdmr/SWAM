@@ -1,188 +1,180 @@
 {
-  "vertexSet": [
-    {
-      "name": "v11",
-      "itemGroup": "RAW_MATERIAL"
-    },
-    {
-      "name": "v2",
-      "quantityProduced": 15,
-      "pdf": {
-        "type": "UNI",
-        "eft": 3.0,
-        "lft": 5.0
-      },
-      "itemGroup": "PROCESSED"
-    },
-    {
-      "name": "v5",
-      "quantityProduced": 7,
-      "pdf": {
-        "type": "UNI",
-        "eft": 8.0,
-        "lft": 13.0
-      },
-      "itemGroup": "PROCESSED"
-    },
-    {
-      "name": "v8",
-      "itemGroup": "RAW_MATERIAL"
-    },
-    {
-      "name": "v4",
-      "quantityProduced": 6,
-      "pdf": {
-        "type": "UNI",
-        "eft": 9.0,
-        "lft": 19.0
-      },
-      "itemGroup": "PROCESSED"
-    },
-    {
-      "name": "v7",
-      "quantityProduced": 8,
-      "pdf": {
-        "type": "UNI",
-        "eft": 9.0,
-        "lft": 12.0
-      },
-      "itemGroup": "PROCESSED"
-    },
-    {
-      "name": "v14",
-      "itemGroup": "RAW_MATERIAL"
-    },
-    {
-      "name": "v3",
-      "itemGroup": "RAW_MATERIAL"
-    },
-    {
+  "vertexMap": {
+    "v6": {
       "name": "v6",
-      "quantityProduced": 15,
+      "itemGroup": "RAW_MATERIAL"
+    },
+    "v7": {
+      "name": "v7",
+      "itemGroup": "RAW_MATERIAL"
+    },
+    "v8": {
+      "name": "v8",
+      "quantityProduced": 4,
       "pdf": {
         "type": "UNI",
-        "eft": 6.0,
-        "lft": 11.0
+        "eft": 3,
+        "lft": 4
       },
       "itemGroup": "PROCESSED"
     },
-    {
-      "name": "v13",
+    "v9": {
+      "name": "v9",
       "itemGroup": "RAW_MATERIAL"
     },
-    {
-      "name": "v1",
-      "itemGroup": "RAW_MATERIAL"
-    },
-    {
-      "name": "v12",
-      "itemGroup": "RAW_MATERIAL"
-    },
-    {
+    "v10": {
       "name": "v10",
       "itemGroup": "RAW_MATERIAL"
     },
-    {
-      "name": "v9",
-      "quantityProduced": 7,
+    "v12": {
+      "name": "v12",
+      "itemGroup": "RAW_MATERIAL"
+    },
+    "v11": {
+      "name": "v11",
+      "quantityProduced": 2,
       "pdf": {
         "type": "UNI",
-        "eft": 7.0,
-        "lft": 11.0
+        "eft": 6,
+        "lft": 13
       },
       "itemGroup": "PROCESSED"
     },
-    {
+    "v13": {
+      "name": "v13",
+      "itemGroup": "RAW_MATERIAL"
+    },
+    "v0": {
       "name": "v0",
-      "quantityProduced": 10,
+      "quantityProduced": 1,
       "pdf": {
         "type": "UNI",
-        "eft": 9.0,
-        "lft": 12.0
+        "eft": 6,
+        "lft": 9
+      },
+      "itemGroup": "PROCESSED"
+    },
+    "v1": {
+      "name": "v1",
+      "quantityProduced": 2,
+      "pdf": {
+        "type": "UNI",
+        "eft": 2,
+        "lft": 10
+      },
+      "itemGroup": "PROCESSED"
+    },
+    "v2": {
+      "name": "v2",
+      "quantityProduced": 9,
+      "pdf": {
+        "type": "UNI",
+        "eft": 3,
+        "lft": 5
+      },
+      "itemGroup": "PROCESSED"
+    },
+    "v3": {
+      "name": "v3",
+      "quantityProduced": 5,
+      "pdf": {
+        "type": "UNI",
+        "eft": 8,
+        "lft": 10
+      },
+      "itemGroup": "PROCESSED"
+    },
+    "v4": {
+      "name": "v4",
+      "itemGroup": "RAW_MATERIAL"
+    },
+    "v5": {
+      "name": "v5",
+      "quantityProduced": 4,
+      "pdf": {
+        "type": "UNI",
+        "eft": 3,
+        "lft": 12
       },
       "itemGroup": "PROCESSED"
     }
-  ],
+  },
   "edgeSet": [
     {
-      "sourceName": "v13",
-      "targetName": "v9",
-      "quantityRequired": 1
-    },
-    {
-      "sourceName": "v1",
+      "sourceName": "v2",
       "targetName": "v0",
-      "quantityRequired": 10
+      "quantityRequired": 9
     },
     {
-      "sourceName": "v3",
-      "targetName": "v2",
-      "quantityRequired": 2
-    },
-    {
-      "sourceName": "v3",
-      "targetName": "v0",
-      "quantityRequired": 7
-    },
-    {
-      "sourceName": "v11",
-      "targetName": "v6",
+      "sourceName": "v8",
+      "targetName": "v3",
       "quantityRequired": 4
     },
     {
-      "sourceName": "v5",
-      "targetName": "v2",
+      "sourceName": "v7",
+      "targetName": "v1",
       "quantityRequired": 7
     },
     {
       "sourceName": "v9",
-      "targetName": "v6",
+      "targetName": "v8",
       "quantityRequired": 7
     },
     {
-      "sourceName": "v14",
-      "targetName": "v9",
-      "quantityRequired": 7
-    },
-    {
-      "sourceName": "v7",
-      "targetName": "v4",
-      "quantityRequired": 8
-    },
-    {
-      "sourceName": "v2",
+      "sourceName": "v1",
       "targetName": "v0",
+      "quantityRequired": 2
+    },
+    {
+      "sourceName": "v3",
+      "targetName": "v1",
       "quantityRequired": 1
-    },
-    {
-      "sourceName": "v6",
-      "targetName": "v5",
-      "quantityRequired": 10
-    },
-    {
-      "sourceName": "v6",
-      "targetName": "v4",
-      "quantityRequired": 5
     },
     {
       "sourceName": "v10",
       "targetName": "v5",
-      "quantityRequired": 8
+      "quantityRequired": 2
     },
     {
-      "sourceName": "v8",
-      "targetName": "v4",
-      "quantityRequired": 10
-    },
-    {
-      "sourceName": "v4",
-      "targetName": "v2",
+      "sourceName": "v13",
+      "targetName": "v11",
       "quantityRequired": 6
     },
     {
+      "sourceName": "v13",
+      "targetName": "v2",
+      "quantityRequired": 10
+    },
+    {
+      "sourceName": "v5",
+      "targetName": "v1",
+      "quantityRequired": 4
+    },
+    {
+      "sourceName": "v6",
+      "targetName": "v3",
+      "quantityRequired": 2
+    },
+    {
+      "sourceName": "v4",
+      "targetName": "v0",
+      "quantityRequired": 6
+    },
+    {
+      "sourceName": "v11",
+      "targetName": "v8",
+      "quantityRequired": 2
+    },
+    {
       "sourceName": "v12",
-      "targetName": "v7",
-      "quantityRequired": 8
+      "targetName": "v11",
+      "quantityRequired": 7
+    },
+    {
+      "sourceName": "v3",
+      "targetName": "v2",
+      "quantityRequired": 4
     }
-  ]
+  ],
+  "id": "66cb6ea148269f54767faa99"
 }

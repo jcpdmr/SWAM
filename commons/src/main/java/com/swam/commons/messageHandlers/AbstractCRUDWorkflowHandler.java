@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflowDTO<? extends AbstractProduct>>
         extends AbstractCRUDHandler {
 
-    private final WorkflowDTORepository<WFDTO> workflowRepository;
+    private final WorkflowDTORepository<WFDTO, ?> workflowRepository;
     private final Class<WFDTO> clazz;
 
     @Override

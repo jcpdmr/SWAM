@@ -1,7 +1,9 @@
 package com.swam.commons.mongodb;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.springframework.data.annotation.Id;
@@ -27,32 +29,32 @@ public abstract class AbstractWorkflowDTO<P extends AbstractProduct> implements 
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     protected @Id String id;
-    protected final Set<? extends AbstractProductDTO<P>> vertexSet;
+    protected final Map<String, ? extends AbstractProductDTO<P>> vertexMap;
     protected final Set<? extends AbstractCustomEdgeDTO> edgeSet;
     @JsonIgnore
     @Transient
     protected final HashMap<String, P> nameToProductMap;
 
-    protected AbstractWorkflowDTO(String id, Set<? extends AbstractProductDTO<P>> vertexSet,
+    protected AbstractWorkflowDTO(String id, Map<String, ? extends AbstractProductDTO<P>> vertexMap,
             Set<? extends AbstractCustomEdgeDTO> edgeSet) {
         this.id = id;
-        this.vertexSet = vertexSet;
+        this.vertexMap = vertexMap;
         this.edgeSet = edgeSet;
         this.nameToProductMap = new HashMap<>();
     }
 
-    protected AbstractWorkflowDTO(Set<? extends AbstractProductDTO<P>> vertexSet,
+    protected AbstractWorkflowDTO(Map<String, ? extends AbstractProductDTO<P>> vertexMap,
             Set<? extends AbstractCustomEdgeDTO> edgeSet) {
         this.id = null;
-        this.vertexSet = vertexSet;
+        this.vertexMap = vertexMap;
         this.edgeSet = edgeSet;
         this.nameToProductMap = new HashMap<>();
     }
 
     protected AbstractWorkflowDTO(AbstractWorkflow<P> workflow) {
         this.id = null;
-        this.vertexSet = workflow.getDag().vertexSet().stream().map(vertex -> createProductDTO(vertex))
-                .collect(Collectors.toSet());
+        this.vertexMap = workflow.getDag().vertexSet().stream()
+                .collect(Collectors.toMap(vertex -> vertex.getName(), vertex -> createProductDTO(vertex)));
         this.edgeSet = workflow.getDag().edgeSet().stream().map(edge -> createCustomEdgeDTO(edge))
                 .collect(Collectors.toSet());
 
@@ -62,9 +64,9 @@ public abstract class AbstractWorkflowDTO<P extends AbstractProduct> implements 
     public AbstractWorkflow<P> toWorkflow() {
         ListenableDAG<P, CustomEdge> dag = new ListenableDAG<>(CustomEdge.class);
 
-        for (AbstractProductDTO<P> producDTO : vertexSet) {
-            P product = producDTO.toProduct();
-            nameToProductMap.put(producDTO.getName(), product);
+        for (Entry<String, ? extends AbstractProductDTO<P>> producDTOEntry : vertexMap.entrySet()) {
+            P product = producDTOEntry.getValue().toProduct();
+            nameToProductMap.put(producDTOEntry.getKey(), product);
             dag.addVertex(product);
         }
 

@@ -18,9 +18,11 @@ import com.mongodb.ExplainVerbosity;
 import com.qesm.ProductType;
 import com.qesm.WorkflowType;
 import com.swam.commons.intercommunication.MessageDispatcher;
+import com.swam.commons.mongodb.AbstractProductDTO;
 import com.swam.commons.mongodb.AbstractWorkflowDTO;
 import com.swam.commons.mongodb.istance.ProductIstanceDTO;
 import com.swam.commons.mongodb.type.ProductTypeDTO;
+import com.swam.commons.mongodb.type.WorkflowTypeDTO;
 import com.swam.commons.mongodb.type.WorkflowTypeDTORepository;
 
 @ActiveProfiles("test")
@@ -43,6 +45,11 @@ public class CRUDWorkflowTypeHandlerTests {
 
     @Test
     public void prova() {
+
+        Optional<AbstractProductDTO<?>> productTypeDTO = workflowTypeDTORepository
+                .findVertexByWorkflowIdAndVertexName("66cb606bd617dc47f248bbaa", "v0");
+
+        System.out.println(productTypeDTO);
 
         // WorkflowType w1 = new WorkflowType();
         // w1.generateRandomDAG(5, 5, 3, 3, 50, PdfType.UNIFORM);
