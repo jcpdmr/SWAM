@@ -39,8 +39,8 @@ public class WorkflowInstanceDTO extends AbstractWorkflowDTO<ProductInstance> {
         super(vertexMap, edgeSet);
     }
 
-    public WorkflowInstanceDTO(WorkflowInstance workflowIstance) {
-        super(workflowIstance);
+    public WorkflowInstanceDTO(WorkflowInstance workflowInstance) {
+        super(workflowInstance);
     }
 
     @Override

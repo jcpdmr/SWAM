@@ -5,7 +5,7 @@ public final class ApiTemplateVariable {
     // Type
     public static final ApiTemplateVariable TARGET_TYPE = new ApiTemplateVariable("type");
     public static final ApiTemplateVariable TARGET_TYPE_PATTERN = new ApiTemplateVariable("/{" + TARGET_TYPE + "}");
-    // WorkflowType
+    // WorkflowTemplate
     public static final ApiTemplateVariable WORKFLOW_ID = new ApiTemplateVariable("workflowId");
     public static final ApiTemplateVariable WORKFLOW_ID_PATTERN = new ApiTemplateVariable("/{" + WORKFLOW_ID + "}");
     // Product

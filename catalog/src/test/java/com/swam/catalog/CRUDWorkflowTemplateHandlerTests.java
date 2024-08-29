@@ -12,23 +12,23 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.qesm.ProductType;
+import com.qesm.ProductTemplate;
 import com.swam.commons.intercommunication.MessageDispatcher;
-import com.swam.commons.mongodb.type.ProductTypeDTO;
-import com.swam.commons.mongodb.type.WorkflowTypeDTORepository;
+import com.swam.commons.mongodb.template.ProductTemplateDTO;
+import com.swam.commons.mongodb.template.WorkflowTemplateDTORepository;
 
 @ActiveProfiles("test")
 @SpringBootTest()
-public class CRUDWorkflowTypeHandlerTests {
+public class CRUDWorkflowTemplateHandlerTests {
 
     @Autowired
-    private WorkflowTypeDTORepository workflowTypeDTORepository;
+    private WorkflowTemplateDTORepository workflowTemplateDTORepository;
 
     @MockBean
     private MessageDispatcher messageDispatcher;
 
     @MockBean
-    private CRUDWorkflowTypeHandler crudWorkflowTypeHandler;
+    private CRUDWorkflowTemplateHandler crudWorkflowTemplateHandler;
 
     @BeforeAll
     private static void dropDb(@Autowired MongoTemplate mongoTemplate) {
@@ -38,18 +38,21 @@ public class CRUDWorkflowTypeHandlerTests {
     @Test
     public void prova() {
 
-        // Optional<AbstractProductDTO<?>> productTypeDTO = workflowTypeDTORepository
+        // Optional<AbstractProductDTO<?>> productTemplateDTO =
+        // workflowTemplateDTORepository
         // .findVertexByWorkflowIdAndVertexName("test", "v0");
 
-        // System.out.println(productTypeDTO);
-        // ProductTypeDTO productTypeDTO = new ProductTypeDTO(new ProductType("v0"));
+        // System.out.println(productTemplateDTO);
+        // ProductTemplateDTO productTemplateDTO = new ProductTemplateDTO(new
+        // ProductTemplate("v0"));
 
-        // test = workflowTypeDTORepository.updateVertexQuantityProducedAndPdf("test",
+        // test =
+        // workflowTemplateDTORepository.updateVertexQuantityProducedAndPdf("test",
         // "v0", 50,
         // new ExponentialTime(BigDecimal.valueOf(10)));
 
-        System.out.println(workflowTypeDTORepository.existVertexAndIsProcessed("test", "prova"));
-        System.out.println(workflowTypeDTORepository.findWorkflowIfVertexExists("test", "v0"));
+        System.out.println(workflowTemplateDTORepository.existVertexAndIsProcessed("test", "prova"));
+        System.out.println(workflowTemplateDTORepository.findWorkflowIfVertexExists("test", "v0"));
     }
 
 }

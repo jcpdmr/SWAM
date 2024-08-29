@@ -10,8 +10,8 @@ import com.swam.commons.mongodb.instance.WorkflowInstanceDTORepository;
 public class CRUDWorkflowInstanceHandler extends
         AbstractCRUDWorkflowHandler<WorkflowInstanceDTO> {
 
-    public CRUDWorkflowInstanceHandler(WorkflowInstanceDTORepository workflowIstanceRepository) {
-        super(workflowIstanceRepository, WorkflowInstanceDTO.class);
+    public CRUDWorkflowInstanceHandler(WorkflowInstanceDTORepository workflowInstanceRepository) {
+        super(workflowInstanceRepository, WorkflowInstanceDTO.class);
     }
 
 }
