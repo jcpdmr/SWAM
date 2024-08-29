@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.qesm.AbstractProduct;
 import com.qesm.AbstractProduct.ItemGroup;
+import com.swam.commons.intercommunication.ProcessingMessageException;
 import com.swam.commons.intercommunication.StochasticTimeDeserializer;
 import com.swam.commons.intercommunication.StochasticTimeSerializer;
 
@@ -20,7 +21,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class AbstractProductDTO<V extends AbstractProduct> implements MongodbDTO {
+public abstract class AbstractProductDTO<V extends AbstractProduct> implements MongodbDTO<V> {
     private final String name;
     private final Integer quantityProduced;
     @JsonDeserialize(using = StochasticTimeDeserializer.class)
@@ -31,8 +32,8 @@ public abstract class AbstractProductDTO<V extends AbstractProduct> implements M
     protected AbstractProductDTO(V product) {
         this.name = product.getName();
         if (product.isProcessed()) {
-            this.quantityProduced = product.getQuantityProduced().get();
-            this.pdf = product.getPdf().get();
+            this.quantityProduced = product.getQuantityProduced();
+            this.pdf = product.getPdf();
             this.itemGroup = ItemGroup.PROCESSED;
         } else {
             this.quantityProduced = null;
@@ -47,37 +48,29 @@ public abstract class AbstractProductDTO<V extends AbstractProduct> implements M
      * 
      * @return Object of a type that extends AbstractProductDTO
      */
-    protected abstract V createProduct();
+    protected abstract V createProcessedProduct(String name, Integer quantityProduced, StochasticTime pdf);
+
+    protected abstract V createRawProduct(String name);
 
     /**
      * 
      * @return
      */
-    public V toProduct() {
-        V product = createProduct();
-
-        // Set common fields
-        product.setName(name);
-        product.setItemGroup(itemGroup);
-
+    private V toProduct() {
         if (itemGroup == ItemGroup.PROCESSED) {
-            product.setQuantityProduced(quantityProduced);
-            product.setPdf(pdf);
+            return createProcessedProduct(name, quantityProduced, pdf);
+        } else {
+            return createRawProduct(name);
         }
-
-        return product;
     }
 
     @Override
-    public Boolean isValid() {
+    public V convertAndValidate() throws ProcessingMessageException {
         try {
-            V abstractProduct = toProduct();
+            return toProduct();
         } catch (Exception e) {
-            System.err.println("Validation error: cannot convert DTO to Product");
-            System.err.println(e.getMessage());
-            ;
-            return false;
+            throw new ProcessingMessageException(e.getMessage(), "Validation error: cannot convert DTO to Product",
+                    400);
         }
-        return true;
     }
 }

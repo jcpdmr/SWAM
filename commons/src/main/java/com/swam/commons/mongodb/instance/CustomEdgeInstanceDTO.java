@@ -1,4 +1,4 @@
-package com.swam.commons.mongodb.istance;
+package com.swam.commons.mongodb.instance;
 
 import org.springframework.data.annotation.PersistenceCreator;
 
@@ -14,17 +14,17 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper = true)
-public class CustomEdgeIstanceDTO extends AbstractCustomEdgeDTO {
+public class CustomEdgeInstanceDTO extends AbstractCustomEdgeDTO {
 
     @PersistenceCreator
     @JsonCreator
-    public CustomEdgeIstanceDTO(@JsonProperty("sourceName") String sourceName,
+    public CustomEdgeInstanceDTO(@JsonProperty("sourceName") String sourceName,
             @JsonProperty("targetName") String targetName, @JsonProperty("quantityRequired") Integer quantityRequired) {
         super(sourceName, targetName, quantityRequired);
 
     }
 
-    public CustomEdgeIstanceDTO(CustomEdge customEdge) {
+    public CustomEdgeInstanceDTO(CustomEdge customEdge) {
         super(customEdge);
     }
 

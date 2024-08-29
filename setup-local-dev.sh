@@ -51,7 +51,7 @@ check_mongodb() {
   while [ $count -lt $retries ]; do
     echo "Verifica se MongoDB ($service) è pronto... ($((count + 1))/$retries)"
 
-    # Check if mongodb istance is ready
+    # Check if mongodb instance is ready
     if docker compose exec -T "$service" mongosh --eval "db.runCommand({ ping: 1 })" --quiet; then
       echo "$service è pronto a ricevere connessioni."
       return 0
@@ -127,7 +127,7 @@ drop_all_mongoDB_databases(){
   --eval "db.getSiblingDB('$MONGO_DB_NAME').dropDatabase()"
 }
 
-kill_old_spring_istance(){
+kill_old_spring_instance(){
   ps aux | grep 'spring-boot:run' | awk '{print $2}' | while read pid; do
     if [[ -n "$pid" ]]; then
         echo "Terminazione del processo PID: $pid"
@@ -137,7 +137,7 @@ kill_old_spring_istance(){
 }
 
 setup_env(){
-  kill_old_spring_istance
+  kill_old_spring_instance
 
   setup_dependency
 

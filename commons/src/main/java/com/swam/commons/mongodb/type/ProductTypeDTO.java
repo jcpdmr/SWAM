@@ -31,8 +31,13 @@ public class ProductTypeDTO extends AbstractProductDTO<ProductType> {
     }
 
     @Override
-    public ProductType createProduct() {
-        return new ProductType();
+    protected ProductType createProcessedProduct(String name, Integer quantityProduced, StochasticTime pdf) {
+        return new ProductType(name, quantityProduced, pdf);
+    }
+
+    @Override
+    protected ProductType createRawProduct(String name) {
+        return new ProductType(name);
     }
 
 }

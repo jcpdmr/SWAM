@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.qesm.WorkflowIstance;
+import com.qesm.WorkflowInstance;
 import com.qesm.WorkflowType;
 import com.swam.commons.intercommunication.ApiTemplateVariable;
 import com.swam.commons.intercommunication.CustomMessage;
@@ -16,14 +16,14 @@ import com.swam.commons.intercommunication.MessageDispatcher.MessageHandler;
 import com.swam.commons.intercommunication.ProcessingMessageException;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
 import com.swam.commons.mongodb.type.WorkflowTypeDTORepository;
-import com.swam.commons.mongodb.istance.WorkflowIstanceDTO;
+import com.swam.commons.mongodb.instance.WorkflowInstanceDTO;
 import com.swam.commons.mongodb.type.WorkflowTypeDTO;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class MakeIstanceHandler implements MessageHandler {
+public class MakeInstanceHandler implements MessageHandler {
 
     private final WorkflowTypeDTORepository workflowTypeDTORepository;
 
@@ -43,7 +43,7 @@ public class MakeIstanceHandler implements MessageHandler {
         switch (triggeredBinding) {
             case TargetMessageHandler.ISTANCE_TEMPLATE:
                 System.out.println("ISTANCE TEMPLATE");
-                istanceTemplate(context);
+                instanceTemplate(context);
                 break;
             default:
                 // TODO: handle error (maybe internal server error)
@@ -53,7 +53,7 @@ public class MakeIstanceHandler implements MessageHandler {
 
     }
 
-    private void istanceTemplate(CustomMessage context) throws ProcessingMessageException {
+    private void instanceTemplate(CustomMessage context) throws ProcessingMessageException {
         Map<String, String> uriTemplateVariables = context.getUriTemplateVariables();
         String workflowId = uriTemplateVariables.get(ApiTemplateVariable.WORKFLOW_ID.value());
         System.out.println("ID: " + workflowId);
@@ -65,9 +65,9 @@ public class MakeIstanceHandler implements MessageHandler {
         }
 
         // TODO: do we need additional sanity checks?
-        WorkflowType workflowType = (WorkflowType) resultDTO.get().toWorkflow();
-        WorkflowIstance workflowIstance = workflowType.makeIstance();
-        WorkflowIstanceDTO workflowIstanceDTO = new WorkflowIstanceDTO(workflowIstance);
+        WorkflowType workflowType = (WorkflowType) resultDTO.get().convertAndValidate();
+        WorkflowInstance workflowIstance = workflowType.makeInstance();
+        WorkflowInstanceDTO workflowIstanceDTO = new WorkflowInstanceDTO(workflowIstance);
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             String serializedWorkflowIstanceDTO = objectMapper.writeValueAsString(workflowIstanceDTO);

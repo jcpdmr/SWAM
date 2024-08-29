@@ -3,6 +3,7 @@ package com.swam.commons.mongodb.type;
 import java.util.Map;
 import java.util.Set;
 
+import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -10,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.qesm.AbstractWorkflow;
 import com.qesm.CustomEdge;
-import com.qesm.ListenableDAG;
 import com.qesm.ProductType;
 import com.qesm.WorkflowType;
 import com.swam.commons.mongodb.AbstractWorkflowDTO;
@@ -53,7 +53,7 @@ public class WorkflowTypeDTO extends AbstractWorkflowDTO<ProductType> {
     }
 
     @Override
-    protected WorkflowType createWorkflow(ListenableDAG<ProductType, CustomEdge> dag) {
+    protected WorkflowType createWorkflow(DirectedAcyclicGraph<ProductType, CustomEdge> dag) {
         return new WorkflowType(dag);
     }
 

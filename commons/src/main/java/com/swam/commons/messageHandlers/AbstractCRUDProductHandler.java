@@ -1,6 +1,5 @@
 package com.swam.commons.messageHandlers;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,8 +7,6 @@ import org.oristool.eulero.modeling.stochastictime.StochasticTime;
 
 import com.qesm.AbstractProduct;
 import com.qesm.AbstractWorkflow;
-import com.qesm.CustomEdge;
-import com.qesm.ListenableDAG;
 import com.swam.commons.intercommunication.ApiTemplateVariable;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.ProcessingMessageException;
@@ -110,46 +107,24 @@ public class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowDTO<? exte
             throw new ProcessingMessageException("Product with productId: " + productId + " not found", 404);
         }
 
-        AbstractWorkflow<AbstractProduct> workflow = workflowDTO.get().toWorkflow();
-        ListenableDAG<AbstractProduct, CustomEdge> dag = workflow.getDag();
-        AbstractProduct vertexToRemove = null;
-        for (AbstractProduct vertex : dag.vertexSet()) {
-            if (productId.equals(vertex.getName())) {
-                vertexToRemove = vertex;
-                break;
-            }
-        }
-        if (vertexToRemove == null) {
+        AbstractWorkflow<AbstractProduct> workflow = workflowDTO.get().convertAndValidate();
+        Optional<AbstractProduct> vertexToRemove = workflow.findProduct(productId);
+
+        // Should never happen
+        if (vertexToRemove.isEmpty()) {
             throw new ProcessingMessageException("Vertex to remove not found", "Internal server error", 500);
         }
 
-        AbstractProduct rootNode = workflow.computeRootNode();
+        if (workflow.removeVertex(vertexToRemove.get())) {
+            WFDTO updatedWorkflowDTO = uncheckedCast(workflowDTO.get().buildFromWorkflow(workflow));
+            updatedWorkflowDTO.setId(workflowDTO.get().getId());
+            workflowRepository.save(updatedWorkflowDTO);
+            context.setResponse("Product with productId: " + productId + " correctly removed", 200);
 
-        // Removing rootNode means deleting the dag itself
-        if (vertexToRemove.equals(rootNode)) {
+        } else {
             throw new ProcessingMessageException("Cannot remove rootVertex, delete workflow instead", 400);
         }
 
-        // Delete vertex
-        dag.removeVertex(vertexToRemove);
-
-        // Check if dag is still connected, otherwise remove all disconnected verteces
-        if (!workflow.isDagConnected()) {
-            List<AbstractProduct> disconnectedVerteces = new ArrayList<>();
-            for (AbstractProduct node : dag) {
-                if (!dag.getAncestors(node).contains(rootNode)) {
-                    disconnectedVerteces.add(node);
-                }
-            }
-            dag.removeAllVertices(disconnectedVerteces);
-        }
-
-        System.out.println((WFDTO) workflowDTO.get().buildFromWorkflow(workflow));
-
-        // workflowRepository.save((WFDTO)
-        // workflowDTO.get().buildFromWorkflow(workflow));
-
-        context.setResponse("Product with productId: " + productId + " correctly removed", 200);
     }
 
     private List<String> getWorfklowAndProductIds(CustomMessage context) throws ProcessingMessageException {
@@ -161,6 +136,11 @@ public class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowDTO<? exte
         }
 
         return List.of(workflowId, productId);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T uncheckedCast(Object objToCast) {
+        return (T) objToCast;
     }
 
 }

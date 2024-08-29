@@ -43,22 +43,22 @@ public class MakePersistence implements MessageHandler {
         // System.out.println(pt1);
         // System.out.println(pt2);
 
-        // ProductIstance pi1 = new ProductIstance(pt1);
-        // ProductIstance pi2 = new ProductIstance(pt2);
+        // ProductInstance pi1 = new ProductInstance(pt1);
+        // ProductInstance pi2 = new ProductInstance(pt2);
         // System.out.println(pi1);
         // System.out.println(pi2);
 
         // ProductDTO<ProductType> pt1DTO = new ProductDTO<ProductType>(pt1);
         // ProductDTO<ProductType> pt2DTO = new ProductDTO<ProductType>(pt2);
 
-        // ProductDTO<ProductIstance> pi1DTO = new ProductDTO<ProductIstance>(pi1);
-        // ProductDTO<ProductIstance> pi2DTO = new ProductDTO<ProductIstance>(pi2);
+        // ProductDTO<ProductInstance> pi1DTO = new ProductDTO<ProductInstance>(pi1);
+        // ProductDTO<ProductInstance> pi2DTO = new ProductDTO<ProductInstance>(pi2);
 
         // productTypeRepository.save(pt1DTO);
         // productTypeRepository.save(pt2DTO);
 
-        // productIstanceRepository.save(pi1DTO);
-        // productIstanceRepository.save(pi2DTO);
+        // productInstanceRepository.save(pi1DTO);
+        // productInstanceRepository.save(pi2DTO);
 
         // ProductType reconstructedProduct = pt1DTO.toProduct(ProductType.class);
         // System.out.println(reconstructedProduct);

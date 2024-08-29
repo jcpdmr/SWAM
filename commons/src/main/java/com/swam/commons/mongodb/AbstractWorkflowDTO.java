@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.jgrapht.graph.DirectedAcyclicGraph;
+import org.jgrapht.graph.GraphCycleProhibitedException;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 
@@ -15,7 +17,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.qesm.AbstractProduct;
 import com.qesm.AbstractWorkflow;
 import com.qesm.CustomEdge;
-import com.qesm.ListenableDAG;
+import com.qesm.WorkflowValidationException;
+import com.swam.commons.intercommunication.ProcessingMessageException;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +28,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class AbstractWorkflowDTO<P extends AbstractProduct> implements MongodbDTO {
+public abstract class AbstractWorkflowDTO<P extends AbstractProduct> implements MongodbDTO<AbstractWorkflow<P>> {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     protected @Id String id;
@@ -53,19 +56,19 @@ public abstract class AbstractWorkflowDTO<P extends AbstractProduct> implements 
 
     protected AbstractWorkflowDTO(AbstractWorkflow<P> workflow) {
         this.id = null;
-        this.vertexMap = workflow.getDag().vertexSet().stream()
+        this.vertexMap = workflow.cloneDag().vertexSet().stream()
                 .collect(Collectors.toMap(vertex -> vertex.getName(), vertex -> createProductDTO(vertex)));
-        this.edgeSet = workflow.getDag().edgeSet().stream().map(edge -> createCustomEdgeDTO(edge))
+        this.edgeSet = workflow.cloneDag().edgeSet().stream().map(edge -> createCustomEdgeDTO(edge))
                 .collect(Collectors.toSet());
 
         this.nameToProductMap = new HashMap<>();
     }
 
-    public AbstractWorkflow<P> toWorkflow() {
-        ListenableDAG<P, CustomEdge> dag = new ListenableDAG<>(CustomEdge.class);
+    private AbstractWorkflow<P> toWorkflow() throws ProcessingMessageException {
+        DirectedAcyclicGraph<P, CustomEdge> dag = new DirectedAcyclicGraph<>(CustomEdge.class);
 
         for (Entry<String, ? extends AbstractProductDTO<P>> producDTOEntry : vertexMap.entrySet()) {
-            P product = producDTOEntry.getValue().toProduct();
+            P product = producDTOEntry.getValue().convertAndValidate();
             nameToProductMap.put(producDTOEntry.getKey(), product);
             dag.addVertex(product);
         }
@@ -80,31 +83,16 @@ public abstract class AbstractWorkflowDTO<P extends AbstractProduct> implements 
     }
 
     @Override
-    public Boolean isValid() {
+    public AbstractWorkflow<P> convertAndValidate() throws ProcessingMessageException {
         try {
-            AbstractWorkflow<P> abstractWorkflow = toWorkflow();
-            if (!abstractWorkflow.isDagConnected()) {
-                System.err.println("Validation error: Workflow is not connected");
-                return false;
-            }
-            if (!abstractWorkflow.checkRootNode()) {
-                System.err.println("Validation error: Workflow's root node not exists or it's not unique");
-                return false;
-            }
-            // TODO: check also if any RAW_MATERIAL has a child (it will be not valid)
-            for (P product : abstractWorkflow.getDag().vertexSet()) {
-                if (!product.isProcessed() && abstractWorkflow.getDag().inDegreeOf(product) != 0) {
-                    System.out.println("Validation error: there is at least one RAW_MATERIAL with incoming edge");
-                    return false;
-                }
-            }
-
+            return toWorkflow();
+        } catch (WorkflowValidationException e) {
+            throw new ProcessingMessageException(e.getMessage(), 400);
+        } catch (GraphCycleProhibitedException e) {
+            throw new ProcessingMessageException("Validation error: there is a cycle", 400);
         } catch (Exception e) {
-            System.err.println("Validation error: cannot convert DTO to Workflow");
-            System.err.println(e.getMessage());
-            return false;
+            throw new ProcessingMessageException(e.getMessage(), "Internal server Error", 500);
         }
-        return true;
     }
 
     public abstract AbstractWorkflowDTO<P> buildFromWorkflow(AbstractWorkflow<P> workflow);
@@ -113,5 +101,5 @@ public abstract class AbstractWorkflowDTO<P extends AbstractProduct> implements 
 
     protected abstract AbstractCustomEdgeDTO createCustomEdgeDTO(CustomEdge edge);
 
-    protected abstract AbstractWorkflow<P> createWorkflow(ListenableDAG<P, CustomEdge> dag);
+    protected abstract AbstractWorkflow<P> createWorkflow(DirectedAcyclicGraph<P, CustomEdge> dag);
 }

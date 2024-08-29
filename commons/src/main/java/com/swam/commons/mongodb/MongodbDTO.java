@@ -1,8 +1,9 @@
 package com.swam.commons.mongodb;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.swam.commons.intercommunication.ProcessingMessageException;
 
-public interface MongodbDTO {
+public interface MongodbDTO<T> {
     @JsonIgnore
-    public Boolean isValid();
+    public T convertAndValidate() throws ProcessingMessageException;
 }

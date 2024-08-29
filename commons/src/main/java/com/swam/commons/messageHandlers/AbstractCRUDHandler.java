@@ -35,7 +35,7 @@ public abstract class AbstractCRUDHandler implements MessageHandler {
 
     }
 
-    protected <DTO extends MongodbDTO> DTO convertBodyWithValidation(CustomMessage context,
+    protected <DTO extends MongodbDTO<?>> DTO convertBodyWithValidation(CustomMessage context,
             Class<DTO> clazz) throws ProcessingMessageException {
         // RequestBody Check
         if (context.getRequestBody().isEmpty()) {
@@ -54,12 +54,13 @@ public abstract class AbstractCRUDHandler implements MessageHandler {
         }
 
         // DTO validation
-        if (receivedDTO != null && receivedDTO.isValid()) {
-            return receivedDTO;
-        } else {
+        if (receivedDTO == null) {
             throw new ProcessingMessageException(
-                    "Error DTO of type: " + clazz + " is null or can't be validated properly",
-                    context.getRequestMethod() + " request with empty or not valid body", 400);
+                    "Error DTO of type: " + clazz + " is null",
+                    context.getRequestMethod() + " request with empty body", 400);
+        } else {
+            receivedDTO.convertAndValidate();
+            return receivedDTO;
         }
     }
 
