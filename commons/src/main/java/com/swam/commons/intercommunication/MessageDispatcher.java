@@ -83,24 +83,4 @@ public class MessageDispatcher {
         rabbitMQSender.sendToNextHop(message, false);
 
     }
-
-    public interface MessageHandler {
-        public void handle(CustomMessage context, TargetMessageHandler triggeredBinding)
-                throws ProcessingMessageException;
-
-        public List<TargetMessageHandler> getBinding();
-
-        public default String getUriId(CustomMessage context, ApiTemplateVariable apiTemplateVariable,
-                Boolean isRequired)
-                throws ProcessingMessageException {
-            Map<String, String> uriTemplateVariables = context.getUriTemplateVariables();
-            String uriId = uriTemplateVariables.get(apiTemplateVariable.value());
-            if (isRequired && uriId == null) {
-                throw new ProcessingMessageException(context.getRequestMethod() + " with null " + apiTemplateVariable,
-                        "Internal server error", 500);
-            }
-            return uriId;
-
-        }
-    }
 }

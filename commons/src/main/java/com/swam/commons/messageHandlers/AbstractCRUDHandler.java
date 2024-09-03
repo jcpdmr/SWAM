@@ -1,12 +1,9 @@
 package com.swam.commons.messageHandlers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swam.commons.intercommunication.CustomMessage;
+import com.swam.commons.intercommunication.MessageHandler;
 import com.swam.commons.intercommunication.ProcessingMessageException;
-import com.swam.commons.intercommunication.MessageDispatcher.MessageHandler;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
-import com.swam.commons.mongodb.MongodbDTO;
 
 import org.springframework.http.HttpMethod;
 
@@ -33,35 +30,6 @@ public abstract class AbstractCRUDHandler implements MessageHandler {
                     "Internal Server error", 500);
         }
 
-    }
-
-    protected <DTO extends MongodbDTO<?>> DTO convertBodyWithValidation(CustomMessage context,
-            Class<DTO> clazz) throws ProcessingMessageException {
-        // RequestBody Check
-        if (context.getRequestBody().isEmpty()) {
-            throw new ProcessingMessageException("Error request with empty body",
-                    context.getRequestMethod() + " request with empty body", 400);
-        }
-
-        // DTO deserialization
-        DTO receivedDTO = null;
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            receivedDTO = objectMapper.readValue(context.getRequestBody().get(), clazz);
-        } catch (JsonProcessingException e) {
-            throw new ProcessingMessageException(e.getMessage(),
-                    context.getRequestMethod() + " request with empty body", 400);
-        }
-
-        // DTO validation
-        if (receivedDTO == null) {
-            throw new ProcessingMessageException(
-                    "Error DTO of type: " + clazz + " is null",
-                    context.getRequestMethod() + " request with empty body", 400);
-        } else {
-            receivedDTO.convertAndValidate();
-            return receivedDTO;
-        }
     }
 
     protected abstract void get(CustomMessage context) throws ProcessingMessageException;

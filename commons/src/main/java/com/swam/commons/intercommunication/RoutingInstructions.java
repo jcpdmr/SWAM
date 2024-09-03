@@ -19,10 +19,12 @@ public class RoutingInstructions {
         CHECK_ACK,
         NULL,
         MAKE_PERSISTENCE,
+        FORWARD_WORKFLOW,
 
         WORKFLOW,
         PRODUCT,
-        ANALYSIS,
+        ANALYZE_TEMPLATE,
+        ANALYZE_INSTANCE
     }
 
     public enum TargetMicroservices {

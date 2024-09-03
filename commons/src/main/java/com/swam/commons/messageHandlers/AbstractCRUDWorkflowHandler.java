@@ -49,7 +49,7 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
     @Override
     protected void post(CustomMessage context) throws ProcessingMessageException {
 
-        WFDTO receivedWorkflowDTO = convertBodyWithValidation(context, clazz);
+        WFDTO receivedWorkflowDTO = convertRequestBodyWithValidation(context.getRequestBody(), clazz, true);
 
         // Saving workflow to mongoDB
         WFDTO savedWorkflowDTO = workflowRepository.save(receivedWorkflowDTO);
@@ -65,7 +65,7 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
 
         if (workflowRepository.existsById(workflowId)) {
 
-            WFDTO receivedWorkflowDTO = convertBodyWithValidation(context, clazz);
+            WFDTO receivedWorkflowDTO = convertRequestBodyWithValidation(context.getRequestBody(), clazz, true);
             receivedWorkflowDTO.setId(workflowId);
 
             WFDTO savedWorkflowDTO = workflowRepository.save(receivedWorkflowDTO);

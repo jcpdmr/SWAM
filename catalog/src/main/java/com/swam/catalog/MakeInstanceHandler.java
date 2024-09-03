@@ -12,7 +12,7 @@ import com.qesm.WorkflowInstance;
 import com.qesm.WorkflowTemplate;
 import com.swam.commons.intercommunication.ApiTemplateVariable;
 import com.swam.commons.intercommunication.CustomMessage;
-import com.swam.commons.intercommunication.MessageDispatcher.MessageHandler;
+import com.swam.commons.intercommunication.MessageHandler;
 import com.swam.commons.intercommunication.ProcessingMessageException;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
 import com.swam.commons.mongodb.instance.WorkflowInstanceDTO;

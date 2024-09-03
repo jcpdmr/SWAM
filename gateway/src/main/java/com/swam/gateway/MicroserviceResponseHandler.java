@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.CustomMessage.MessageType;
-import com.swam.commons.intercommunication.MessageDispatcher.MessageHandler;
+import com.swam.commons.intercommunication.MessageHandler;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
 
 import lombok.AllArgsConstructor;

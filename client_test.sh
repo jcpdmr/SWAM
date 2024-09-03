@@ -3,14 +3,13 @@
 # curl -X GET http://localhost:8080/api/workflow/catalog
 # echo ""
 
+# curl -X GET http://localhost:8080/api/workflow/catalog/test
+# echo ""
+
 # curl -X GET http://localhost:8080/api/workflow/tobeinstantiated/66cb4992a20535208e0238b8
 # echo ""
 
 # curl -X GET http://localhost:8080/api/workflow/tobeinstantiated/66ca0b8e70c55e1ab83b5eb4
-# echo ""
-
-
-# curl -X GET http://localhost:8080/api/workflow/catalog/66ca140340f089794e33de04
 # echo ""
 
 # curl -X GET http://localhost:8080/api/workflow/operation
@@ -62,5 +61,8 @@
 
 # echo ""
 
-curl -X DELETE http://localhost:8080/api/workflow/catalog/test/product/v5
+# curl -X DELETE http://localhost:8080/api/workflow/catalog/test/product/v5
+# echo ""
+
+curl -X GET http://localhost:8080/api/analysis/catalog/test
 echo ""

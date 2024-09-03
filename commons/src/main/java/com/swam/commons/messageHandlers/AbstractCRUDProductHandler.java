@@ -63,7 +63,8 @@ public class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowDTO<? exte
         String workflowId = ids.get(0);
         String productId = ids.get(1);
 
-        AbstractProductDTO<?> abstractProductDTO = convertBodyWithValidation(context, clazzP);
+        AbstractProductDTO<?> abstractProductDTO = convertRequestBodyWithValidation(context.getRequestBody(),
+                clazzP, true);
 
         if (workflowRepository.existVertexAndIsProcessed(workflowId, productId)) {
             Integer quantityProduced = abstractProductDTO.getQuantityProduced();
