@@ -28,10 +28,8 @@ public class MakeInstanceHandler implements MessageHandler {
 
     @Override
     public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) throws ProcessingMessageException {
-        System.out.println("Execute CATALOG MAKE_ISTANCE");
 
         // DEBUG
-        System.out.println("Execute MakeInstance");
         if (context.getRequestBody().isPresent()) {
             System.out.println("RequestBody: " + context.getRequestBody().get());
         }

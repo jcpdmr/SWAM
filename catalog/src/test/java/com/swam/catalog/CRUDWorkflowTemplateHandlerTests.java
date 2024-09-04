@@ -1,7 +1,5 @@
 package com.swam.catalog;
 
-import java.math.BigDecimal;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.oristool.eulero.modeling.stochastictime.ExponentialTime;

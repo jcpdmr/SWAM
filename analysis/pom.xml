@@ -14,6 +14,15 @@
 	<name>analysis</name>
 	<description>Demo project for Spring Boot</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.knowm.xchart</groupId>
+            <artifactId>xchart</artifactId>
+            <version>3.8.0</version>
+        </dependency>
+    </dependencies>
+    
+
 	<!-- <build>
 		<plugins>
 			<plugin>

@@ -3,6 +3,9 @@ package com.swam.commons.messageHandlers;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qesm.AbstractProduct;
@@ -21,6 +24,7 @@ public abstract class AbstractForwardWorkflowHandler<WFDTO extends AbstractWorkf
         implements MessageHandler {
 
     private final WorkflowDTORepository<WFDTO, ?> workflowRepository;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public List<TargetMessageHandler> getBinding() {
@@ -44,6 +48,8 @@ public abstract class AbstractForwardWorkflowHandler<WFDTO extends AbstractWorkf
                         "Internal Server Error", 500);
             }
         }
+
+        logger.info("Workflow forwarded successfully");
     }
 
 }

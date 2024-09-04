@@ -5,26 +5,30 @@ import com.swam.commons.intercommunication.MessageHandler;
 import com.swam.commons.intercommunication.ProcessingMessageException;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 
 public abstract class AbstractCRUDHandler implements MessageHandler {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) throws ProcessingMessageException {
         // System.out.println("Execute CRUD");
 
         if (context.getRequestMethod().equals(HttpMethod.GET)) {
-            // System.out.println("GET");
             get(context);
+            logger.info("GET Workflow correctly");
         } else if (context.getRequestMethod().equals(HttpMethod.POST)) {
-            // System.out.println("POST");
             post(context);
+            logger.info("POST Workflow correctly");
         } else if (context.getRequestMethod().equals(HttpMethod.PUT)) {
-            // System.out.println("PUT");
             put(context);
+            logger.info("PUT Workflow correctly");
         } else if (context.getRequestMethod().equals(HttpMethod.DELETE)) {
-            // System.out.println("DELETE");
             delete(context);
+            logger.info("DELETE Workflow correctly");
         } else {
             throw new ProcessingMessageException("Error requestMethod: " + context.getRequestMethod() + " not handled",
                     "Internal Server error", 500);

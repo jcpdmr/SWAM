@@ -21,6 +21,7 @@ spring:
     username: myuser
     password: secret
     in-queue: catalog_in
-# logging:
-#   level:
-#     org.springframework.boot.devtools: DEBUG
+
+logging:
+  level:
+    guru.nidi.graphviz: OFF

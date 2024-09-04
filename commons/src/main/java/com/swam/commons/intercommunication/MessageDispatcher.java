@@ -6,6 +6,8 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,7 @@ import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHand
 public class MessageDispatcher {
     private final Map<List<TargetMessageHandler>, MessageHandler> messageHandlerMap;
     private final RabbitMQSender rabbitMQSender;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public MessageDispatcher(RabbitMQSender rabbitMQSender, List<MessageHandler> messageHandlers) {
         this.rabbitMQSender = rabbitMQSender;
@@ -28,11 +31,11 @@ public class MessageDispatcher {
         try {
             this.dispatchMessage(message);
         } catch (ProcessingMessageException e) {
-            System.err.println("ProcessingMessageException: " + e.getMessage());
+            logger.error("ProcessingMessageException: " + e.getMessage(), e);
             message.setError(e.getResponseError(), e.getHttpStatusCode());
             rabbitMQSender.sendToNextHop(message, false);
         } catch (RuntimeException e) {
-            e.printStackTrace();
+            logger.error("RunTimeException: " + e.getMessage(), e);
             message.setError("Internal server Error", 500);
             rabbitMQSender.sendToNextHop(message, false);
         }
@@ -52,7 +55,7 @@ public class MessageDispatcher {
         // System.out.println("Nome del motodo da eseguire: " + method);
 
         if (targetMessageHandler.equals(TargetMessageHandler.NULL)) {
-            System.out.println("execute NULL method");
+            logger.info("Execute NULL method");
         } else {
 
             MessageHandler messageHandler = null;
@@ -70,7 +73,8 @@ public class MessageDispatcher {
             }
 
             if (messageHandler != null) {
-                System.out.println("Execute handler: " + targetMessageHandler);
+                logger.info("Execute handler: " + targetMessageHandler);
+                // System.out.println("Execute handler: " + targetMessageHandler);
                 messageHandler.handle(message, targetMessageHandler);
             } else {
 

@@ -1,5 +1,5 @@
-curl -G -d "paramTest1=ciao" -d "paramTest2=prova" http://localhost:8080/api/workflow/catalog/test
-echo ""
+# curl -G -d "paramTest1=ciao" -d "paramTest2=prova" http://localhost:8080/api/workflow/catalog/test
+# echo ""
 
 # curl -X GET http://localhost:8080/api/workflow/catalog
 # echo ""
@@ -67,3 +67,6 @@ echo ""
 
 # curl -X GET http://localhost:8080/api/analysis/catalog/test
 # echo ""
+
+curl -G -d "format=svg" http://localhost:8080/api/analysis/catalog/test
+echo ""
