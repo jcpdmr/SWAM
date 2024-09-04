@@ -18,13 +18,15 @@ import com.swam.commons.mongodb.instance.WorkflowInstanceDTO;
 import com.swam.commons.mongodb.template.WorkflowTemplateDTO;
 import com.swam.commons.mongodb.template.WorkflowTemplateDTORepository;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
-public class MakeInstanceHandler implements MessageHandler {
+public class MakeInstanceHandler extends MessageHandler {
 
     private final WorkflowTemplateDTORepository workflowTemplateDTORepository;
+
+    public MakeInstanceHandler(WorkflowTemplateDTORepository workflowTemplateDTORepository) {
+        super(List.of(TargetMessageHandler.ISTANCE_TEMPLATE));
+        this.workflowTemplateDTORepository = workflowTemplateDTORepository;
+    }
 
     @Override
     public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) throws ProcessingMessageException {
@@ -72,11 +74,6 @@ public class MakeInstanceHandler implements MessageHandler {
                     "Internal Server Error", 500);
         }
 
-    }
-
-    @Override
-    public List<TargetMessageHandler> getBinding() {
-        return List.of(TargetMessageHandler.ISTANCE_TEMPLATE);
     }
 
 }

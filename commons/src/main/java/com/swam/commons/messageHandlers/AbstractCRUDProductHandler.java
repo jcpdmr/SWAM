@@ -15,14 +15,19 @@ import com.swam.commons.mongodb.AbstractProductDTO;
 import com.swam.commons.mongodb.AbstractWorkflowDTO;
 import com.swam.commons.mongodb.WorkflowDTORepository;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
-public class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowDTO<? extends AbstractProduct>>
+public abstract class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowDTO<? extends AbstractProduct>>
         extends AbstractCRUDHandler {
 
     private final WorkflowDTORepository<WFDTO, ? extends AbstractProductDTO<? extends AbstractProduct>> workflowRepository;
     private final Class<? extends AbstractProductDTO<?>> clazzP;
+
+    public AbstractCRUDProductHandler(
+            WorkflowDTORepository<WFDTO, ? extends AbstractProductDTO<? extends AbstractProduct>> workflowRepository,
+            Class<? extends AbstractProductDTO<?>> clazzP) {
+        super(List.of(TargetMessageHandler.PRODUCT));
+        this.workflowRepository = workflowRepository;
+        this.clazzP = clazzP;
+    }
 
     @Override
     public List<TargetMessageHandler> getBinding() {
@@ -31,9 +36,9 @@ public class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowDTO<? exte
 
     @Override
     protected void get(CustomMessage context) throws ProcessingMessageException {
-        List<String> ids = getWorfklowAndProductIds(context);
-        String workflowId = ids.get(0);
-        String productId = ids.get(1);
+        String[] ids = getWorfklowAndProductIds(context);
+        String workflowId = ids[0];
+        String productId = ids[1];
 
         if (productId != null) {
             Optional<AbstractProductDTO<?>> receivedProduct = workflowRepository
@@ -59,9 +64,9 @@ public class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowDTO<? exte
 
     @Override
     protected void put(CustomMessage context) throws ProcessingMessageException {
-        List<String> ids = getWorfklowAndProductIds(context);
-        String workflowId = ids.get(0);
-        String productId = ids.get(1);
+        String[] ids = getWorfklowAndProductIds(context);
+        String workflowId = ids[0];
+        String productId = ids[1];
 
         AbstractProductDTO<?> abstractProductDTO = convertRequestBody(context.getRequestBody(),
                 clazzP, true);
@@ -98,9 +103,9 @@ public class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowDTO<? exte
 
     @Override
     protected void delete(CustomMessage context) throws ProcessingMessageException {
-        List<String> ids = getWorfklowAndProductIds(context);
-        String workflowId = ids.get(0);
-        String productId = ids.get(1);
+        String[] ids = getWorfklowAndProductIds(context);
+        String workflowId = ids[0];
+        String productId = ids[1];
 
         Optional<AbstractWorkflowDTO<AbstractProduct>> workflowDTO = workflowRepository
                 .findWorkflowIfVertexExists(workflowId, productId);
@@ -128,7 +133,7 @@ public class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowDTO<? exte
 
     }
 
-    private List<String> getWorfklowAndProductIds(CustomMessage context) throws ProcessingMessageException {
+    private String[] getWorfklowAndProductIds(CustomMessage context) throws ProcessingMessageException {
         String workflowId = getUriId(context, ApiTemplateVariable.WORKFLOW_ID, true);
         String productId = getUriId(context, ApiTemplateVariable.PRODUCT_ID, false);
 
@@ -136,7 +141,7 @@ public class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowDTO<? exte
             throw new ProcessingMessageException("Workflow with workflowId: " + workflowId + " not found", 404);
         }
 
-        return List.of(workflowId, productId);
+        return new String[] { workflowId, productId };
     }
 
     @SuppressWarnings("unchecked")

@@ -3,9 +3,6 @@ package com.swam.commons.messageHandlers;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qesm.AbstractProduct;
@@ -17,18 +14,14 @@ import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHand
 import com.swam.commons.mongodb.AbstractWorkflowDTO;
 import com.swam.commons.mongodb.WorkflowDTORepository;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public abstract class AbstractForwardWorkflowHandler<WFDTO extends AbstractWorkflowDTO<? extends AbstractProduct>>
-        implements MessageHandler {
+        extends MessageHandler {
 
     private final WorkflowDTORepository<WFDTO, ?> workflowRepository;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Override
-    public List<TargetMessageHandler> getBinding() {
-        return List.of(TargetMessageHandler.FORWARD_WORKFLOW);
+    public AbstractForwardWorkflowHandler(WorkflowDTORepository<WFDTO, ?> workflowRepository) {
+        super(List.of(TargetMessageHandler.FORWARD_WORKFLOW));
+        this.workflowRepository = workflowRepository;
     }
 
     @Override

@@ -13,13 +13,15 @@ import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHand
 import com.swam.commons.mongodb.instance.WorkflowInstanceDTO;
 import com.swam.commons.mongodb.instance.WorkflowInstanceDTORepository;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 @Service
-public class MakePersistenceHandler implements MessageHandler {
+public class MakePersistenceHandler extends MessageHandler {
 
     private final WorkflowInstanceDTORepository workflowInstanceDTORepository;
+
+    public MakePersistenceHandler(WorkflowInstanceDTORepository workflowInstanceDTORepository) {
+        super(List.of(TargetMessageHandler.MAKE_PERSISTENCE));
+        this.workflowInstanceDTORepository = workflowInstanceDTORepository;
+    }
 
     @Override
     public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) throws ProcessingMessageException {
@@ -61,11 +63,6 @@ public class MakePersistenceHandler implements MessageHandler {
         // context.setError("Server error", 500);
         // return;
         // }
-    }
-
-    @Override
-    public List<TargetMessageHandler> getBinding() {
-        return List.of(TargetMessageHandler.MAKE_PERSISTENCE);
     }
 
 }

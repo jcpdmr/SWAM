@@ -4,18 +4,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
 import com.swam.commons.mongodb.MongodbDTO;
 
-public interface MessageHandler {
-    public void handle(CustomMessage context, TargetMessageHandler triggeredBinding)
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public abstract class MessageHandler {
+
+    private final List<TargetMessageHandler> bindings;
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    protected abstract void handle(CustomMessage context, TargetMessageHandler triggeredBinding)
             throws ProcessingMessageException;
 
-    public List<TargetMessageHandler> getBinding();
+    public List<TargetMessageHandler> getBinding() {
+        return bindings;
+    }
 
-    public default String getUriId(CustomMessage context, ApiTemplateVariable apiTemplateVariable,
+    protected String getUriId(CustomMessage context, ApiTemplateVariable apiTemplateVariable,
             Boolean isRequired)
             throws ProcessingMessageException {
         Map<String, String> uriTemplateVariables = context.getUriTemplateVariables();
@@ -28,7 +40,7 @@ public interface MessageHandler {
 
     }
 
-    public default Boolean isParamSpecified(CustomMessage context, String paramKey, String paramValue) {
+    protected Boolean isParamSpecified(CustomMessage context, String paramKey, String paramValue) {
         if (context.getRequestParams().isPresent()) {
             Map<String, String> paramsMap = context.getRequestParams().get();
             if (paramsMap.containsKey(paramKey) && paramsMap.get(paramKey).equals(paramValue)) {
@@ -38,13 +50,13 @@ public interface MessageHandler {
         return false;
     }
 
-    public default <DTO extends MongodbDTO<?>, T> T convertResponseBody(Object responseBody,
+    protected <DTO extends MongodbDTO<?>, T> T convertResponseBody(Object responseBody,
             Class<DTO> clazz, Boolean toDTO) throws ProcessingMessageException {
         return uncheckedCast(
                 convertBody((String) responseBody, clazz, "Internal server error", 500, toDTO));
     }
 
-    public default <DTO extends MongodbDTO<?>, T> T convertRequestBody(Optional<String> requestBody,
+    protected <DTO extends MongodbDTO<?>, T> T convertRequestBody(Optional<String> requestBody,
             Class<DTO> clazz, Boolean toDTO) throws ProcessingMessageException {
         // RequestBody Check
         if (requestBody.isEmpty()) {

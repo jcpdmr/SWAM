@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 
 import org.knowm.xchart.VectorGraphicsEncoder;
 import org.knowm.xchart.XYChart;
@@ -16,8 +17,6 @@ import org.oristool.eulero.evaluation.approximator.TruncatedExponentialMixtureAp
 import org.oristool.eulero.evaluation.heuristics.AnalysisHeuristicsVisitor;
 import org.oristool.eulero.evaluation.heuristics.RBFHeuristicsVisitor;
 import org.oristool.eulero.modeling.Activity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.qesm.AbstractProduct;
 import com.qesm.AbstractWorkflow;
@@ -29,14 +28,17 @@ import com.swam.commons.intercommunication.ProcessingMessageException;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
 import com.swam.commons.mongodb.AbstractWorkflowDTO;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
-public abstract class AbstractAnalyzeHandler<V extends AbstractProduct> implements MessageHandler {
+public abstract class AbstractAnalyzeHandler<V extends AbstractProduct> extends MessageHandler {
 
     private final Class<? extends AbstractWorkflowDTO<?>> workflowDTOclass;
     private final Class<V> dagVertexClass;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public AbstractAnalyzeHandler(List<TargetMessageHandler> bindings,
+            Class<? extends AbstractWorkflowDTO<?>> workflowDTOclass, Class<V> dagVertexClass) {
+        super(bindings);
+        this.workflowDTOclass = workflowDTOclass;
+        this.dagVertexClass = dagVertexClass;
+    }
 
     @Override
     public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) throws ProcessingMessageException {

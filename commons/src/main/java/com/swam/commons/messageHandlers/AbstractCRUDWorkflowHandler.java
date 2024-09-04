@@ -15,18 +15,16 @@ import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHand
 import com.swam.commons.mongodb.AbstractWorkflowDTO;
 import com.swam.commons.mongodb.WorkflowDTORepository;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflowDTO<? extends AbstractProduct>>
         extends AbstractCRUDHandler {
 
     private final WorkflowDTORepository<WFDTO, ?> workflowRepository;
     private final Class<WFDTO> workflowClazz;
 
-    @Override
-    public List<TargetMessageHandler> getBinding() {
-        return List.of(TargetMessageHandler.WORKFLOW);
+    public AbstractCRUDWorkflowHandler(WorkflowDTORepository<WFDTO, ?> workflowRepository, Class<WFDTO> workflowClazz) {
+        super(List.of(TargetMessageHandler.WORKFLOW));
+        this.workflowRepository = workflowRepository;
+        this.workflowClazz = workflowClazz;
     }
 
     @Override

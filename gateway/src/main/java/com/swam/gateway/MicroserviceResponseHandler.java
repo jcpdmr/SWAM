@@ -11,14 +11,15 @@ import com.swam.commons.intercommunication.CustomMessage.MessageType;
 import com.swam.commons.intercommunication.MessageHandler;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 @Service
-public class MicroserviceResponseHandler implements MessageHandler {
+public class MicroserviceResponseHandler extends MessageHandler {
 
     private final AsyncResponseHandler asyncResponseHandler;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public MicroserviceResponseHandler(AsyncResponseHandler asyncResponseHandler) {
+        super(List.of(TargetMessageHandler.CHECK_ACK));
+        this.asyncResponseHandler = asyncResponseHandler;
+    }
 
     @Override
     public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) {
@@ -38,16 +39,11 @@ public class MicroserviceResponseHandler implements MessageHandler {
             logger.info("Recived ACK from: " + context.getSender());
 
         } else if (context.getMessageType().equals(MessageType.ERROR)) {
-            logger.error("Error message: " + context);
+            logger.warn("Error message: " + context);
             asyncResponseHandler.setDeferredResult(context.getDeferredResultId(), context.getResponseEntity());
             context.setMessageType(MessageType.END_MESSAGE);
         }
 
-    }
-
-    @Override
-    public List<TargetMessageHandler> getBinding() {
-        return List.of(TargetMessageHandler.CHECK_ACK);
     }
 
 }

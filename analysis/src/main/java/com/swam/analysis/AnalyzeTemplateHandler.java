@@ -11,11 +11,6 @@ import com.swam.commons.mongodb.template.WorkflowTemplateDTO;
 @Service
 public class AnalyzeTemplateHandler extends AbstractAnalyzeHandler<ProductTemplate> {
     public AnalyzeTemplateHandler() {
-        super(WorkflowTemplateDTO.class, ProductTemplate.class);
-    }
-
-    @Override
-    public List<TargetMessageHandler> getBinding() {
-        return List.of(TargetMessageHandler.ANALYZE_TEMPLATE);
+        super(List.of(TargetMessageHandler.ANALYZE_TEMPLATE), WorkflowTemplateDTO.class, ProductTemplate.class);
     }
 }

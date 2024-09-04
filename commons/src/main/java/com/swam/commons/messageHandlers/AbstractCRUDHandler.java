@@ -5,13 +5,15 @@ import com.swam.commons.intercommunication.MessageHandler;
 import com.swam.commons.intercommunication.ProcessingMessageException;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
+
 import org.springframework.http.HttpMethod;
 
-public abstract class AbstractCRUDHandler implements MessageHandler {
+public abstract class AbstractCRUDHandler extends MessageHandler {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    public AbstractCRUDHandler(List<TargetMessageHandler> bindings) {
+        super(bindings);
+    }
 
     @Override
     public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) throws ProcessingMessageException {

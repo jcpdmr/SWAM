@@ -62,11 +62,11 @@
 
 # echo ""
 
-# curl -X DELETE http://localhost:8080/api/workflow/catalog/test/product/v5
+# curl -X DELETE http://localhost:8080/api/workflow/catalog/test/product/v2
 # echo ""
 
 # curl -X GET http://localhost:8080/api/analysis/catalog/test
 # echo ""
 
-curl -G -d "format=svg" http://localhost:8080/api/analysis/catalog/test
-echo ""
+# curl -G -d "format=svg" http://localhost:8080/api/analysis/catalog/test
+# echo ""
