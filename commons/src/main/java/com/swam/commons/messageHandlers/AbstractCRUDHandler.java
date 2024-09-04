@@ -11,19 +11,19 @@ public abstract class AbstractCRUDHandler implements MessageHandler {
 
     @Override
     public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) throws ProcessingMessageException {
-        System.out.println("Execute CRUD");
+        // System.out.println("Execute CRUD");
 
         if (context.getRequestMethod().equals(HttpMethod.GET)) {
-            System.out.println("GET");
+            // System.out.println("GET");
             get(context);
         } else if (context.getRequestMethod().equals(HttpMethod.POST)) {
-            System.out.println("POST");
+            // System.out.println("POST");
             post(context);
         } else if (context.getRequestMethod().equals(HttpMethod.PUT)) {
-            System.out.println("PUT");
+            // System.out.println("PUT");
             put(context);
         } else if (context.getRequestMethod().equals(HttpMethod.DELETE)) {
-            System.out.println("DELETE");
+            // System.out.println("DELETE");
             delete(context);
         } else {
             throw new ProcessingMessageException("Error requestMethod: " + context.getRequestMethod() + " not handled",

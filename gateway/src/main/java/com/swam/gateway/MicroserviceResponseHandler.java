@@ -19,15 +19,16 @@ public class MicroserviceResponseHandler implements MessageHandler {
 
     @Override
     public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) {
-        System.out.println("Execute HandleACK");
 
         // TODO: monitor response progress with ackHop
         if (context.getMessageType().equals(MessageType.END_MESSAGE)) {
             Integer ackHop = context.getRoutingInstructions().getHopCounter();
             System.out.println("Recived END_MESSAGE from: " + context.getSender());
             System.out.println("Request completed");
+
             // Notify Client setting DeferredResult
-            asyncResponseHandler.setDeferredResult(context.getDeferredResultId(), context.getResponseEntity());
+            asyncResponseHandler.setDeferredResult(context.getDeferredResultId(),
+                    context.getResponseEntity());
 
         } else if (context.getMessageType().equals(MessageType.ACK)) {
             Integer ackHop = context.getAckHop().get();

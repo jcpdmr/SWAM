@@ -7,11 +7,8 @@ import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.Update;
-import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.qesm.AbstractProduct;
-import com.swam.commons.mongodb.template.ProductTemplateDTO;
 
 public interface WorkflowDTORepository<WFDTO extends AbstractWorkflowDTO<? extends AbstractProduct>, P extends AbstractProductDTO<? extends AbstractProduct>>
         extends MongoRepository<WFDTO, String> {

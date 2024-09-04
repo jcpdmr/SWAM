@@ -1,4 +1,5 @@
-# curl -G -d "paramTest1=ciao" -d "paramTest2=prova" http://localhost:8080/api/workflow
+curl -G -d "paramTest1=ciao" -d "paramTest2=prova" http://localhost:8080/api/workflow/catalog/test
+echo ""
 
 # curl -X GET http://localhost:8080/api/workflow/catalog
 # echo ""
@@ -64,5 +65,5 @@
 # curl -X DELETE http://localhost:8080/api/workflow/catalog/test/product/v5
 # echo ""
 
-curl -X GET http://localhost:8080/api/analysis/catalog/test
-echo ""
+# curl -X GET http://localhost:8080/api/analysis/catalog/test
+# echo ""

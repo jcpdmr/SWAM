@@ -1,7 +1,6 @@
 package com.swam.catalog;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -54,9 +53,7 @@ public class MakeInstanceHandler implements MessageHandler {
     }
 
     private void instanceTemplate(CustomMessage context) throws ProcessingMessageException {
-        Map<String, String> uriTemplateVariables = context.getUriTemplateVariables();
-        String workflowId = uriTemplateVariables.get(ApiTemplateVariable.WORKFLOW_ID.value());
-        System.out.println("ID: " + workflowId);
+        String workflowId = getUriId(context, ApiTemplateVariable.WORKFLOW_ID, true);
 
         Optional<WorkflowTemplateDTO> resultDTO = workflowTemplateDTORepository.findById(workflowId);
 

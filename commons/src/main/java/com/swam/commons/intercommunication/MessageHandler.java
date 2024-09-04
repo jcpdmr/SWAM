@@ -28,13 +28,23 @@ public interface MessageHandler {
 
     }
 
-    public default <DTO extends MongodbDTO<?>, T> T convertResponseBodyWithValidation(Object responseBody,
-            Class<DTO> clazz, Boolean toDTO) throws ProcessingMessageException {
-        return uncheckedCast(
-                convertBodyWithValidation((String) responseBody, clazz, "Internal server error", 500, toDTO));
+    public default Boolean isParamSpecified(CustomMessage context, String paramKey, String paramValue) {
+        if (context.getRequestParams().isPresent()) {
+            Map<String, String> paramsMap = context.getRequestParams().get();
+            if (paramsMap.containsKey(paramKey) && paramsMap.get(paramKey).equals(paramValue)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public default <DTO extends MongodbDTO<?>, T> T convertRequestBodyWithValidation(Optional<String> requestBody,
+    public default <DTO extends MongodbDTO<?>, T> T convertResponseBody(Object responseBody,
+            Class<DTO> clazz, Boolean toDTO) throws ProcessingMessageException {
+        return uncheckedCast(
+                convertBody((String) responseBody, clazz, "Internal server error", 500, toDTO));
+    }
+
+    public default <DTO extends MongodbDTO<?>, T> T convertRequestBody(Optional<String> requestBody,
             Class<DTO> clazz, Boolean toDTO) throws ProcessingMessageException {
         // RequestBody Check
         if (requestBody.isEmpty()) {
@@ -42,10 +52,10 @@ public interface MessageHandler {
                     "Error: request with empty body", 400);
         }
         return uncheckedCast(
-                convertBodyWithValidation(requestBody.get(), clazz, "Error: request with empty body", 400, toDTO));
+                convertBody(requestBody.get(), clazz, "Error: request with empty body", 400, toDTO));
     }
 
-    private <DTO extends MongodbDTO<?>> Object convertBodyWithValidation(String body,
+    private <DTO extends MongodbDTO<?>> Object convertBody(String body,
             Class<DTO> clazz, String responseErrorMsg, Integer httpStatusCode, Boolean toDTO)
             throws ProcessingMessageException {
 
@@ -59,7 +69,7 @@ public interface MessageHandler {
                     responseErrorMsg, httpStatusCode);
         }
 
-        // DTO validation
+        // DTO convertion and validation
         if (receivedDTO == null) {
             throw new ProcessingMessageException(
                     "Error DTO of type: " + clazz + " is null",

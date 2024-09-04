@@ -30,7 +30,6 @@ public abstract class AbstractForwardWorkflowHandler<WFDTO extends AbstractWorkf
     @Override
     public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) throws ProcessingMessageException {
         String workflowId = getUriId(context, ApiTemplateVariable.WORKFLOW_ID, true);
-        System.out.println("ID: " + workflowId);
 
         Optional<WFDTO> workflowDTO = workflowRepository.findById(workflowId);
         if (workflowDTO.isEmpty()) {

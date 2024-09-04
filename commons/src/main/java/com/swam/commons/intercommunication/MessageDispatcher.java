@@ -70,6 +70,7 @@ public class MessageDispatcher {
             }
 
             if (messageHandler != null) {
+                System.out.println("Execute handler: " + targetMessageHandler);
                 messageHandler.handle(message, targetMessageHandler);
             } else {
 

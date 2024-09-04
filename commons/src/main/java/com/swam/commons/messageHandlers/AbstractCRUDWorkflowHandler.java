@@ -1,9 +1,13 @@
 package com.swam.commons.messageHandlers;
 
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
 import com.qesm.AbstractProduct;
+import com.qesm.AbstractWorkflow;
+import com.qesm.Renderer;
 import com.swam.commons.intercommunication.ApiTemplateVariable;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.ProcessingMessageException;
@@ -29,14 +33,30 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
     protected void get(CustomMessage context) throws ProcessingMessageException {
 
         String workflowId = getUriId(context, ApiTemplateVariable.WORKFLOW_ID, false);
-        System.out.println("ID: " + workflowId);
 
         if (workflowId != null) {
             Optional<WFDTO> workflowDTO = workflowRepository.findById(workflowId);
             if (workflowDTO.isEmpty()) {
                 throw new ProcessingMessageException("Workflow with workflowId: " + workflowId + " not found", 404);
             } else {
-                context.setResponse(workflowDTO, 200);
+
+                // System.out.println(context.getRequestParams());
+                if (isParamSpecified(context, "format", "svg")) {
+                    String dotFile;
+                    AbstractWorkflow<?> workflow = workflowDTO.get().convertAndValidate();
+                    try {
+                        dotFile = workflow.exportDotFileNoSerialization().toString(StandardCharsets.UTF_8.name());
+                    } catch (Exception e) {
+                        throw new ProcessingMessageException(e.getMessage(), "Internal server error", 500);
+                    }
+
+                    ByteArrayOutputStream outputStream = Renderer
+                            .renderDotFile(dotFile);
+
+                    context.setResponse(outputStream.toString(), 200);
+                } else {
+                    context.setResponse(workflowDTO.get(), 200);
+                }
             }
         } else {
             // TODO: implement paging and filtering opt
@@ -49,7 +69,7 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
     @Override
     protected void post(CustomMessage context) throws ProcessingMessageException {
 
-        WFDTO receivedWorkflowDTO = convertRequestBodyWithValidation(context.getRequestBody(), clazz, true);
+        WFDTO receivedWorkflowDTO = convertRequestBody(context.getRequestBody(), clazz, true);
 
         // Saving workflow to mongoDB
         WFDTO savedWorkflowDTO = workflowRepository.save(receivedWorkflowDTO);
@@ -65,7 +85,7 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
 
         if (workflowRepository.existsById(workflowId)) {
 
-            WFDTO receivedWorkflowDTO = convertRequestBodyWithValidation(context.getRequestBody(), clazz, true);
+            WFDTO receivedWorkflowDTO = convertRequestBody(context.getRequestBody(), clazz, true);
             receivedWorkflowDTO.setId(workflowId);
 
             WFDTO savedWorkflowDTO = workflowRepository.save(receivedWorkflowDTO);
