@@ -16,16 +16,14 @@ import com.swam.commons.mongodb.AbstractWorkflowDTO;
 import com.swam.commons.mongodb.WorkflowDTORepository;
 
 public abstract class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowDTO<P>, P extends AbstractProduct>
-        extends AbstractCRUDHandler {
+        extends AbstractCRUDHandler<WFDTO, P> {
 
-    private final WorkflowDTORepository<WFDTO, ? extends AbstractProductDTO<P>> workflowRepository;
     private final Class<? extends AbstractProductDTO<?>> clazzP;
 
     public AbstractCRUDProductHandler(
             WorkflowDTORepository<WFDTO, ? extends AbstractProductDTO<P>> workflowRepository,
             Class<? extends AbstractProductDTO<P>> clazzP) {
-        super(List.of(TargetMessageHandler.PRODUCT));
-        this.workflowRepository = workflowRepository;
+        super(List.of(TargetMessageHandler.PRODUCT), workflowRepository);
         this.clazzP = clazzP;
     }
 

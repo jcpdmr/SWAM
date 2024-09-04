@@ -1,18 +1,22 @@
 package com.swam.commons.messageHandlers;
 
+import com.qesm.AbstractProduct;
 import com.swam.commons.intercommunication.CustomMessage;
-import com.swam.commons.intercommunication.MessageHandler;
 import com.swam.commons.intercommunication.ProcessingMessageException;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
+import com.swam.commons.mongodb.AbstractWorkflowDTO;
+import com.swam.commons.mongodb.WorkflowDTORepository;
 
 import java.util.List;
 
 import org.springframework.http.HttpMethod;
 
-public abstract class AbstractCRUDHandler extends MessageHandler {
+public abstract class AbstractCRUDHandler<WFDTO extends AbstractWorkflowDTO<P>, P extends AbstractProduct>
+        extends AbstractBaseHandler<WFDTO, P> {
 
-    public AbstractCRUDHandler(List<TargetMessageHandler> bindings) {
-        super(bindings);
+    public AbstractCRUDHandler(List<TargetMessageHandler> bindings,
+            WorkflowDTORepository<WFDTO, ?> workflowRepository) {
+        super(bindings, workflowRepository);
     }
 
     @Override
