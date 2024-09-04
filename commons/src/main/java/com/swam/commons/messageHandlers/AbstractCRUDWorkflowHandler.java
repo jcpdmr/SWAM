@@ -39,7 +39,8 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
             } else {
 
                 // System.out.println(context.getRequestParams());
-                if (isParamSpecified(context, "format", "svg")) {
+                if (isParamSpecified(context, ApiTemplateVariable.PARAM_KEY_FORMAT,
+                        ApiTemplateVariable.PARAM_FORMAT_SVG)) {
                     String dotFile;
                     AbstractWorkflow<?> workflow = workflowDTO.get().convertAndValidate();
                     try {

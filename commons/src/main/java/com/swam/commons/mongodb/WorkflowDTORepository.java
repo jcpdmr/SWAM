@@ -49,7 +49,7 @@ public interface WorkflowDTORepository<WFDTO extends AbstractWorkflowDTO<? exten
     @Aggregation(pipeline = {
             "{ $match: { _id: ?0, 'vertexMap.?1': { $exists: true } } }"
     })
-    Optional<AbstractWorkflowDTO<AbstractProduct>> findWorkflowIfVertexExists(String workflowId,
+    Optional<WFDTO> findWorkflowIfVertexExists(String workflowId,
             String productId);
 
     @Aggregation(pipeline = {

@@ -40,14 +40,25 @@ public abstract class MessageHandler {
 
     }
 
-    protected Boolean isParamSpecified(CustomMessage context, String paramKey, String paramValue) {
+    protected Boolean isParamSpecified(CustomMessage context, ApiTemplateVariable paramKey,
+            ApiTemplateVariable paramValue) {
         if (context.getRequestParams().isPresent()) {
             Map<String, String> paramsMap = context.getRequestParams().get();
-            if (paramsMap.containsKey(paramKey) && paramsMap.get(paramKey).equals(paramValue)) {
+            if (paramsMap.containsKey(paramKey.value()) && paramsMap.get(paramKey.value()).equals(paramValue.value())) {
                 return true;
             }
         }
         return false;
+    }
+
+    protected Optional<String> getParamValue(CustomMessage context, ApiTemplateVariable paramKey) {
+        if (context.getRequestParams().isPresent()) {
+            Map<String, String> paramsMap = context.getRequestParams().get();
+            if (paramsMap.containsKey(paramKey.value())) {
+                return Optional.of(paramsMap.get(paramKey.value()));
+            }
+        }
+        return Optional.empty();
     }
 
     protected <DTO extends MongodbDTO<?>, T> T convertResponseBody(Object responseBody,
@@ -98,7 +109,7 @@ public abstract class MessageHandler {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T uncheckedCast(Object objectToCast) {
+    protected <T> T uncheckedCast(Object objectToCast) {
         return (T) objectToCast;
     }
 

@@ -15,15 +15,15 @@ import com.swam.commons.mongodb.AbstractProductDTO;
 import com.swam.commons.mongodb.AbstractWorkflowDTO;
 import com.swam.commons.mongodb.WorkflowDTORepository;
 
-public abstract class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowDTO<? extends AbstractProduct>>
+public abstract class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowDTO<P>, P extends AbstractProduct>
         extends AbstractCRUDHandler {
 
-    private final WorkflowDTORepository<WFDTO, ? extends AbstractProductDTO<? extends AbstractProduct>> workflowRepository;
+    private final WorkflowDTORepository<WFDTO, ? extends AbstractProductDTO<P>> workflowRepository;
     private final Class<? extends AbstractProductDTO<?>> clazzP;
 
     public AbstractCRUDProductHandler(
-            WorkflowDTORepository<WFDTO, ? extends AbstractProductDTO<? extends AbstractProduct>> workflowRepository,
-            Class<? extends AbstractProductDTO<?>> clazzP) {
+            WorkflowDTORepository<WFDTO, ? extends AbstractProductDTO<P>> workflowRepository,
+            Class<? extends AbstractProductDTO<P>> clazzP) {
         super(List.of(TargetMessageHandler.PRODUCT));
         this.workflowRepository = workflowRepository;
         this.clazzP = clazzP;
@@ -107,14 +107,14 @@ public abstract class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowD
         String workflowId = ids[0];
         String productId = ids[1];
 
-        Optional<AbstractWorkflowDTO<AbstractProduct>> workflowDTO = workflowRepository
+        Optional<WFDTO> workflowDTO = workflowRepository
                 .findWorkflowIfVertexExists(workflowId, productId);
         if (workflowDTO.isEmpty()) {
             throw new ProcessingMessageException("Product with productId: " + productId + " not found", 404);
         }
 
-        AbstractWorkflow<AbstractProduct> workflow = workflowDTO.get().convertAndValidate();
-        Optional<AbstractProduct> vertexToRemove = workflow.findProduct(productId);
+        AbstractWorkflow<P> workflow = workflowDTO.get().convertAndValidate();
+        Optional<P> vertexToRemove = workflow.findProduct(productId);
 
         // Should never happen
         if (vertexToRemove.isEmpty()) {
@@ -143,10 +143,4 @@ public abstract class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowD
 
         return new String[] { workflowId, productId };
     }
-
-    @SuppressWarnings("unchecked")
-    private <T> T uncheckedCast(Object objToCast) {
-        return (T) objToCast;
-    }
-
 }

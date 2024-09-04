@@ -31,7 +31,7 @@ public class MessageDispatcher {
         try {
             this.dispatchMessage(message);
         } catch (ProcessingMessageException e) {
-            logger.error("ProcessingMessageException: " + e.getMessage(), e);
+            logger.error("ProcessingMessageException: " + e.getMessage());
             message.setError(e.getResponseError(), e.getHttpStatusCode());
             rabbitMQSender.sendToNextHop(message, false);
         } catch (RuntimeException e) {

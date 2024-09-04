@@ -22,6 +22,7 @@ import com.qesm.AbstractProduct;
 import com.qesm.AbstractWorkflow;
 import com.qesm.StructuredTree;
 import com.qesm.StructuredTreeConverter;
+import com.swam.commons.intercommunication.ApiTemplateVariable;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.MessageHandler;
 import com.swam.commons.intercommunication.ProcessingMessageException;
@@ -57,7 +58,7 @@ public abstract class AbstractAnalyzeHandler<V extends AbstractProduct> extends 
                 new TruncatedExponentialMixtureApproximation());
         double[] cdf = activity.analyze(activity.max().add(BigDecimal.ONE), activity.getFairTimeTick(), visitor);
 
-        if (isParamSpecified(context, "format", "svg")) {
+        if (isParamSpecified(context, ApiTemplateVariable.PARAM_KEY_FORMAT, ApiTemplateVariable.PARAM_FORMAT_SVG)) {
             // Build chart
             XYChart chart = new XYChartBuilder().width(800).height(600).title("CDF").xAxisTitle("Time [s]")
                     .yAxisTitle("").build();

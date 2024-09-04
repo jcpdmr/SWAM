@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qesm.AbstractProduct;
+import com.qesm.AbstractWorkflow;
 import com.swam.commons.intercommunication.ApiTemplateVariable;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.MessageHandler;
@@ -14,7 +15,7 @@ import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHand
 import com.swam.commons.mongodb.AbstractWorkflowDTO;
 import com.swam.commons.mongodb.WorkflowDTORepository;
 
-public abstract class AbstractForwardWorkflowHandler<WFDTO extends AbstractWorkflowDTO<? extends AbstractProduct>>
+public abstract class AbstractForwardWorkflowHandler<WFDTO extends AbstractWorkflowDTO<P>, P extends AbstractProduct>
         extends MessageHandler {
 
     private final WorkflowDTORepository<WFDTO, ?> workflowRepository;
@@ -28,18 +29,43 @@ public abstract class AbstractForwardWorkflowHandler<WFDTO extends AbstractWorkf
     public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) throws ProcessingMessageException {
         String workflowId = getUriId(context, ApiTemplateVariable.WORKFLOW_ID, true);
 
-        Optional<WFDTO> workflowDTO = workflowRepository.findById(workflowId);
-        if (workflowDTO.isEmpty()) {
+        // Check if workflow exist
+        if (!workflowRepository.existsById(workflowId)) {
             throw new ProcessingMessageException("Workflow with workflowId: " + workflowId + " not found", 404);
-        } else {
-            ObjectMapper objectMapper = new ObjectMapper();
-            try {
-                String serializedWorkflowDTO = objectMapper.writeValueAsString(workflowDTO.get());
-                context.setResponseBody(serializedWorkflowDTO);
-            } catch (JsonProcessingException e) {
-                throw new ProcessingMessageException(e.getMessage(),
-                        "Internal Server Error", 500);
+        }
+
+        WFDTO workflowDTO;
+
+        Optional<String> subWorkflowId = getParamValue(context, ApiTemplateVariable.PARAM_KEY_SUBWORKFLOW);
+        if (subWorkflowId.isPresent()) {
+            Optional<WFDTO> topTierWorkflowDTO = workflowRepository.findWorkflowIfVertexExists(workflowId,
+                    subWorkflowId.get());
+            if (topTierWorkflowDTO.isEmpty()) {
+                throw new ProcessingMessageException("SubWorkflow with subWorkflowId: " + subWorkflowId
+                        + " not found for Workflow with workflowId: " + workflowId, 404);
             }
+            // Compute subworkflow
+            AbstractWorkflow<P> subWorkflow = topTierWorkflowDTO.get().convertAndValidate()
+                    .getProductWorkflow(subWorkflowId.get());
+
+            if (subWorkflow == null) {
+                throw new ProcessingMessageException(
+                        "Product with productId: " + subWorkflowId.get() + " doesn't have a subworkflow", 400);
+            }
+
+            workflowDTO = uncheckedCast(topTierWorkflowDTO.get().buildFromWorkflow(subWorkflow));
+        } else {
+            workflowDTO = workflowRepository.findById(workflowId).get();
+        }
+
+        // DTO serialization
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String serializedWorkflowDTO = objectMapper.writeValueAsString(workflowDTO);
+            context.setResponseBody(serializedWorkflowDTO);
+        } catch (JsonProcessingException e) {
+            throw new ProcessingMessageException(e.getMessage(),
+                    "Internal Server Error", 500);
         }
 
         logger.info("Workflow forwarded successfully");
