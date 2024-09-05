@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.qesm.AbstractProduct;
-import com.qesm.AbstractWorkflow;
 import com.swam.commons.intercommunication.ApiTemplateVariable;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.MessageHandler;
@@ -37,15 +36,7 @@ public abstract class AbstractBaseHandler<WFDTO extends AbstractWorkflowDTO<P>, 
                         + " not found for Workflow with workflowId: " + workflowId, 404);
             }
             // Compute subworkflow
-            AbstractWorkflow<P> subWorkflow = topTierWorkflowDTO.get().convertAndValidate()
-                    .getProductWorkflow(subWorkflowId.get());
-
-            if (subWorkflow == null) {
-                throw new ProcessingMessageException(
-                        "Product with productId: " + subWorkflowId.get() + " doesn't have a subworkflow", 400);
-            }
-
-            workflowDTO = uncheckedCast(topTierWorkflowDTO.get().buildFromWorkflow(subWorkflow));
+            workflowDTO = uncheckedCast(topTierWorkflowDTO.get().getSubWorkflowDTO(subWorkflowId.get()));
         }
 
         return workflowDTO;

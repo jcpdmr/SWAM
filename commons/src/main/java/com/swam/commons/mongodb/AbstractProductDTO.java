@@ -1,5 +1,7 @@
 package com.swam.commons.mongodb;
 
+import java.util.Objects;
+
 import org.oristool.eulero.modeling.stochastictime.StochasticTime;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -71,6 +73,49 @@ public abstract class AbstractProductDTO<V extends AbstractProduct> implements M
         } catch (Exception e) {
             throw new ProcessingMessageException(e.getMessage(), "Validation error: cannot convert DTO to Product",
                     400);
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        AbstractProductDTO<V> abstractProductDTOToCompare = uncheckedCast(obj);
+
+        if (!name.equals(abstractProductDTOToCompare.name)) {
+            return false;
+        }
+
+        if (!itemGroup.equals(abstractProductDTOToCompare.itemGroup)) {
+            return false;
+        }
+
+        if (itemGroup.equals(ItemGroup.PROCESSED)) {
+            if (!quantityProduced.equals(abstractProductDTOToCompare.quantityProduced)) {
+                return false;
+            }
+            if (!AbstractProduct.arePdfEquals(pdf, abstractProductDTOToCompare.pdf)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        if (itemGroup.equals(ItemGroup.PROCESSED)) {
+            return Objects.hash(name, quantityProduced, pdf);
+        } else {
+            return Objects.hash(name);
         }
     }
 }

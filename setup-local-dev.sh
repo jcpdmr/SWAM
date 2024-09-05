@@ -172,11 +172,7 @@ setup_env(){
   base_setup
 }
 
-# setup_unit_test(){
-
-# }
-
-setup_integration_test(){
+setup_test_env(){
     if is_any_service_running; then
         docker compose down
     fi
@@ -192,7 +188,8 @@ setup_integration_test(){
 
 usage() {
   echo "Usage: $0 [-s] [-m]"
-  echo "  -s  Setup local env"
+  echo "  -s  Setup Local env"
+  echo "  -b  Setup Test env"
   echo "  -h  This message"
   echo " check script for additional commands"
   exit 1
@@ -204,11 +201,8 @@ while getopts "sabh" opt; do
     s )
       setup_env
       ;;
-    a )
-      setup_unit_test
-      ;;
     b )
-      setup_integration_test
+      setup_test_env
       ;;
     h )
       usage

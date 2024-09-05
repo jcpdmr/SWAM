@@ -222,7 +222,7 @@
         "problemMatcher": []
     },
     {
-        "label": "7: Setup integration-test env",
+        "label": "7: Setup Test env",
         "type": "shell",
         "command": "./setup-local-dev.sh",
         "args": [

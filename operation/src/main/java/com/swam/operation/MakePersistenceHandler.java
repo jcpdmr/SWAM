@@ -50,8 +50,10 @@ public class MakePersistenceHandler extends MessageHandler {
         try {
             WorkflowInstanceDTO workflowInstanceDTO = objectMapper.readValue(serializedWorkflowInstanceDTO,
                     WorkflowInstanceDTO.class);
-            System.out.println("WorkflowInstaceDTO created");
-            workflowInstanceDTORepository.save(workflowInstanceDTO);
+
+            WorkflowInstanceDTO workflowInstanceDTOSaved = workflowInstanceDTORepository.save(workflowInstanceDTO);
+            context.setResponse("Workflow correctly instantiated with id: " + workflowInstanceDTOSaved.getId(), 200);
+            logger.info("WorkflowInstaceDTO saved");
         } catch (JsonProcessingException e) {
             throw new ProcessingMessageException(e.getMessage(),
                     "Internal Server Error", 500);
@@ -63,6 +65,7 @@ public class MakePersistenceHandler extends MessageHandler {
         // context.setError("Server error", 500);
         // return;
         // }
+
     }
 
 }

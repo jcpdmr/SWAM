@@ -95,6 +95,44 @@ public abstract class AbstractWorkflowDTO<P extends AbstractProduct> implements 
         }
     }
 
+    public AbstractWorkflowDTO<P> getSubWorkflowDTO(String vertexName) throws ProcessingMessageException {
+        if (!vertexMap.containsKey(vertexName)) {
+            throw new ProcessingMessageException("SubWorkflow with subWorkflowId: " + vertexName
+                    + " not found for Workflow with workflowId: " + id, 404);
+        }
+
+        AbstractWorkflow<P> subWorkflow = this.convertAndValidate().getProductWorkflow(vertexName);
+        if (subWorkflow == null) {
+            throw new ProcessingMessageException(
+                    "Product with productId: " + vertexName + " doesn't have a subworkflow", 400);
+        }
+        return buildFromWorkflow(subWorkflow);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        AbstractWorkflowDTO<P> workflowDTOToCompare = uncheckedCast(obj);
+
+        if (!vertexMap.equals(workflowDTOToCompare.vertexMap)) {
+            return false;
+        }
+        if (!edgeSet.equals(workflowDTOToCompare.edgeSet)) {
+            return false;
+        }
+
+        return true;
+    }
+
     public abstract AbstractWorkflowDTO<P> buildFromWorkflow(AbstractWorkflow<P> workflow);
 
     protected abstract AbstractProductDTO<P> createProductDTO(P vertex);

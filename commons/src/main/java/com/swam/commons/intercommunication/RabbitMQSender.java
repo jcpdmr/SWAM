@@ -101,7 +101,7 @@ public class RabbitMQSender {
                 .addTargets(TargetMicroservices.GATEWAY, TargetMessageHandler.CHECK_ACK)
                 .build();
 
-        CustomMessage errorMessage = new CustomMessage("ERROR", errorRoutingInstructions,
+        CustomMessage errorMessage = new CustomMessage(originalMessage.getMsg(), errorRoutingInstructions,
                 sender,
                 MessageType.ERROR,
                 originalMessage.getResponseEntity());

@@ -76,6 +76,12 @@ public class CustomMessage {
         this.messageType = MessageType.ERROR;
     }
 
+    public void setError(Object responseBody, Integer responseStatusCode, String errorInfo) {
+        this.msg = errorInfo;
+        setResponse(responseBody, responseStatusCode);
+        this.messageType = MessageType.ERROR;
+    }
+
     public void setResponse(Object responseBody, Integer responseStatusCode) {
         this.responseStatusCode = responseStatusCode;
         this.responseBody = responseBody;

@@ -32,11 +32,13 @@ public class MessageDispatcher {
             this.dispatchMessage(message);
         } catch (ProcessingMessageException e) {
             logger.error("ProcessingMessageException: " + e.getMessage());
-            message.setError(e.getResponseError(), e.getHttpStatusCode());
+            message.setError(e.getResponseError(), e.getHttpStatusCode(),
+                    "ProcessingMessageException: " + e.getMessage());
             rabbitMQSender.sendToNextHop(message, false);
         } catch (RuntimeException e) {
             logger.error("RunTimeException: " + e.getMessage(), e);
-            message.setError("Internal server Error", 500);
+            message.setError("Internal server Error", 500,
+                    "ProcessingMessageException: " + e.getMessage());
             rabbitMQSender.sendToNextHop(message, false);
         }
 

@@ -1,5 +1,7 @@
 package com.swam.commons.mongodb;
 
+import java.util.Objects;
+
 import com.qesm.AbstractProduct;
 import com.qesm.CustomEdge;
 
@@ -24,4 +26,39 @@ public abstract class AbstractCustomEdgeDTO {
         this.quantityRequired = customEdge.getQuantityRequired();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        AbstractCustomEdgeDTO customEdgeToCompare = (AbstractCustomEdgeDTO) obj;
+        if (sourceName == null) {
+            if (customEdgeToCompare.sourceName != null)
+                return false;
+        } else if (!sourceName.equals(customEdgeToCompare.sourceName))
+            return false;
+        if (targetName == null) {
+            if (customEdgeToCompare.targetName != null)
+                return false;
+        } else if (!targetName.equals(customEdgeToCompare.targetName))
+            return false;
+        if (quantityRequired == null) {
+            if (customEdgeToCompare.quantityRequired != null)
+                return false;
+        } else if (!quantityRequired.equals(customEdgeToCompare.quantityRequired))
+            return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sourceName, targetName, quantityRequired);
+    }
 }
