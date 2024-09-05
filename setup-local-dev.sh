@@ -4,6 +4,7 @@
 source .env
 
 BASE_SERVICES=("rabbitmq" "mongodb_catalog" "mongodb_operation" "config-server")
+MICROSERVICES=("catalog" "operation" "analysis" "gateway")
 
 # Function used to install a JAR in local Maven repository
 install_jar() {
@@ -102,15 +103,26 @@ is_service_running() {
   fi
 }
 
-start_base_services(){
-    for service in "${BASE_SERVICES[@]}"; do
+is_any_service_running(){
+    local active_containers
+    active_containers=$(docker compose ps --filter "status=running" --services)
+
+    if [[ -z "$active_containers" ]]; then
+        return 1  
+    else
+        return 0  
+    fi
+}
+
+start_services(){
+    local services=("$@")
+    for service in "${services[@]}"; do
         # Check if the microservice is running, otherwise start it
         if ! is_service_running "$service"; then
             echo "Starting service: $service"
             docker compose up -d "$service"
         fi
     done
-
 }
 
 drop_all_mongoDB_databases(){
@@ -136,31 +148,46 @@ kill_old_spring_instance(){
   done
 }
 
+base_setup(){
+    setup_dependency
+
+    start_services "${BASE_SERVICES[@]}"
+    
+    check_mongodb "mongodb_catalog" &
+    PID2=$!
+    check_mongodb "mongodb_operation" &
+    PID3=$!
+
+    wait $PID2
+    wait $PID3
+
+    drop_all_mongoDB_databases
+
+    check_config_server
+}
+
 setup_env(){
   kill_old_spring_instance
 
-  setup_dependency
-
-  start_base_services
-
-  # ./mvnw install -pl commons -DskipTests 
-  
-  check_mongodb "mongodb_catalog" &
-  PID2=$!
-  check_mongodb "mongodb_operation" &
-  PID3=$!
-
-  wait $PID2
-  wait $PID3
-
-  drop_all_mongoDB_databases
-
-  check_config_server
-
-  wait $PID1
+  base_setup
 }
 
+# setup_unit_test(){
 
+# }
+
+setup_integration_test(){
+    if is_any_service_running; then
+        docker compose down
+    fi
+
+    # Multithread compilation with maven
+    ./mvnw clean install --threads 1C -DskipTests
+
+    base_setup
+
+    start_services "${MICROSERVICES[@]}"
+}
 
 
 usage() {
@@ -172,13 +199,16 @@ usage() {
 }
 
 # Options parsing
-while getopts "sah" opt; do
+while getopts "sabh" opt; do
   case ${opt} in
     s )
       setup_env
       ;;
     a )
-      run_catalog
+      setup_unit_test
+      ;;
+    b )
+      setup_integration_test
       ;;
     h )
       usage

@@ -1,4 +1,7 @@
 spring:
+  main:
+    web-application-type: none
+
   rabbitmq:
     host: rabbitmq
     port: 5672

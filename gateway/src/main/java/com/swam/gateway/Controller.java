@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ public class Controller {
 
     private final Dispatcher dispatcher;
     private final AsyncResponseHandler asyncResponseHandler;
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public Controller(Dispatcher dispatcher, AsyncResponseHandler asyncResponseHandler) {
         this.dispatcher = dispatcher;
@@ -56,14 +59,14 @@ public class Controller {
             dispatcher.dispatchRequest(httpMethod, path, Optional.ofNullable(requestParams),
                     Optional.ofNullable(requestBody), deferredResultEntry.getKey());
         } catch (ProcessingMessageException e) {
-            System.err.println("ProcessingMessageException: " + e.getMessage());
+            logger.warn("ProcessingMessageException: " + e.getMessage());
             asyncResponseHandler.setDeferredResult(deferredResultEntry.getKey(),
                     new ResponseEntity<Object>(e.getResponseError(),
                             HttpStatusCode.valueOf(e.getHttpStatusCode())));
         } catch (Exception e) {
             // Catch all generics exceptions (eg. related to rabbitMQ or Jackson
             // serialization/deserialization)
-            e.printStackTrace();
+            logger.error("Runtime exception: " + e.getMessage(), e);
             asyncResponseHandler.setDeferredResult(deferredResultEntry.getKey(),
                     new ResponseEntity<Object>("Internal server error", HttpStatusCode.valueOf(500)));
         }

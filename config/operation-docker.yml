@@ -1,4 +1,7 @@
 spring:
+  main:
+    web-application-type: none
+
   data:
     mongodb:
       host: mongodb_operation
