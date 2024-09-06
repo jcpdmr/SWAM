@@ -3,6 +3,8 @@ package com.swam.gateway.integration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Set;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -31,6 +33,21 @@ public abstract class BaseEndpointTest {
 
     }
 
+    protected <T> void checkIfResponseIsEqualsToDTOSet(String uri, Set<MongodbDTO<T>> DTOSetToCompare,
+            Class<? extends MongodbDTO<T>> DTOClazz) {
+        client.get().uri(uri)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(DTOClazz)
+                .consumeWith(result -> {
+                    boolean areEqual = DTOSetToCompare.size() == result.getResponseBody().size() &&
+                            DTOSetToCompare.stream()
+                                    .allMatch(dto -> result.getResponseBody().stream().anyMatch(r -> r.equals(dto)));
+                    assertTrue(areEqual);
+                });
+
+    }
+
     protected <T> void checkIfResponseContainsDTO(String uri, MongodbDTO<T> DTOToBeContained) {
         client.get().uri(uri)
                 .exchange()
@@ -40,4 +57,5 @@ public abstract class BaseEndpointTest {
                     assertTrue(result.getResponseBody().contains(DTOToBeContained));
                 });
     }
+
 }

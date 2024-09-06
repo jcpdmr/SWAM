@@ -24,7 +24,7 @@ public interface WorkflowDTORepository<WFDTO extends AbstractWorkflowDTO<? exten
     // String subWorkflowId);
 
     @Aggregation(pipeline = {
-            "{ $match: { _id: ?0 } }",
+            "{ $match: { _id: ?0 , 'vertexMap.?1': { $exists: true } } }",
             "{ $project: { vertex: { $getField: { field: ?1, input: '$vertexMap' } } } }",
             "{ $replaceRoot: { newRoot: '$vertex' } }"
     })

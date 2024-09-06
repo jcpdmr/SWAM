@@ -47,7 +47,8 @@ public abstract class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowD
                 context.setResponse(receivedProduct.get(), 200);
             }
         } else {
-            context.setResponse(workflowRepository.findVertexMapProjectionByWorkflowId(workflowId).get().getVertexMap(),
+            context.setResponse(
+                    workflowRepository.findVertexMapProjectionByWorkflowId(workflowId).get().getVertexMap().values(),
                     200);
         }
 

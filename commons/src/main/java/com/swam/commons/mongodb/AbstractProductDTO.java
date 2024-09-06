@@ -113,9 +113,9 @@ public abstract class AbstractProductDTO<V extends AbstractProduct> implements M
     @Override
     public int hashCode() {
         if (itemGroup.equals(ItemGroup.PROCESSED)) {
-            return Objects.hash(name, quantityProduced, pdf);
+            return Objects.hash(name, itemGroup, quantityProduced, pdf);
         } else {
-            return Objects.hash(name);
+            return Objects.hash(name, itemGroup);
         }
     }
 }
