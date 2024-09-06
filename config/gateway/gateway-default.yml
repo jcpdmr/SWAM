@@ -1,0 +1,5 @@
+spring:
+  config:
+    import: ../rabbitmq-default.yml
+  rabbitmq:
+    in-queue: gateway_in

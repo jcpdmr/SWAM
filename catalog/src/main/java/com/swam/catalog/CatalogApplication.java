@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import com.swam.commons.intercommunication.MessageDispatcher;
 import com.swam.commons.mongodb.template.WorkflowTemplateDTO;
 import com.swam.commons.mongodb.template.WorkflowTemplateDTORepository;
-import com.swam.commons.utility.Defaults;
+import com.swam.commons.utility.DefaultWorkflows;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,11 +31,11 @@ public class CatalogApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        WorkflowTemplateDTO workflowTemplateDTO1 = Defaults.getWorkflowTemplateDTO1();
+        WorkflowTemplateDTO workflowTemplateDTO1 = DefaultWorkflows.getWorkflowTemplateDTO1();
         workflowTemplateDTO1.setId("random");
         workflowTemplateRepository.save(workflowTemplateDTO1);
 
-        WorkflowTemplateDTO workflowTemplateDTO2 = Defaults.getWorkflowTemplateDTO2();
+        WorkflowTemplateDTO workflowTemplateDTO2 = DefaultWorkflows.getWorkflowTemplateDTO2();
         workflowTemplateDTO2.setId("test");
         workflowTemplateRepository.save(workflowTemplateDTO2);
     }

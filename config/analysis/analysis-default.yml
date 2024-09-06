@@ -1,10 +1,9 @@
 spring:
+  config:
+    import: ../rabbitmq-default.yml
+
   main:
     web-application-type: none
 
   rabbitmq:
-    host: rabbitmq
-    port: 5672
-    username: myuser
-    password: secret
     in-queue: analysis_in

@@ -1,0 +1,8 @@
+spring:
+  data:
+    mongodb:
+      host: mongodb_operation
+      port: 27017
+
+  rabbitmq:
+    host: rabbitmq

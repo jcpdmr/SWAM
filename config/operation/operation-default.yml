@@ -1,0 +1,17 @@
+spring:
+  config:
+    import: ../rabbitmq-default.yml, ../mongodb-default.yml
+
+  main:
+    web-application-type: none
+
+  data:
+    mongodb:
+      port: 27018
+
+  rabbitmq:
+    in-queue: operation_in
+
+logging:
+  level:
+    guru.nidi.graphviz: OFF
