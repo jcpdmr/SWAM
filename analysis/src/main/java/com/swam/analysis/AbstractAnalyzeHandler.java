@@ -6,6 +6,10 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 
 import org.knowm.xchart.VectorGraphicsEncoder;
 import org.knowm.xchart.XYChart;
@@ -56,16 +60,21 @@ public abstract class AbstractAnalyzeHandler<V extends AbstractProduct> extends 
 
         AnalysisHeuristicsVisitor visitor = new RBFHeuristicsVisitor(BigInteger.valueOf(4), BigInteger.TEN,
                 new TruncatedExponentialMixtureApproximation());
-        double[] cdf = activity.analyze(activity.max().add(BigDecimal.ONE), activity.getFairTimeTick(), visitor);
+        final double[] cdf = activity.analyze(activity.max().add(BigDecimal.ONE), activity.getFairTimeTick(), visitor);
+
+        Double tickTime = activity.getFairTimeTick().doubleValue();
+        final double[] xtime = DoubleStream.iterate(0, d -> d + tickTime).limit(cdf.length).toArray();
 
         if (isParamSpecified(context, ApiTemplateVariable.PARAM_KEY_FORMAT, ApiTemplateVariable.PARAM_FORMAT_SVG)) {
             // Build chart
             XYChart chart = new XYChartBuilder().width(800).height(600).title("CDF").xAxisTitle("Time [s]")
                     .yAxisTitle("").build();
 
+            double[] cdfRounded = DoubleStream.of(cdf).map(d -> Math.round(d * 100.0) / 100.0).toArray();
+            double[] xtimeRounded = DoubleStream.of(xtime).map(d -> Math.round(d * 1000.0) / 1000.0).toArray();
             chart.getStyler().setLegendVisible(false);
 
-            XYSeries series = chart.addSeries("test", cdf);
+            XYSeries series = chart.addSeries("test", xtimeRounded, cdfRounded);
             series.setXYSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Line);
             series.setMarker(new None());
 
@@ -79,7 +88,17 @@ public abstract class AbstractAnalyzeHandler<V extends AbstractProduct> extends 
             context.setResponse(outputStream.toString(), 200);
 
         } else {
-            context.setResponse(cdf, 200);
+            TreeMap<Double, Double> analysisResults = IntStream.range(0, cdf.length)
+                    .boxed()
+                    .collect(Collectors.toMap(
+                            i -> xtime[i],
+                            i -> cdf[i],
+                            (oldValue, newValue) -> oldValue, // handle duplicates
+                            TreeMap::new));
+            // TreeMap<Double, Double> analysisResults = IntStream.range(0, cdf.length)
+            // .mapToObj(i -> new Entry<Double, Double>(xtime[i],
+            // cdf[i])).collect(Collectors.toMap(null, null));
+            context.setResponse(analysisResults, 200);
         }
 
         logger.info("Analysis completed successfully");
