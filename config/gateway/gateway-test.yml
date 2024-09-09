@@ -1,4 +1,6 @@
 spring:
+  rabbitmq:
+    enabled: false
   devtools:
     restart:
       enabled: false
