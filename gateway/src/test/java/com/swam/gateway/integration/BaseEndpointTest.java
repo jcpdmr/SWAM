@@ -58,4 +58,8 @@ public abstract class BaseEndpointTest {
                 });
     }
 
+    @SuppressWarnings("unchecked")
+    protected <T> T uncheckedCast(Object objectToCast) {
+        return (T) objectToCast;
+    }
 }
