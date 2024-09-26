@@ -6,17 +6,17 @@ import com.qesm.CustomEdge;
 import com.qesm.ProductTemplate;
 import com.qesm.RandomDAGGenerator.PdfType;
 import com.qesm.WorkflowTemplate;
-import com.swam.commons.mongodb.template.WorkflowTemplateDTO;
+import com.swam.commons.mongodb.template.WorkflowTemplateTO;
 
 public class DefaultWorkflows {
 
-    public static WorkflowTemplateDTO getWorkflowTemplateDTO1() {
+    public static WorkflowTemplateTO getWorkflowTemplateTO1() {
         WorkflowTemplate workflowTemplate = new WorkflowTemplate();
         workflowTemplate.generateRandomDAG(5, 5, 3, 3, 50, PdfType.UNIFORM);
-        return new WorkflowTemplateDTO(workflowTemplate);
+        return new WorkflowTemplateTO(workflowTemplate);
     }
 
-    public static WorkflowTemplateDTO getWorkflowTemplateDTO2() {
+    public static WorkflowTemplateTO getWorkflowTemplateTO2() {
 
         DirectedAcyclicGraph<ProductTemplate, CustomEdge> dag = new DirectedAcyclicGraph<>(CustomEdge.class);
         dag.addVertex(DefaultProducts.v0);
@@ -39,10 +39,10 @@ public class DefaultWorkflows {
 
         WorkflowTemplate workflowTemplate = new WorkflowTemplate(dag);
 
-        return new WorkflowTemplateDTO(workflowTemplate);
+        return new WorkflowTemplateTO(workflowTemplate);
     }
 
-    public static WorkflowTemplateDTO getWorkflowTemplateDTO3() {
+    public static WorkflowTemplateTO getWorkflowTemplateTO3() {
 
         DirectedAcyclicGraph<ProductTemplate, CustomEdge> dag = new DirectedAcyclicGraph<>(CustomEdge.class);
         dag.addVertex(DefaultProducts.v0);
@@ -56,6 +56,6 @@ public class DefaultWorkflows {
 
         WorkflowTemplate workflowTemplate = new WorkflowTemplate(dag);
 
-        return new WorkflowTemplateDTO(workflowTemplate);
+        return new WorkflowTemplateTO(workflowTemplate);
     }
 }

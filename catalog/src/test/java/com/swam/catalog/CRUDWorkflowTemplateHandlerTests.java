@@ -12,15 +12,15 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.qesm.ProductTemplate;
 import com.swam.commons.intercommunication.MessageDispatcher;
-import com.swam.commons.mongodb.template.ProductTemplateDTO;
-import com.swam.commons.mongodb.template.WorkflowTemplateDTORepository;
+import com.swam.commons.mongodb.template.ProductTemplateTO;
+import com.swam.commons.mongodb.template.WorkflowTemplateTORepository;
 
 @ActiveProfiles("test")
 @SpringBootTest()
 public class CRUDWorkflowTemplateHandlerTests {
 
     @Autowired
-    private WorkflowTemplateDTORepository workflowTemplateDTORepository;
+    private WorkflowTemplateTORepository workflowTemplateTORepository;
 
     @MockBean
     private MessageDispatcher messageDispatcher;
@@ -36,21 +36,21 @@ public class CRUDWorkflowTemplateHandlerTests {
     @Test
     public void prova() {
 
-        // Optional<AbstractProductDTO<?>> productTemplateDTO =
-        // workflowTemplateDTORepository
+        // Optional<AbstractProductTO<?>> productTemplateTO =
+        // workflowTemplateTORepository
         // .findVertexByWorkflowIdAndVertexName("test", "v0");
 
-        // System.out.println(productTemplateDTO);
-        // ProductTemplateDTO productTemplateDTO = new ProductTemplateDTO(new
+        // System.out.println(productTemplateTO);
+        // ProductTemplateTO productTemplateTO = new ProductTemplateTO(new
         // ProductTemplate("v0"));
 
         // test =
-        // workflowTemplateDTORepository.updateVertexQuantityProducedAndPdf("test",
+        // workflowTemplateTORepository.updateVertexQuantityProducedAndPdf("test",
         // "v0", 50,
         // new ExponentialTime(BigDecimal.valueOf(10)));
 
-        System.out.println(workflowTemplateDTORepository.existVertexAndIsProcessed("test", "prova"));
-        System.out.println(workflowTemplateDTORepository.findWorkflowIfVertexExists("test", "v0"));
+        System.out.println(workflowTemplateTORepository.existVertexAndIsProcessed("test", "prova"));
+        System.out.println(workflowTemplateTORepository.findWorkflowIfVertexExists("test", "v0"));
     }
 
 }

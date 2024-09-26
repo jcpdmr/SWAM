@@ -9,8 +9,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.qesm.ProductTemplate;
 import com.qesm.WorkflowTemplate;
-import com.swam.commons.mongodb.template.ProductTemplateDTO;
-import com.swam.commons.mongodb.template.WorkflowTemplateDTO;
+import com.swam.commons.mongodb.template.ProductTemplateTO;
+import com.swam.commons.mongodb.template.WorkflowTemplateTO;
 import com.swam.commons.utility.DefaultProducts;
 import com.swam.commons.utility.DefaultWorkflows;
 
@@ -24,14 +24,14 @@ public class ProductEndpointTest extends BaseEndpointTest {
     // Test CRUD operations
     @Test
     public void productGetTest() {
-        checkIfResponseIsEqualsToDTO("/catalog/test/product/v1", new ProductTemplateDTO(DefaultProducts.v1));
+        checkIfResponseIsEqualsToTO("/catalog/test/product/v1", new ProductTemplateTO(DefaultProducts.v1));
 
-        checkIfResponseIsEqualsToDTOSet("/catalog/test/product",
-                Set.of(new ProductTemplateDTO(DefaultProducts.v0), new ProductTemplateDTO(DefaultProducts.v1),
-                        new ProductTemplateDTO(DefaultProducts.v2), new ProductTemplateDTO(DefaultProducts.v3),
-                        new ProductTemplateDTO(DefaultProducts.v4), new ProductTemplateDTO(DefaultProducts.v5),
-                        new ProductTemplateDTO(DefaultProducts.v6), new ProductTemplateDTO(DefaultProducts.v7)),
-                ProductTemplateDTO.class);
+        checkIfResponseIsEqualsToTOSet("/catalog/test/product",
+                Set.of(new ProductTemplateTO(DefaultProducts.v0), new ProductTemplateTO(DefaultProducts.v1),
+                        new ProductTemplateTO(DefaultProducts.v2), new ProductTemplateTO(DefaultProducts.v3),
+                        new ProductTemplateTO(DefaultProducts.v4), new ProductTemplateTO(DefaultProducts.v5),
+                        new ProductTemplateTO(DefaultProducts.v6), new ProductTemplateTO(DefaultProducts.v7)),
+                ProductTemplateTO.class);
 
         client.get().uri("/catalog/test1/product")
                 .exchange()
@@ -46,14 +46,14 @@ public class ProductEndpointTest extends BaseEndpointTest {
     public void productPutAndDeleteTest() {
         // Update random workflow
         client.put().uri("/catalog/random")
-                .bodyValue(DefaultWorkflows.getWorkflowTemplateDTO2())
+                .bodyValue(DefaultWorkflows.getWorkflowTemplateTO2())
                 .exchange()
                 .expectStatus().isOk();
 
-        checkIfResponseIsEqualsToDTO("/catalog/random", DefaultWorkflows.getWorkflowTemplateDTO2());
+        checkIfResponseIsEqualsToTO("/catalog/random", DefaultWorkflows.getWorkflowTemplateTO2());
 
         // Put test
-        ProductTemplateDTO v1Updated = new ProductTemplateDTO(
+        ProductTemplateTO v1Updated = new ProductTemplateTO(
                 new ProductTemplate("v1", 150, new DeterministicTime(BigDecimal.valueOf(5.0))));
 
         client.put().uri("/catalog/random/product/v1")
@@ -61,7 +61,7 @@ public class ProductEndpointTest extends BaseEndpointTest {
                 .exchange()
                 .expectStatus().isOk();
 
-        checkIfResponseIsEqualsToDTO("/catalog/random/product/v1", v1Updated);
+        checkIfResponseIsEqualsToTO("/catalog/random/product/v1", v1Updated);
 
         // Delete test
         client.delete().uri("/catalog/random/product/v1")
@@ -73,11 +73,11 @@ public class ProductEndpointTest extends BaseEndpointTest {
                 .expectStatus().isNotFound();
 
         try {
-            WorkflowTemplate workflowTemplateUpdated = (WorkflowTemplate) DefaultWorkflows.getWorkflowTemplateDTO2()
+            WorkflowTemplate workflowTemplateUpdated = (WorkflowTemplate) DefaultWorkflows.getWorkflowTemplateTO2()
                     .convertAndValidate();
             workflowTemplateUpdated.removeVertex(workflowTemplateUpdated.findProduct("v1").get());
 
-            checkIfResponseIsEqualsToDTO("/catalog/random", new WorkflowTemplateDTO(workflowTemplateUpdated));
+            checkIfResponseIsEqualsToTO("/catalog/random", new WorkflowTemplateTO(workflowTemplateUpdated));
         } catch (Exception e) {
             e.printStackTrace();
         }

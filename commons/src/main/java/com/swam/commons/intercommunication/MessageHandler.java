@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
-import com.swam.commons.mongodb.MongodbDTO;
+import com.swam.commons.mongodb.MongodbTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -61,46 +61,46 @@ public abstract class MessageHandler {
         return Optional.empty();
     }
 
-    protected <DTO extends MongodbDTO<?>, T> T convertResponseBody(Object responseBody,
-            Class<DTO> clazz, Boolean toDTO) throws ProcessingMessageException {
+    protected <TO extends MongodbTO<?>, T> T convertResponseBody(Object responseBody,
+            Class<TO> clazz, Boolean toTO) throws ProcessingMessageException {
         return uncheckedCast(
-                convertBody((String) responseBody, clazz, "Internal server error", 500, toDTO));
+                convertBody((String) responseBody, clazz, "Internal server error", 500, toTO));
     }
 
-    protected <DTO extends MongodbDTO<?>, T> T convertRequestBody(Optional<String> requestBody,
-            Class<DTO> clazz, Boolean toDTO) throws ProcessingMessageException {
+    protected <TO extends MongodbTO<?>, T> T convertRequestBody(Optional<String> requestBody,
+            Class<TO> clazz, Boolean toTO) throws ProcessingMessageException {
         // RequestBody Check
         if (requestBody.isEmpty()) {
             throw new ProcessingMessageException("Error request with empty body",
                     "Error: request with empty body", 400);
         }
         return uncheckedCast(
-                convertBody(requestBody.get(), clazz, "Error: request with empty body", 400, toDTO));
+                convertBody(requestBody.get(), clazz, "Error: request with empty body", 400, toTO));
     }
 
-    private <DTO extends MongodbDTO<?>> Object convertBody(String body,
-            Class<DTO> clazz, String responseErrorMsg, Integer httpStatusCode, Boolean toDTO)
+    private <TO extends MongodbTO<?>> Object convertBody(String body,
+            Class<TO> clazz, String responseErrorMsg, Integer httpStatusCode, Boolean toTO)
             throws ProcessingMessageException {
 
-        // DTO deserialization
-        DTO receivedDTO = null;
+        // TO deserialization
+        TO receivedTO = null;
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            receivedDTO = objectMapper.readValue(body, clazz);
+            receivedTO = objectMapper.readValue(body, clazz);
         } catch (JsonProcessingException e) {
             throw new ProcessingMessageException(e.getMessage(),
                     responseErrorMsg, httpStatusCode);
         }
 
-        // DTO convertion and validation
-        if (receivedDTO == null) {
+        // TO convertion and validation
+        if (receivedTO == null) {
             throw new ProcessingMessageException(
-                    "Error DTO of type: " + clazz + " is null",
+                    "Error TO of type: " + clazz + " is null",
                     responseErrorMsg, httpStatusCode);
         } else {
-            Object convertedObject = receivedDTO.convertAndValidate();
-            if (toDTO) {
-                return receivedDTO;
+            Object convertedObject = receivedTO.convertAndValidate();
+            if (toTO) {
+                return receivedTO;
             } else {
                 return convertedObject;
             }

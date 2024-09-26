@@ -23,7 +23,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class AbstractProductDTO<V extends AbstractProduct> implements MongodbDTO<V> {
+public abstract class AbstractProductTO<V extends AbstractProduct> implements MongodbTO<V> {
     private final String name;
     private final Integer quantityProduced;
     @JsonDeserialize(using = StochasticTimeDeserializer.class)
@@ -31,7 +31,7 @@ public abstract class AbstractProductDTO<V extends AbstractProduct> implements M
     private final transient StochasticTime pdf;
     private final ItemGroup itemGroup;
 
-    protected AbstractProductDTO(V product) {
+    protected AbstractProductTO(V product) {
         this.name = product.getName();
         if (product.isProcessed()) {
             this.quantityProduced = product.getQuantityProduced();
@@ -46,9 +46,9 @@ public abstract class AbstractProductDTO<V extends AbstractProduct> implements M
 
     /**
      * Delegate the responsability to create the right type of object to the class
-     * that inherit from AbstractProductDTO.
+     * that inherit from AbstractProductTO.
      * 
-     * @return Object of a type that extends AbstractProductDTO
+     * @return Object of a type that extends AbstractProductTO
      */
     protected abstract V createProcessedProduct(String name, Integer quantityProduced, StochasticTime pdf);
 
@@ -71,7 +71,7 @@ public abstract class AbstractProductDTO<V extends AbstractProduct> implements M
         try {
             return toProduct();
         } catch (Exception e) {
-            throw new ProcessingMessageException(e.getMessage(), "Validation error: cannot convert DTO to Product",
+            throw new ProcessingMessageException(e.getMessage(), "Validation error: cannot convert TO to Product",
                     400);
         }
     }
@@ -88,21 +88,21 @@ public abstract class AbstractProductDTO<V extends AbstractProduct> implements M
             return false;
         }
 
-        AbstractProductDTO<V> abstractProductDTOToCompare = uncheckedCast(obj);
+        AbstractProductTO<V> abstractProductTOToCompare = uncheckedCast(obj);
 
-        if (!name.equals(abstractProductDTOToCompare.name)) {
+        if (!name.equals(abstractProductTOToCompare.name)) {
             return false;
         }
 
-        if (!itemGroup.equals(abstractProductDTOToCompare.itemGroup)) {
+        if (!itemGroup.equals(abstractProductTOToCompare.itemGroup)) {
             return false;
         }
 
         if (itemGroup.equals(ItemGroup.PROCESSED)) {
-            if (!quantityProduced.equals(abstractProductDTOToCompare.quantityProduced)) {
+            if (!quantityProduced.equals(abstractProductTOToCompare.quantityProduced)) {
                 return false;
             }
-            if (!AbstractProduct.arePdfEquals(pdf, abstractProductDTOToCompare.pdf)) {
+            if (!AbstractProduct.arePdfEquals(pdf, abstractProductTOToCompare.pdf)) {
                 return false;
             }
         }

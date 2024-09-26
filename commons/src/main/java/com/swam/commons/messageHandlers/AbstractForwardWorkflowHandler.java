@@ -9,13 +9,13 @@ import com.swam.commons.intercommunication.ApiTemplateVariable;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.ProcessingMessageException;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
-import com.swam.commons.mongodb.AbstractWorkflowDTO;
-import com.swam.commons.mongodb.WorkflowDTORepository;
+import com.swam.commons.mongodb.AbstractWorkflowTO;
+import com.swam.commons.mongodb.WorkflowTORepository;
 
-public abstract class AbstractForwardWorkflowHandler<WFDTO extends AbstractWorkflowDTO<P>, P extends AbstractProduct>
-        extends AbstractBaseHandler<WFDTO, P> {
+public abstract class AbstractForwardWorkflowHandler<WFTO extends AbstractWorkflowTO<P>, P extends AbstractProduct>
+        extends AbstractBaseHandler<WFTO, P> {
 
-    public AbstractForwardWorkflowHandler(WorkflowDTORepository<WFDTO, ?> workflowRepository) {
+    public AbstractForwardWorkflowHandler(WorkflowTORepository<WFTO, ?> workflowRepository) {
         super(List.of(TargetMessageHandler.FORWARD_WORKFLOW), workflowRepository);
     }
 
@@ -30,16 +30,16 @@ public abstract class AbstractForwardWorkflowHandler<WFDTO extends AbstractWorkf
 
         // Check if it's requested a subworkflow analysis instead of full workflow
         // analysis
-        WFDTO workflowDTO = getSubWorkflowIfRequested(context, workflowId);
-        if (workflowDTO == null) {
-            workflowDTO = workflowRepository.findById(workflowId).get();
+        WFTO workflowTO = getSubWorkflowIfRequested(context, workflowId);
+        if (workflowTO == null) {
+            workflowTO = workflowRepository.findById(workflowId).get();
         }
 
-        // DTO serialization
+        // TO serialization
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            String serializedWorkflowDTO = objectMapper.writeValueAsString(workflowDTO);
-            context.setResponseBody(serializedWorkflowDTO);
+            String serializedWorkflowTO = objectMapper.writeValueAsString(workflowTO);
+            context.setResponseBody(serializedWorkflowTO);
         } catch (JsonProcessingException e) {
             throw new ProcessingMessageException(e.getMessage(),
                     "Internal Server Error", 500);

@@ -11,25 +11,20 @@ import com.swam.commons.intercommunication.ApiTemplateVariable;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.ProcessingMessageException;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
-import com.swam.commons.mongodb.AbstractProductDTO;
-import com.swam.commons.mongodb.AbstractWorkflowDTO;
-import com.swam.commons.mongodb.WorkflowDTORepository;
+import com.swam.commons.mongodb.AbstractProductTO;
+import com.swam.commons.mongodb.AbstractWorkflowTO;
+import com.swam.commons.mongodb.WorkflowTORepository;
 
-public abstract class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowDTO<P>, P extends AbstractProduct>
-        extends AbstractCRUDHandler<WFDTO, P> {
+public abstract class AbstractCRUDProductHandler<WFTO extends AbstractWorkflowTO<P>, P extends AbstractProduct>
+        extends AbstractCRUDHandler<WFTO, P> {
 
-    private final Class<? extends AbstractProductDTO<?>> clazzP;
+    private final Class<? extends AbstractProductTO<?>> clazzP;
 
     public AbstractCRUDProductHandler(
-            WorkflowDTORepository<WFDTO, ? extends AbstractProductDTO<P>> workflowRepository,
-            Class<? extends AbstractProductDTO<P>> clazzP) {
+            WorkflowTORepository<WFTO, ? extends AbstractProductTO<P>> workflowRepository,
+            Class<? extends AbstractProductTO<P>> clazzP) {
         super(List.of(TargetMessageHandler.PRODUCT), workflowRepository);
         this.clazzP = clazzP;
-    }
-
-    @Override
-    public List<TargetMessageHandler> getBinding() {
-        return List.of(TargetMessageHandler.PRODUCT);
     }
 
     @Override
@@ -39,7 +34,7 @@ public abstract class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowD
         String productId = ids[1];
 
         if (productId != null) {
-            Optional<AbstractProductDTO<?>> receivedProduct = workflowRepository
+            Optional<AbstractProductTO<?>> receivedProduct = workflowRepository
                     .findVertexByWorkflowIdAndVertexName(workflowId, productId);
             if (receivedProduct.isEmpty()) {
                 throw new ProcessingMessageException("Product with productId: " + productId + " not found", 404);
@@ -67,12 +62,12 @@ public abstract class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowD
         String workflowId = ids[0];
         String productId = ids[1];
 
-        AbstractProductDTO<?> abstractProductDTO = convertRequestBody(context.getRequestBody(),
+        AbstractProductTO<?> abstractProductTO = convertRequestBody(context.getRequestBody(),
                 clazzP, true);
 
         if (workflowRepository.existVertexAndIsProcessed(workflowId, productId)) {
-            Integer quantityProduced = abstractProductDTO.getQuantityProduced();
-            StochasticTime pdf = abstractProductDTO.getPdf();
+            Integer quantityProduced = abstractProductTO.getQuantityProduced();
+            StochasticTime pdf = abstractProductTO.getPdf();
             Integer updatedCount = 0;
             if (quantityProduced != null && pdf != null) {
                 updatedCount = workflowRepository.updateVertexQuantityProducedAndPdf(workflowId, productId,
@@ -106,13 +101,13 @@ public abstract class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowD
         String workflowId = ids[0];
         String productId = ids[1];
 
-        Optional<WFDTO> workflowDTO = workflowRepository
+        Optional<WFTO> workflowTO = workflowRepository
                 .findWorkflowIfVertexExists(workflowId, productId);
-        if (workflowDTO.isEmpty()) {
+        if (workflowTO.isEmpty()) {
             throw new ProcessingMessageException("Product with productId: " + productId + " not found", 404);
         }
 
-        AbstractWorkflow<P> workflow = workflowDTO.get().convertAndValidate();
+        AbstractWorkflow<P> workflow = workflowTO.get().convertAndValidate();
         Optional<P> vertexToRemove = workflow.findProduct(productId);
 
         // Should never happen
@@ -121,9 +116,9 @@ public abstract class AbstractCRUDProductHandler<WFDTO extends AbstractWorkflowD
         }
 
         if (workflow.removeVertex(vertexToRemove.get())) {
-            WFDTO updatedWorkflowDTO = uncheckedCast(workflowDTO.get().buildFromWorkflow(workflow));
-            updatedWorkflowDTO.setId(workflowDTO.get().getId());
-            workflowRepository.save(updatedWorkflowDTO);
+            WFTO updatedWorkflowTO = uncheckedCast(workflowTO.get().buildFromWorkflow(workflow));
+            updatedWorkflowTO.setId(workflowTO.get().getId());
+            workflowRepository.save(updatedWorkflowTO);
             context.setResponse("Product with productId: " + productId + " correctly removed", 200);
 
         } else {

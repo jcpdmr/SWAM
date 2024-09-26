@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.test.context.ActiveProfiles;
 
-import com.swam.commons.mongodb.template.WorkflowTemplateDTO;
+import com.swam.commons.mongodb.template.WorkflowTemplateTO;
 import com.swam.commons.utility.DefaultWorkflows;
 
 @ActiveProfiles("test")
@@ -18,19 +18,19 @@ public class WorkflowEndpointTest extends BaseEndpointTest {
     @Test
     public void workflowGetTest() {
         // GET test
-        checkIfResponseIsEqualsToDTO("/catalog/test", DefaultWorkflows.getWorkflowTemplateDTO2());
+        checkIfResponseIsEqualsToTO("/catalog/test", DefaultWorkflows.getWorkflowTemplateTO2());
 
-        WorkflowTemplateDTO subWorkflowTemplateDTO = null;
+        WorkflowTemplateTO subWorkflowTemplateTO = null;
         try {
-            subWorkflowTemplateDTO = (WorkflowTemplateDTO) DefaultWorkflows.getWorkflowTemplateDTO2()
-                    .getSubWorkflowDTO("v2");
+            subWorkflowTemplateTO = (WorkflowTemplateTO) DefaultWorkflows.getWorkflowTemplateTO2()
+                    .getSubWorkflowTO("v2");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        checkIfResponseIsEqualsToDTO("/catalog/test?subworkflow=v2", subWorkflowTemplateDTO);
+        checkIfResponseIsEqualsToTO("/catalog/test?subworkflow=v2", subWorkflowTemplateTO);
 
-        checkIfResponseContainsDTO("/catalog", DefaultWorkflows.getWorkflowTemplateDTO2());
+        checkIfResponseContainsTO("/catalog", DefaultWorkflows.getWorkflowTemplateTO2());
 
         client.get().uri("/catalog/test1")
                 .exchange()
@@ -52,7 +52,7 @@ public class WorkflowEndpointTest extends BaseEndpointTest {
         // Post test
         String newWorkflowId;
         String response = client.post().uri("/catalog")
-                .bodyValue(DefaultWorkflows.getWorkflowTemplateDTO2())
+                .bodyValue(DefaultWorkflows.getWorkflowTemplateTO2())
                 .exchange()
                 .expectStatus().isCreated()
                 .expectBody(String.class)
@@ -62,7 +62,7 @@ public class WorkflowEndpointTest extends BaseEndpointTest {
         newWorkflowId = response.split(": ")[1];
 
         // Get the workflowDto and check if it was posted correctly
-        checkIfResponseIsEqualsToDTO("/catalog/" + newWorkflowId, DefaultWorkflows.getWorkflowTemplateDTO2());
+        checkIfResponseIsEqualsToTO("/catalog/" + newWorkflowId, DefaultWorkflows.getWorkflowTemplateTO2());
 
         // Delete test
         client.delete().uri("/catalog/" + newWorkflowId)
@@ -75,11 +75,11 @@ public class WorkflowEndpointTest extends BaseEndpointTest {
     public void workflowPutTest() {
         // Put test
         client.put().uri("/catalog/random")
-                .bodyValue(DefaultWorkflows.getWorkflowTemplateDTO3())
+                .bodyValue(DefaultWorkflows.getWorkflowTemplateTO3())
                 .exchange()
                 .expectStatus().isOk();
 
-        checkIfResponseIsEqualsToDTO("/catalog/random", DefaultWorkflows.getWorkflowTemplateDTO3());
+        checkIfResponseIsEqualsToTO("/catalog/random", DefaultWorkflows.getWorkflowTemplateTO3());
     }
 
     // Test MakeInstance (and some CRUD for operation)
@@ -96,7 +96,7 @@ public class WorkflowEndpointTest extends BaseEndpointTest {
 
         newWorkflowInstanceId = response.split(": ")[1];
 
-        checkIfResponseIsEqualsToDTO("/operation/" + newWorkflowInstanceId, DefaultWorkflows.getWorkflowTemplateDTO2());
+        checkIfResponseIsEqualsToTO("/operation/" + newWorkflowInstanceId, DefaultWorkflows.getWorkflowTemplateTO2());
 
         client.delete().uri("/operation/" + newWorkflowInstanceId)
                 .exchange()

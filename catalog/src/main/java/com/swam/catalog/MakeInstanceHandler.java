@@ -14,15 +14,15 @@ import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.ProcessingMessageException;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
 import com.swam.commons.messageHandlers.AbstractBaseHandler;
-import com.swam.commons.mongodb.instance.WorkflowInstanceDTO;
-import com.swam.commons.mongodb.template.WorkflowTemplateDTO;
-import com.swam.commons.mongodb.template.WorkflowTemplateDTORepository;
+import com.swam.commons.mongodb.instance.WorkflowInstanceTO;
+import com.swam.commons.mongodb.template.WorkflowTemplateTO;
+import com.swam.commons.mongodb.template.WorkflowTemplateTORepository;
 
 @Service
-public class MakeInstanceHandler extends AbstractBaseHandler<WorkflowTemplateDTO, ProductTemplate> {
+public class MakeInstanceHandler extends AbstractBaseHandler<WorkflowTemplateTO, ProductTemplate> {
 
-    public MakeInstanceHandler(WorkflowTemplateDTORepository workflowTemplateDTORepository) {
-        super(List.of(TargetMessageHandler.ISTANCE_TEMPLATE), workflowTemplateDTORepository);
+    public MakeInstanceHandler(WorkflowTemplateTORepository workflowTemplateTORepository) {
+        super(List.of(TargetMessageHandler.ISTANCE_TEMPLATE), workflowTemplateTORepository);
     }
 
     @Override
@@ -58,19 +58,19 @@ public class MakeInstanceHandler extends AbstractBaseHandler<WorkflowTemplateDTO
         }
 
         // Check if it's requested a subworkflow instead of full workflow
-        WorkflowTemplateDTO workflowDTO = getSubWorkflowIfRequested(context, workflowId);
-        if (workflowDTO == null) {
-            workflowDTO = workflowRepository.findById(workflowId).get();
+        WorkflowTemplateTO workflowTO = getSubWorkflowIfRequested(context, workflowId);
+        if (workflowTO == null) {
+            workflowTO = workflowRepository.findById(workflowId).get();
         }
 
         // TODO: do we need additional sanity checks?
-        WorkflowTemplate workflowTemplate = (WorkflowTemplate) workflowDTO.convertAndValidate();
+        WorkflowTemplate workflowTemplate = (WorkflowTemplate) workflowTO.convertAndValidate();
         WorkflowInstance workflowInstance = workflowTemplate.makeInstance();
-        WorkflowInstanceDTO workflowInstanceDTO = new WorkflowInstanceDTO(workflowInstance);
+        WorkflowInstanceTO workflowInstanceTO = new WorkflowInstanceTO(workflowInstance);
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            String serializedWorkflowInstanceDTO = objectMapper.writeValueAsString(workflowInstanceDTO);
-            context.setResponseBody(serializedWorkflowInstanceDTO);
+            String serializedWorkflowInstanceTO = objectMapper.writeValueAsString(workflowInstanceTO);
+            context.setResponseBody(serializedWorkflowInstanceTO);
         } catch (JsonProcessingException e) {
             throw new ProcessingMessageException(e.getMessage(),
                     "Internal Server Error", 500);

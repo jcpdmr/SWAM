@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.qesm.AbstractProduct.ItemGroup;
 import com.qesm.ProductInstance;
-import com.swam.commons.mongodb.AbstractProductDTO;
+import com.swam.commons.mongodb.AbstractProductTO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,17 +16,17 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper = true)
-public class ProductInstanceDTO extends AbstractProductDTO<ProductInstance> {
+public class ProductInstanceTO extends AbstractProductTO<ProductInstance> {
 
     @PersistenceCreator
     @JsonCreator
-    public ProductInstanceDTO(@JsonProperty("name") String name,
+    public ProductInstanceTO(@JsonProperty("name") String name,
             @JsonProperty("quantityProduced") Integer quantityProduced, @JsonProperty("pdf") StochasticTime pdf,
             @JsonProperty("itemGroup") ItemGroup itemGroup) {
         super(name, quantityProduced, pdf, itemGroup);
     }
 
-    public ProductInstanceDTO(ProductInstance product) {
+    public ProductInstanceTO(ProductInstance product) {
         super(product);
     }
 

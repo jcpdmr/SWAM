@@ -13,7 +13,7 @@ import com.qesm.AbstractWorkflow;
 import com.qesm.CustomEdge;
 import com.qesm.ProductTemplate;
 import com.qesm.WorkflowTemplate;
-import com.swam.commons.mongodb.AbstractWorkflowDTO;
+import com.swam.commons.mongodb.AbstractWorkflowTO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,33 +23,33 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper = true)
-public class WorkflowTemplateDTO extends AbstractWorkflowDTO<ProductTemplate> {
+public class WorkflowTemplateTO extends AbstractWorkflowTO<ProductTemplate> {
 
     @PersistenceCreator
-    public WorkflowTemplateDTO(String id,
-            Map<String, ProductTemplateDTO> vertexMap,
-            Set<CustomEdgeTemplateDTO> edgeSet) {
+    public WorkflowTemplateTO(String id,
+            Map<String, ProductTemplateTO> vertexMap,
+            Set<CustomEdgeTemplateTO> edgeSet) {
         super(id, vertexMap, edgeSet);
     }
 
     @JsonCreator
-    public WorkflowTemplateDTO(@JsonProperty("vertexMap") Map<String, ProductTemplateDTO> vertexMap,
-            @JsonProperty("edgeSet") Set<CustomEdgeTemplateDTO> edgeSet) {
+    public WorkflowTemplateTO(@JsonProperty("vertexMap") Map<String, ProductTemplateTO> vertexMap,
+            @JsonProperty("edgeSet") Set<CustomEdgeTemplateTO> edgeSet) {
         super(vertexMap, edgeSet);
     }
 
-    public WorkflowTemplateDTO(WorkflowTemplate workflowTemplate) {
+    public WorkflowTemplateTO(WorkflowTemplate workflowTemplate) {
         super(workflowTemplate);
     }
 
     @Override
-    protected ProductTemplateDTO createProductDTO(ProductTemplate vertex) {
-        return new ProductTemplateDTO(vertex);
+    protected ProductTemplateTO createProductTO(ProductTemplate vertex) {
+        return new ProductTemplateTO(vertex);
     }
 
     @Override
-    protected CustomEdgeTemplateDTO createCustomEdgeDTO(CustomEdge edge) {
-        return new CustomEdgeTemplateDTO(edge);
+    protected CustomEdgeTemplateTO createCustomEdgeTO(CustomEdge edge) {
+        return new CustomEdgeTemplateTO(edge);
     }
 
     @Override
@@ -58,8 +58,8 @@ public class WorkflowTemplateDTO extends AbstractWorkflowDTO<ProductTemplate> {
     }
 
     @Override
-    public AbstractWorkflowDTO<ProductTemplate> buildFromWorkflow(AbstractWorkflow<ProductTemplate> workflow) {
-        return new WorkflowTemplateDTO((WorkflowTemplate) workflow);
+    public AbstractWorkflowTO<ProductTemplate> buildFromWorkflow(AbstractWorkflow<ProductTemplate> workflow) {
+        return new WorkflowTemplateTO((WorkflowTemplate) workflow);
     }
 
 }

@@ -11,15 +11,15 @@ import com.swam.commons.intercommunication.ApiTemplateVariable;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.ProcessingMessageException;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
-import com.swam.commons.mongodb.AbstractWorkflowDTO;
-import com.swam.commons.mongodb.WorkflowDTORepository;
+import com.swam.commons.mongodb.AbstractWorkflowTO;
+import com.swam.commons.mongodb.WorkflowTORepository;
 
-public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflowDTO<P>, P extends AbstractProduct>
-        extends AbstractCRUDHandler<WFDTO, P> {
+public abstract class AbstractCRUDWorkflowHandler<WFTO extends AbstractWorkflowTO<P>, P extends AbstractProduct>
+        extends AbstractCRUDHandler<WFTO, P> {
 
-    private final Class<WFDTO> workflowClazz;
+    private final Class<WFTO> workflowClazz;
 
-    public AbstractCRUDWorkflowHandler(WorkflowDTORepository<WFDTO, ?> workflowRepository, Class<WFDTO> workflowClazz) {
+    public AbstractCRUDWorkflowHandler(WorkflowTORepository<WFTO, ?> workflowRepository, Class<WFTO> workflowClazz) {
         super(List.of(TargetMessageHandler.WORKFLOW), workflowRepository);
         this.workflowClazz = workflowClazz;
     }
@@ -37,16 +37,16 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
             }
 
             // Check if it's requested a subworkflow instead of full workflow
-            WFDTO workflowDTO = getSubWorkflowIfRequested(context, workflowId);
-            if (workflowDTO == null) {
-                workflowDTO = workflowRepository.findById(workflowId).get();
+            WFTO workflowTO = getSubWorkflowIfRequested(context, workflowId);
+            if (workflowTO == null) {
+                workflowTO = workflowRepository.findById(workflowId).get();
             }
 
             // Check if it's requested svg format or json data
             if (isParamSpecified(context, ApiTemplateVariable.PARAM_KEY_FORMAT,
                     ApiTemplateVariable.PARAM_FORMAT_SVG)) {
                 String dotFile;
-                AbstractWorkflow<?> workflow = workflowDTO.convertAndValidate();
+                AbstractWorkflow<?> workflow = workflowTO.convertAndValidate();
                 try {
                     dotFile = workflow.exportDotFileNoSerialization().toString(StandardCharsets.UTF_8.name());
                 } catch (Exception e) {
@@ -58,7 +58,7 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
 
                 context.setResponse(outputStream.toString(), 200);
             } else {
-                context.setResponse(workflowDTO, 200);
+                context.setResponse(workflowTO, 200);
             }
 
         } else {
@@ -70,11 +70,11 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
     @Override
     protected void post(CustomMessage context) throws ProcessingMessageException {
 
-        WFDTO receivedWorkflowDTO = convertRequestBody(context.getRequestBody(), workflowClazz, true);
+        WFTO receivedWorkflowTO = convertRequestBody(context.getRequestBody(), workflowClazz, true);
 
         // Saving workflow to mongoDB
-        WFDTO savedWorkflowDTO = workflowRepository.save(receivedWorkflowDTO);
-        context.setResponse("Workflow correctly saved with id: " + savedWorkflowDTO.getId(), 201);
+        WFTO savedWorkflowTO = workflowRepository.save(receivedWorkflowTO);
+        context.setResponse("Workflow correctly saved with id: " + savedWorkflowTO.getId(), 201);
     }
 
     @Override
@@ -84,11 +84,11 @@ public abstract class AbstractCRUDWorkflowHandler<WFDTO extends AbstractWorkflow
 
         if (workflowRepository.existsById(workflowId)) {
 
-            WFDTO receivedWorkflowDTO = convertRequestBody(context.getRequestBody(), workflowClazz, true);
-            receivedWorkflowDTO.setId(workflowId);
+            WFTO receivedWorkflowTO = convertRequestBody(context.getRequestBody(), workflowClazz, true);
+            receivedWorkflowTO.setId(workflowId);
 
-            WFDTO savedWorkflowDTO = workflowRepository.save(receivedWorkflowDTO);
-            context.setResponse("Workflow with id: " + savedWorkflowDTO.getId() + " updated correctly", 200);
+            WFTO savedWorkflowTO = workflowRepository.save(receivedWorkflowTO);
+            context.setResponse("Workflow with id: " + savedWorkflowTO.getId() + " updated correctly", 200);
 
         } else {
             throw new ProcessingMessageException("Workflow with workflowId: " + workflowId + " not found", 404);

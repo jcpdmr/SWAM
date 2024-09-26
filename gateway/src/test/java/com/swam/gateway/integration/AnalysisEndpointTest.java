@@ -51,8 +51,8 @@ public class AnalysisEndpointTest extends BaseEndpointTest {
 
         newWorkflowInstanceId = response.split(": ")[1];
 
-        checkIfResponseIsEqualsToDTO("/workflow/operation/" + newWorkflowInstanceId,
-                DefaultWorkflows.getWorkflowTemplateDTO2());
+        checkIfResponseIsEqualsToTO("/workflow/operation/" + newWorkflowInstanceId,
+                DefaultWorkflows.getWorkflowTemplateTO2());
 
         // Test analysis
         analyze("/analysis/operation/" + newWorkflowInstanceId, WorkflowInstance.class, ProductInstance.class);
@@ -80,7 +80,7 @@ public class AnalysisEndpointTest extends BaseEndpointTest {
         W workflowTemplate = null;
 
         try {
-            workflowTemplate = uncheckedCast(DefaultWorkflows.getWorkflowTemplateDTO2().convertAndValidate());
+            workflowTemplate = uncheckedCast(DefaultWorkflows.getWorkflowTemplateTO2().convertAndValidate());
         } catch (Exception e) {
             e.printStackTrace();
         }

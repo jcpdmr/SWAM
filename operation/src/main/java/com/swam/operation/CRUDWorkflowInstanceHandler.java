@@ -4,15 +4,15 @@ import org.springframework.stereotype.Service;
 
 import com.qesm.ProductInstance;
 import com.swam.commons.messageHandlers.AbstractCRUDWorkflowHandler;
-import com.swam.commons.mongodb.instance.WorkflowInstanceDTO;
-import com.swam.commons.mongodb.instance.WorkflowInstanceDTORepository;
+import com.swam.commons.mongodb.instance.WorkflowInstanceTO;
+import com.swam.commons.mongodb.instance.WorkflowInstanceTORepository;
 
 @Service
 public class CRUDWorkflowInstanceHandler extends
-        AbstractCRUDWorkflowHandler<WorkflowInstanceDTO, ProductInstance> {
+        AbstractCRUDWorkflowHandler<WorkflowInstanceTO, ProductInstance> {
 
-    public CRUDWorkflowInstanceHandler(WorkflowInstanceDTORepository workflowInstanceRepository) {
-        super(workflowInstanceRepository, WorkflowInstanceDTO.class);
+    public CRUDWorkflowInstanceHandler(WorkflowInstanceTORepository workflowInstanceRepository) {
+        super(workflowInstanceRepository, WorkflowInstanceTO.class);
     }
 
 }

@@ -14,13 +14,13 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public abstract class AbstractCustomEdgeDTO {
+public abstract class AbstractCustomEdgeTO {
 
     protected final String sourceName;
     protected final String targetName;
     protected final Integer quantityRequired;
 
-    protected AbstractCustomEdgeDTO(CustomEdge customEdge) {
+    protected AbstractCustomEdgeTO(CustomEdge customEdge) {
         this.sourceName = ((AbstractProduct) customEdge.getSource()).getName();
         this.targetName = ((AbstractProduct) customEdge.getTarget()).getName();
         this.quantityRequired = customEdge.getQuantityRequired();
@@ -38,7 +38,7 @@ public abstract class AbstractCustomEdgeDTO {
             return false;
         }
 
-        AbstractCustomEdgeDTO customEdgeToCompare = (AbstractCustomEdgeDTO) obj;
+        AbstractCustomEdgeTO customEdgeToCompare = (AbstractCustomEdgeTO) obj;
         if (sourceName == null) {
             if (customEdgeToCompare.sourceName != null)
                 return false;

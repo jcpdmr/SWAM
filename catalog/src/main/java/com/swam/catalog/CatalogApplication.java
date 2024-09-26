@@ -7,8 +7,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import com.swam.commons.intercommunication.MessageDispatcher;
-import com.swam.commons.mongodb.template.WorkflowTemplateDTO;
-import com.swam.commons.mongodb.template.WorkflowTemplateDTORepository;
+import com.swam.commons.mongodb.template.WorkflowTemplateTO;
+import com.swam.commons.mongodb.template.WorkflowTemplateTORepository;
 import com.swam.commons.utility.DefaultWorkflows;
 
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CatalogApplication implements CommandLineRunner {
 
-    private final WorkflowTemplateDTORepository workflowTemplateRepository;
+    private final WorkflowTemplateTORepository workflowTemplateRepository;
 
     @SuppressWarnings("unused")
     private final MessageDispatcher requestHandler;
@@ -31,12 +31,12 @@ public class CatalogApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        WorkflowTemplateDTO workflowTemplateDTO1 = DefaultWorkflows.getWorkflowTemplateDTO1();
-        workflowTemplateDTO1.setId("random");
-        workflowTemplateRepository.save(workflowTemplateDTO1);
+        WorkflowTemplateTO workflowTemplateTO1 = DefaultWorkflows.getWorkflowTemplateTO1();
+        workflowTemplateTO1.setId("random");
+        workflowTemplateRepository.save(workflowTemplateTO1);
 
-        WorkflowTemplateDTO workflowTemplateDTO2 = DefaultWorkflows.getWorkflowTemplateDTO2();
-        workflowTemplateDTO2.setId("test");
-        workflowTemplateRepository.save(workflowTemplateDTO2);
+        WorkflowTemplateTO workflowTemplateTO2 = DefaultWorkflows.getWorkflowTemplateTO2();
+        workflowTemplateTO2.setId("test");
+        workflowTemplateRepository.save(workflowTemplateTO2);
     }
 }
