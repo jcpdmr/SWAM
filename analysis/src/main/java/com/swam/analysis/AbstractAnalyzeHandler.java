@@ -22,10 +22,10 @@ import org.oristool.eulero.evaluation.heuristics.AnalysisHeuristicsVisitor;
 import org.oristool.eulero.evaluation.heuristics.RBFHeuristicsVisitor;
 import org.oristool.eulero.modeling.Activity;
 
-import com.qesm.AbstractProduct;
-import com.qesm.AbstractWorkflow;
-import com.qesm.StructuredTree;
-import com.qesm.StructuredTreeConverter;
+import com.qesm.workflow.AbstractProduct;
+import com.qesm.workflow.AbstractWorkflow;
+import com.qesm.tree.StructuredTree;
+import com.qesm.tree.StructuredTreeConverter;
 import com.swam.commons.intercommunication.ApiTemplateVariable;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.MessageHandler;

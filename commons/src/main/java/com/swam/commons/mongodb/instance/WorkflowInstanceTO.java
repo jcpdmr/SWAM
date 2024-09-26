@@ -9,10 +9,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.qesm.AbstractWorkflow;
-import com.qesm.CustomEdge;
-import com.qesm.ProductInstance;
-import com.qesm.WorkflowInstance;
+import com.qesm.workflow.AbstractWorkflow;
+import com.qesm.workflow.CustomEdge;
+import com.qesm.workflow.ProductInstance;
+import com.qesm.workflow.WorkflowInstance;
 import com.swam.commons.mongodb.AbstractWorkflowTO;
 import com.swam.commons.mongodb.AbstractCustomEdgeTO;
 import com.swam.commons.mongodb.AbstractProductTO;

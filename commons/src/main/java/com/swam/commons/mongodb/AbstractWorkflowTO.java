@@ -14,10 +14,10 @@ import org.springframework.data.annotation.Transient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.qesm.AbstractProduct;
-import com.qesm.AbstractWorkflow;
-import com.qesm.CustomEdge;
-import com.qesm.WorkflowValidationException;
+import com.qesm.workflow.AbstractProduct;
+import com.qesm.workflow.AbstractWorkflow;
+import com.qesm.workflow.CustomEdge;
+import com.qesm.workflow.WorkflowValidationException;
 import com.swam.commons.intercommunication.ProcessingMessageException;
 
 import lombok.Getter;

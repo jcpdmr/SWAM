@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.qesm.ProductTemplate;
-import com.qesm.WorkflowInstance;
-import com.qesm.WorkflowTemplate;
+import com.qesm.workflow.ProductTemplate;
+import com.qesm.workflow.WorkflowInstance;
+import com.qesm.workflow.WorkflowTemplate;
 import com.swam.commons.intercommunication.ApiTemplateVariable;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.ProcessingMessageException;

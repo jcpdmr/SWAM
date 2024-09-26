@@ -5,8 +5,8 @@ import org.springframework.data.annotation.PersistenceCreator;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.qesm.AbstractProduct.ItemGroup;
-import com.qesm.ProductInstance;
+import com.qesm.workflow.AbstractProduct.ItemGroup;
+import com.qesm.workflow.ProductInstance;
 import com.swam.commons.mongodb.AbstractProductTO;
 
 import lombok.Getter;

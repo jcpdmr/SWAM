@@ -2,10 +2,10 @@ package com.swam.commons.utility;
 
 import org.jgrapht.graph.DirectedAcyclicGraph;
 
-import com.qesm.CustomEdge;
-import com.qesm.ProductTemplate;
-import com.qesm.RandomDAGGenerator.PdfType;
-import com.qesm.WorkflowTemplate;
+import com.qesm.workflow.CustomEdge;
+import com.qesm.workflow.ProductTemplate;
+import com.qesm.workflow.RandomDAGGenerator.PdfType;
+import com.qesm.workflow.WorkflowTemplate;
 import com.swam.commons.mongodb.template.WorkflowTemplateTO;
 
 public class DefaultWorkflows {

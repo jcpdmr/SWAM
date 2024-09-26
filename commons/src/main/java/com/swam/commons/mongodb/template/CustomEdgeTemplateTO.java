@@ -3,7 +3,7 @@ package com.swam.commons.mongodb.template;
 import org.springframework.data.annotation.PersistenceCreator;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.qesm.CustomEdge;
+import com.qesm.workflow.CustomEdge;
 import com.swam.commons.mongodb.AbstractCustomEdgeTO;
 
 import lombok.Getter;

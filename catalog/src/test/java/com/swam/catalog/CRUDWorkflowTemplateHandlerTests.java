@@ -10,7 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.qesm.ProductTemplate;
+import com.qesm.workflow.ProductTemplate;
 import com.swam.commons.intercommunication.MessageDispatcher;
 import com.swam.commons.mongodb.template.ProductTemplateTO;
 import com.swam.commons.mongodb.template.WorkflowTemplateTORepository;

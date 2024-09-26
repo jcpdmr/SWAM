@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.Update;
 
-import com.qesm.AbstractProduct;
+import com.qesm.workflow.AbstractProduct;
 
 public interface WorkflowTORepository<WFTO extends AbstractWorkflowTO<? extends AbstractProduct>, P extends AbstractProductTO<? extends AbstractProduct>>
         extends MongoRepository<WFTO, String> {

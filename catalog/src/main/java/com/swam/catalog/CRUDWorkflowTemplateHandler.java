@@ -2,7 +2,7 @@ package com.swam.catalog;
 
 import org.springframework.stereotype.Service;
 
-import com.qesm.ProductTemplate;
+import com.qesm.workflow.ProductTemplate;
 import com.swam.commons.messageHandlers.AbstractCRUDWorkflowHandler;
 import com.swam.commons.mongodb.template.WorkflowTemplateTO;
 import com.swam.commons.mongodb.template.WorkflowTemplateTORepository;

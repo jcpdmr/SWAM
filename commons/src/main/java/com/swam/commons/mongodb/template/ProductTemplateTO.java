@@ -3,11 +3,11 @@ package com.swam.commons.mongodb.template;
 import org.oristool.eulero.modeling.stochastictime.StochasticTime;
 import org.springframework.data.annotation.PersistenceCreator;
 
-import com.qesm.AbstractProduct.ItemGroup;
+import com.qesm.workflow.AbstractProduct.ItemGroup;
 import com.swam.commons.mongodb.AbstractProductTO;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.qesm.ProductTemplate;
+import com.qesm.workflow.ProductTemplate;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -2,8 +2,8 @@ package com.swam.commons.mongodb;
 
 import java.util.Objects;
 
-import com.qesm.AbstractProduct;
-import com.qesm.CustomEdge;
+import com.qesm.workflow.AbstractProduct;
+import com.qesm.workflow.CustomEdge;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

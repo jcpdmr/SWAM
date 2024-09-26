@@ -2,7 +2,7 @@ package com.swam.commons.utility;
 
 import org.oristool.eulero.modeling.stochastictime.UniformTime;
 
-import com.qesm.ProductTemplate;
+import com.qesm.workflow.ProductTemplate;
 
 public class DefaultProducts {
     public static ProductTemplate v0 = new ProductTemplate("v0", 1, new UniformTime(0, 2));

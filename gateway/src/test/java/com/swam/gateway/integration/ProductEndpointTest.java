@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.oristool.eulero.modeling.stochastictime.DeterministicTime;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.qesm.ProductTemplate;
-import com.qesm.WorkflowTemplate;
+import com.qesm.workflow.ProductTemplate;
+import com.qesm.workflow.WorkflowTemplate;
 import com.swam.commons.mongodb.template.ProductTemplateTO;
 import com.swam.commons.mongodb.template.WorkflowTemplateTO;
 import com.swam.commons.utility.DefaultProducts;

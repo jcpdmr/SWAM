@@ -4,9 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import com.qesm.AbstractProduct;
-import com.qesm.AbstractWorkflow;
-import com.qesm.Renderer;
+import com.qesm.workflow.AbstractProduct;
+import com.qesm.workflow.AbstractWorkflow;
+import com.qesm.io.Renderer;
 import com.swam.commons.intercommunication.ApiTemplateVariable;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.ProcessingMessageException;

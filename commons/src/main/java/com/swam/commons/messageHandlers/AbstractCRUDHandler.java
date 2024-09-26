@@ -1,6 +1,6 @@
 package com.swam.commons.messageHandlers;
 
-import com.qesm.AbstractProduct;
+import com.qesm.workflow.AbstractProduct;
 import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.ProcessingMessageException;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;

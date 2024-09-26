@@ -14,14 +14,14 @@ import org.oristool.eulero.evaluation.heuristics.RBFHeuristicsVisitor;
 import org.oristool.eulero.modeling.Activity;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.qesm.AbstractProduct;
-import com.qesm.AbstractWorkflow;
-import com.qesm.ProductInstance;
-import com.qesm.ProductTemplate;
-import com.qesm.StructuredTree;
-import com.qesm.StructuredTreeConverter;
-import com.qesm.WorkflowInstance;
-import com.qesm.WorkflowTemplate;
+import com.qesm.workflow.AbstractProduct;
+import com.qesm.workflow.AbstractWorkflow;
+import com.qesm.workflow.ProductInstance;
+import com.qesm.workflow.ProductTemplate;
+import com.qesm.tree.StructuredTree;
+import com.qesm.tree.StructuredTreeConverter;
+import com.qesm.workflow.WorkflowInstance;
+import com.qesm.workflow.WorkflowTemplate;
 import com.swam.commons.utility.DefaultWorkflows;
 
 @ActiveProfiles("test")
