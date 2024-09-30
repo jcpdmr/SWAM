@@ -24,12 +24,12 @@ import lombok.ToString;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class AbstractProductTO<V extends AbstractProduct> implements MongodbTO<V> {
-    private final String name;
-    private final Integer quantityProduced;
+    protected final String name;
+    protected final Integer quantityProduced;
     @JsonDeserialize(using = StochasticTimeDeserializer.class)
     @JsonSerialize(using = StochasticTimeSerializer.class)
-    private final transient StochasticTime pdf;
-    private final ItemGroup itemGroup;
+    protected final transient StochasticTime pdf;
+    protected final ItemGroup itemGroup;
 
     protected AbstractProductTO(V product) {
         this.name = product.getName();

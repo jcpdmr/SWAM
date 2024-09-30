@@ -14,8 +14,6 @@ import com.qesm.workflow.CustomEdge;
 import com.qesm.workflow.ProductInstance;
 import com.qesm.workflow.WorkflowInstance;
 import com.swam.commons.mongodb.AbstractWorkflowTO;
-import com.swam.commons.mongodb.AbstractCustomEdgeTO;
-import com.swam.commons.mongodb.AbstractProductTO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -44,12 +42,12 @@ public class WorkflowInstanceTO extends AbstractWorkflowTO<ProductInstance> {
     }
 
     @Override
-    protected AbstractProductTO<ProductInstance> createProductTO(ProductInstance vertex) {
+    protected ProductInstanceTO createProductTO(ProductInstance vertex) {
         return new ProductInstanceTO(vertex);
     }
 
     @Override
-    protected AbstractCustomEdgeTO createCustomEdgeTO(CustomEdge edge) {
+    protected CustomEdgeInstanceTO createCustomEdgeTO(CustomEdge edge) {
         return new CustomEdgeInstanceTO(edge);
     }
 

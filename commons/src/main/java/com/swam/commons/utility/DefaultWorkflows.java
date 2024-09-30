@@ -58,4 +58,19 @@ public class DefaultWorkflows {
 
         return new WorkflowTemplateTO(workflowTemplate);
     }
+
+    public static WorkflowTemplateTO getWorkflowTemplateTO4() {
+
+        DirectedAcyclicGraph<ProductTemplate, CustomEdge> dag = new DirectedAcyclicGraph<>(CustomEdge.class);
+        dag.addVertex(DefaultProducts.v0);
+        dag.addVertex(DefaultProducts.v1);
+        dag.addVertex(DefaultProducts.v2);
+
+        dag.addEdge(DefaultProducts.v0, DefaultProducts.v1);
+        dag.addEdge(DefaultProducts.v1, DefaultProducts.v2);
+
+        WorkflowTemplate workflowTemplate = new WorkflowTemplate(dag);
+
+        return new WorkflowTemplateTO(workflowTemplate);
+    }
 }

@@ -38,5 +38,9 @@ public class CatalogApplication implements CommandLineRunner {
         WorkflowTemplateTO workflowTemplateTO2 = DefaultWorkflows.getWorkflowTemplateTO2();
         workflowTemplateTO2.setId("test");
         workflowTemplateRepository.save(workflowTemplateTO2);
+
+        WorkflowTemplateTO workflowTemplateTO4 = DefaultWorkflows.getWorkflowTemplateTO4();
+        workflowTemplateTO4.setId("demo");
+        workflowTemplateRepository.save(workflowTemplateTO4);
     }
 }
