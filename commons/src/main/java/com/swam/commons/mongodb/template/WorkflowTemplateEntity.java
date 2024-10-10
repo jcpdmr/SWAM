@@ -13,7 +13,7 @@ import com.qesm.workflow.AbstractWorkflow;
 import com.qesm.workflow.CustomEdge;
 import com.qesm.workflow.ProductTemplate;
 import com.qesm.workflow.WorkflowTemplate;
-import com.swam.commons.mongodb.AbstractWorkflowTO;
+import com.swam.commons.mongodb.AbstractWorkflowEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,33 +23,33 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper = true)
-public class WorkflowTemplateTO extends AbstractWorkflowTO<ProductTemplate> {
+public class WorkflowTemplateEntity extends AbstractWorkflowEntity<ProductTemplate> {
 
     @PersistenceCreator
-    public WorkflowTemplateTO(String id,
-            Map<String, ProductTemplateTO> vertexMap,
-            Set<CustomEdgeTemplateTO> edgeSet) {
+    public WorkflowTemplateEntity(String id,
+            Map<String, ProductTemplateEntity> vertexMap,
+            Set<CustomEdgeTemplateEntity> edgeSet) {
         super(id, vertexMap, edgeSet);
     }
 
     @JsonCreator
-    public WorkflowTemplateTO(@JsonProperty("vertexMap") Map<String, ProductTemplateTO> vertexMap,
-            @JsonProperty("edgeSet") Set<CustomEdgeTemplateTO> edgeSet) {
+    public WorkflowTemplateEntity(@JsonProperty("vertexMap") Map<String, ProductTemplateEntity> vertexMap,
+            @JsonProperty("edgeSet") Set<CustomEdgeTemplateEntity> edgeSet) {
         super(vertexMap, edgeSet);
     }
 
-    public WorkflowTemplateTO(WorkflowTemplate workflowTemplate) {
+    public WorkflowTemplateEntity(WorkflowTemplate workflowTemplate) {
         super(workflowTemplate);
     }
 
     @Override
-    protected ProductTemplateTO createProductTO(ProductTemplate vertex) {
-        return new ProductTemplateTO(vertex);
+    protected ProductTemplateEntity createProductEntity(ProductTemplate vertex) {
+        return new ProductTemplateEntity(vertex);
     }
 
     @Override
-    protected CustomEdgeTemplateTO createCustomEdgeTO(CustomEdge edge) {
-        return new CustomEdgeTemplateTO(edge);
+    protected CustomEdgeTemplateEntity createCustomEdgeEntity(CustomEdge edge) {
+        return new CustomEdgeTemplateEntity(edge);
     }
 
     @Override
@@ -58,8 +58,8 @@ public class WorkflowTemplateTO extends AbstractWorkflowTO<ProductTemplate> {
     }
 
     @Override
-    public AbstractWorkflowTO<ProductTemplate> buildFromWorkflow(AbstractWorkflow<ProductTemplate> workflow) {
-        return new WorkflowTemplateTO((WorkflowTemplate) workflow);
+    public AbstractWorkflowEntity<ProductTemplate> buildFromWorkflow(AbstractWorkflow<ProductTemplate> workflow) {
+        return new WorkflowTemplateEntity((WorkflowTemplate) workflow);
     }
 
 }

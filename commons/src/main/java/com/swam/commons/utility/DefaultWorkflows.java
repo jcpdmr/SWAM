@@ -6,17 +6,17 @@ import com.qesm.workflow.CustomEdge;
 import com.qesm.workflow.ProductTemplate;
 import com.qesm.workflow.RandomDAGGenerator.PdfType;
 import com.qesm.workflow.WorkflowTemplate;
-import com.swam.commons.mongodb.template.WorkflowTemplateTO;
+import com.swam.commons.mongodb.template.WorkflowTemplateEntity;
 
 public class DefaultWorkflows {
 
-    public static WorkflowTemplateTO getWorkflowTemplateTO1() {
+    public static WorkflowTemplateEntity getWorkflowTemplateEntity1() {
         WorkflowTemplate workflowTemplate = new WorkflowTemplate();
         workflowTemplate.generateRandomDAG(5, 5, 3, 3, 50, PdfType.UNIFORM);
-        return new WorkflowTemplateTO(workflowTemplate);
+        return new WorkflowTemplateEntity(workflowTemplate);
     }
 
-    public static WorkflowTemplateTO getWorkflowTemplateTO2() {
+    public static WorkflowTemplateEntity getWorkflowTemplateEntity2() {
 
         DirectedAcyclicGraph<ProductTemplate, CustomEdge> dag = new DirectedAcyclicGraph<>(CustomEdge.class);
         dag.addVertex(DefaultProducts.v0);
@@ -39,10 +39,10 @@ public class DefaultWorkflows {
 
         WorkflowTemplate workflowTemplate = new WorkflowTemplate(dag);
 
-        return new WorkflowTemplateTO(workflowTemplate);
+        return new WorkflowTemplateEntity(workflowTemplate);
     }
 
-    public static WorkflowTemplateTO getWorkflowTemplateTO3() {
+    public static WorkflowTemplateEntity getWorkflowTemplateEntity3() {
 
         DirectedAcyclicGraph<ProductTemplate, CustomEdge> dag = new DirectedAcyclicGraph<>(CustomEdge.class);
         dag.addVertex(DefaultProducts.v0);
@@ -56,10 +56,10 @@ public class DefaultWorkflows {
 
         WorkflowTemplate workflowTemplate = new WorkflowTemplate(dag);
 
-        return new WorkflowTemplateTO(workflowTemplate);
+        return new WorkflowTemplateEntity(workflowTemplate);
     }
 
-    public static WorkflowTemplateTO getWorkflowTemplateTO4() {
+    public static WorkflowTemplateEntity getWorkflowTemplateEntity4() {
 
         DirectedAcyclicGraph<ProductTemplate, CustomEdge> dag = new DirectedAcyclicGraph<>(CustomEdge.class);
         dag.addVertex(DefaultProducts.v0);
@@ -71,6 +71,6 @@ public class DefaultWorkflows {
 
         WorkflowTemplate workflowTemplate = new WorkflowTemplate(dag);
 
-        return new WorkflowTemplateTO(workflowTemplate);
+        return new WorkflowTemplateEntity(workflowTemplate);
     }
 }

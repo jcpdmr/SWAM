@@ -12,15 +12,15 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.qesm.workflow.ProductTemplate;
 import com.swam.commons.intercommunication.MessageDispatcher;
-import com.swam.commons.mongodb.template.ProductTemplateTO;
-import com.swam.commons.mongodb.template.WorkflowTemplateTORepository;
+import com.swam.commons.mongodb.template.ProductTemplateEntity;
+import com.swam.commons.mongodb.template.WorkflowTemplateEntityRepository;
 
 @ActiveProfiles("test")
 @SpringBootTest()
 public class CRUDWorkflowTemplateHandlerTests {
 
     @Autowired
-    private WorkflowTemplateTORepository workflowTemplateTORepository;
+    private WorkflowTemplateEntityRepository workflowTemplateEntityRepository;
 
     @MockBean
     private MessageDispatcher messageDispatcher;
@@ -36,21 +36,21 @@ public class CRUDWorkflowTemplateHandlerTests {
     @Test
     public void prova() {
 
-        // Optional<AbstractProductTO<?>> productTemplateTO =
-        // workflowTemplateTORepository
+        // Optional<AbstractProductEntity<?>> productTemplateEntity =
+        // workflowTemplateEntityRepository
         // .findVertexByWorkflowIdAndVertexName("test", "v0");
 
-        // System.out.println(productTemplateTO);
-        // ProductTemplateTO productTemplateTO = new ProductTemplateTO(new
+        // System.out.println(productTemplateEntity);
+        // ProductTemplateEntity productTemplateEntity = new ProductTemplateEntity(new
         // ProductTemplate("v0"));
 
         // test =
-        // workflowTemplateTORepository.updateVertexQuantityProducedAndPdf("test",
+        // workflowTemplateEntityRepository.updateVertexQuantityProducedAndPdf("test",
         // "v0", 50,
         // new ExponentialTime(BigDecimal.valueOf(10)));
 
-        System.out.println(workflowTemplateTORepository.existVertexAndIsProcessed("test", "prova"));
-        System.out.println(workflowTemplateTORepository.findWorkflowIfVertexExists("test", "v0"));
+        System.out.println(workflowTemplateEntityRepository.existVertexAndIsProcessed("test", "prova"));
+        System.out.println(workflowTemplateEntityRepository.findWorkflowIfVertexExists("test", "v0"));
     }
 
 }

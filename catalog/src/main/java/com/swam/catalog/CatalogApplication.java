@@ -7,8 +7,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import com.swam.commons.intercommunication.MessageDispatcher;
-import com.swam.commons.mongodb.template.WorkflowTemplateTO;
-import com.swam.commons.mongodb.template.WorkflowTemplateTORepository;
+import com.swam.commons.mongodb.template.WorkflowTemplateEntity;
+import com.swam.commons.mongodb.template.WorkflowTemplateEntityRepository;
 import com.swam.commons.utility.DefaultWorkflows;
 
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CatalogApplication implements CommandLineRunner {
 
-    private final WorkflowTemplateTORepository workflowTemplateRepository;
+    private final WorkflowTemplateEntityRepository workflowTemplateRepository;
 
     @SuppressWarnings("unused")
     private final MessageDispatcher requestHandler;
@@ -31,16 +31,16 @@ public class CatalogApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        WorkflowTemplateTO workflowTemplateTO1 = DefaultWorkflows.getWorkflowTemplateTO1();
-        workflowTemplateTO1.setId("random");
-        workflowTemplateRepository.save(workflowTemplateTO1);
+        WorkflowTemplateEntity workflowTemplateEntity1 = DefaultWorkflows.getWorkflowTemplateEntity1();
+        workflowTemplateEntity1.setId("random");
+        workflowTemplateRepository.save(workflowTemplateEntity1);
 
-        WorkflowTemplateTO workflowTemplateTO2 = DefaultWorkflows.getWorkflowTemplateTO2();
-        workflowTemplateTO2.setId("test");
-        workflowTemplateRepository.save(workflowTemplateTO2);
+        WorkflowTemplateEntity workflowTemplateEntity2 = DefaultWorkflows.getWorkflowTemplateEntity2();
+        workflowTemplateEntity2.setId("test");
+        workflowTemplateRepository.save(workflowTemplateEntity2);
 
-        WorkflowTemplateTO workflowTemplateTO4 = DefaultWorkflows.getWorkflowTemplateTO4();
-        workflowTemplateTO4.setId("demo");
-        workflowTemplateRepository.save(workflowTemplateTO4);
+        WorkflowTemplateEntity workflowTemplateEntity4 = DefaultWorkflows.getWorkflowTemplateEntity4();
+        workflowTemplateEntity4.setId("demo");
+        workflowTemplateRepository.save(workflowTemplateEntity4);
     }
 }

@@ -13,7 +13,7 @@ import com.qesm.workflow.AbstractWorkflow;
 import com.qesm.workflow.CustomEdge;
 import com.qesm.workflow.ProductInstance;
 import com.qesm.workflow.WorkflowInstance;
-import com.swam.commons.mongodb.AbstractWorkflowTO;
+import com.swam.commons.mongodb.AbstractWorkflowEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,32 +23,32 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper = true)
-public class WorkflowInstanceTO extends AbstractWorkflowTO<ProductInstance> {
+public class WorkflowInstanceEntity extends AbstractWorkflowEntity<ProductInstance> {
 
     @PersistenceCreator
-    public WorkflowInstanceTO(String id, Map<String, ProductInstanceTO> vertexMap,
-            Set<CustomEdgeInstanceTO> edgeSet) {
+    public WorkflowInstanceEntity(String id, Map<String, ProductInstanceEntity> vertexMap,
+            Set<CustomEdgeInstanceEntity> edgeSet) {
         super(id, vertexMap, edgeSet);
     }
 
     @JsonCreator
-    public WorkflowInstanceTO(@JsonProperty("vertexMap") Map<String, ProductInstanceTO> vertexMap,
-            @JsonProperty("edgeSet") Set<CustomEdgeInstanceTO> edgeSet) {
+    public WorkflowInstanceEntity(@JsonProperty("vertexMap") Map<String, ProductInstanceEntity> vertexMap,
+            @JsonProperty("edgeSet") Set<CustomEdgeInstanceEntity> edgeSet) {
         super(vertexMap, edgeSet);
     }
 
-    public WorkflowInstanceTO(WorkflowInstance workflowInstance) {
+    public WorkflowInstanceEntity(WorkflowInstance workflowInstance) {
         super(workflowInstance);
     }
 
     @Override
-    protected ProductInstanceTO createProductTO(ProductInstance vertex) {
-        return new ProductInstanceTO(vertex);
+    protected ProductInstanceEntity createProductEntity(ProductInstance vertex) {
+        return new ProductInstanceEntity(vertex);
     }
 
     @Override
-    protected CustomEdgeInstanceTO createCustomEdgeTO(CustomEdge edge) {
-        return new CustomEdgeInstanceTO(edge);
+    protected CustomEdgeInstanceEntity createCustomEdgeEntity(CustomEdge edge) {
+        return new CustomEdgeInstanceEntity(edge);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class WorkflowInstanceTO extends AbstractWorkflowTO<ProductInstance> {
     }
 
     @Override
-    public AbstractWorkflowTO<ProductInstance> buildFromWorkflow(AbstractWorkflow<ProductInstance> workflow) {
-        return new WorkflowInstanceTO((WorkflowInstance) workflow);
+    public AbstractWorkflowEntity<ProductInstance> buildFromWorkflow(AbstractWorkflow<ProductInstance> workflow) {
+        return new WorkflowInstanceEntity((WorkflowInstance) workflow);
     }
 }

@@ -4,14 +4,14 @@ import org.springframework.stereotype.Service;
 
 import com.qesm.workflow.ProductInstance;
 import com.swam.commons.messageHandlers.AbstractForwardWorkflowHandler;
-import com.swam.commons.mongodb.instance.WorkflowInstanceTO;
-import com.swam.commons.mongodb.instance.WorkflowInstanceTORepository;
+import com.swam.commons.mongodb.instance.WorkflowInstanceEntity;
+import com.swam.commons.mongodb.instance.WorkflowInstanceEntityRepository;
 
 @Service
 public class ForwardWorkflowInstanceHandler
-        extends AbstractForwardWorkflowHandler<WorkflowInstanceTO, ProductInstance> {
+        extends AbstractForwardWorkflowHandler<WorkflowInstanceEntity, ProductInstance> {
 
-    public ForwardWorkflowInstanceHandler(WorkflowInstanceTORepository workflowInstanceRepository) {
+    public ForwardWorkflowInstanceHandler(WorkflowInstanceEntityRepository workflowInstanceRepository) {
         super(workflowInstanceRepository);
     }
 

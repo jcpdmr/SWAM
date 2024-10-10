@@ -9,8 +9,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.qesm.workflow.ProductTemplate;
 import com.qesm.workflow.WorkflowTemplate;
-import com.swam.commons.mongodb.template.ProductTemplateTO;
-import com.swam.commons.mongodb.template.WorkflowTemplateTO;
+import com.swam.commons.mongodb.template.ProductTemplateEntity;
+import com.swam.commons.mongodb.template.WorkflowTemplateEntity;
 import com.swam.commons.utility.DefaultProducts;
 import com.swam.commons.utility.DefaultWorkflows;
 
@@ -24,14 +24,14 @@ public class ProductEndpointTest extends BaseEndpointTest {
     // Test CRUD operations
     @Test
     public void productGetTest() {
-        checkIfResponseIsEqualsToTO("/catalog/test/product/v1", new ProductTemplateTO(DefaultProducts.v1));
+        checkIfResponseIsEqualsToEntity("/catalog/test/product/v1", new ProductTemplateEntity(DefaultProducts.v1));
 
-        checkIfResponseIsEqualsToTOSet("/catalog/test/product",
-                Set.of(new ProductTemplateTO(DefaultProducts.v0), new ProductTemplateTO(DefaultProducts.v1),
-                        new ProductTemplateTO(DefaultProducts.v2), new ProductTemplateTO(DefaultProducts.v3),
-                        new ProductTemplateTO(DefaultProducts.v4), new ProductTemplateTO(DefaultProducts.v5),
-                        new ProductTemplateTO(DefaultProducts.v6), new ProductTemplateTO(DefaultProducts.v7)),
-                ProductTemplateTO.class);
+        checkIfResponseIsEqualsToEntitySet("/catalog/test/product",
+                Set.of(new ProductTemplateEntity(DefaultProducts.v0), new ProductTemplateEntity(DefaultProducts.v1),
+                        new ProductTemplateEntity(DefaultProducts.v2), new ProductTemplateEntity(DefaultProducts.v3),
+                        new ProductTemplateEntity(DefaultProducts.v4), new ProductTemplateEntity(DefaultProducts.v5),
+                        new ProductTemplateEntity(DefaultProducts.v6), new ProductTemplateEntity(DefaultProducts.v7)),
+                ProductTemplateEntity.class);
 
         client.get().uri("/catalog/test1/product")
                 .exchange()
@@ -46,14 +46,14 @@ public class ProductEndpointTest extends BaseEndpointTest {
     public void productPutAndDeleteTest() {
         // Update random workflow
         client.put().uri("/catalog/random")
-                .bodyValue(DefaultWorkflows.getWorkflowTemplateTO2())
+                .bodyValue(DefaultWorkflows.getWorkflowTemplateEntity2())
                 .exchange()
                 .expectStatus().isOk();
 
-        checkIfResponseIsEqualsToTO("/catalog/random", DefaultWorkflows.getWorkflowTemplateTO2());
+        checkIfResponseIsEqualsToEntity("/catalog/random", DefaultWorkflows.getWorkflowTemplateEntity2());
 
         // Put test
-        ProductTemplateTO v1Updated = new ProductTemplateTO(
+        ProductTemplateEntity v1Updated = new ProductTemplateEntity(
                 new ProductTemplate("v1", 150, new DeterministicTime(BigDecimal.valueOf(5.0))));
 
         client.put().uri("/catalog/random/product/v1")
@@ -61,7 +61,7 @@ public class ProductEndpointTest extends BaseEndpointTest {
                 .exchange()
                 .expectStatus().isOk();
 
-        checkIfResponseIsEqualsToTO("/catalog/random/product/v1", v1Updated);
+        checkIfResponseIsEqualsToEntity("/catalog/random/product/v1", v1Updated);
 
         // Delete test
         client.delete().uri("/catalog/random/product/v1")
@@ -73,11 +73,11 @@ public class ProductEndpointTest extends BaseEndpointTest {
                 .expectStatus().isNotFound();
 
         try {
-            WorkflowTemplate workflowTemplateUpdated = (WorkflowTemplate) DefaultWorkflows.getWorkflowTemplateTO2()
+            WorkflowTemplate workflowTemplateUpdated = (WorkflowTemplate) DefaultWorkflows.getWorkflowTemplateEntity2()
                     .convertAndValidate();
             workflowTemplateUpdated.removeVertex(workflowTemplateUpdated.findProduct("v1").get());
 
-            checkIfResponseIsEqualsToTO("/catalog/random", new WorkflowTemplateTO(workflowTemplateUpdated));
+            checkIfResponseIsEqualsToEntity("/catalog/random", new WorkflowTemplateEntity(workflowTemplateUpdated));
         } catch (Exception e) {
             e.printStackTrace();
         }

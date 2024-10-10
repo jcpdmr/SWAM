@@ -23,7 +23,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class AbstractProductTO<V extends AbstractProduct> implements MongodbTO<V> {
+public abstract class AbstractProductEntity<V extends AbstractProduct> implements MongodbEntity<V> {
     protected final String name;
     protected final Integer quantityProduced;
     @JsonDeserialize(using = StochasticTimeDeserializer.class)
@@ -31,7 +31,7 @@ public abstract class AbstractProductTO<V extends AbstractProduct> implements Mo
     protected final transient StochasticTime pdf;
     protected final ItemGroup itemGroup;
 
-    protected AbstractProductTO(V product) {
+    protected AbstractProductEntity(V product) {
         this.name = product.getName();
         if (product.isProcessed()) {
             this.quantityProduced = product.getQuantityProduced();
@@ -46,9 +46,9 @@ public abstract class AbstractProductTO<V extends AbstractProduct> implements Mo
 
     /**
      * Delegate the responsability to create the right type of object to the class
-     * that inherit from AbstractProductTO.
+     * that inherit from AbstractProductEntity.
      * 
-     * @return Object of a type that extends AbstractProductTO
+     * @return Object of a type that extends AbstractProductEntity
      */
     protected abstract V createProcessedProduct(String name, Integer quantityProduced, StochasticTime pdf);
 
@@ -71,7 +71,7 @@ public abstract class AbstractProductTO<V extends AbstractProduct> implements Mo
         try {
             return toProduct();
         } catch (Exception e) {
-            throw new ProcessingMessageException(e.getMessage(), "Validation error: cannot convert TO to Product",
+            throw new ProcessingMessageException(e.getMessage(), "Validation error: cannot convert Entity to Product",
                     400);
         }
     }
@@ -88,21 +88,21 @@ public abstract class AbstractProductTO<V extends AbstractProduct> implements Mo
             return false;
         }
 
-        AbstractProductTO<V> abstractProductTOToCompare = uncheckedCast(obj);
+        AbstractProductEntity<V> abstractProductEntityToCompare = uncheckedCast(obj);
 
-        if (!name.equals(abstractProductTOToCompare.name)) {
+        if (!name.equals(abstractProductEntityToCompare.name)) {
             return false;
         }
 
-        if (!itemGroup.equals(abstractProductTOToCompare.itemGroup)) {
+        if (!itemGroup.equals(abstractProductEntityToCompare.itemGroup)) {
             return false;
         }
 
         if (itemGroup.equals(ItemGroup.PROCESSED)) {
-            if (!quantityProduced.equals(abstractProductTOToCompare.quantityProduced)) {
+            if (!quantityProduced.equals(abstractProductEntityToCompare.quantityProduced)) {
                 return false;
             }
-            if (!AbstractProduct.arePdfEquals(pdf, abstractProductTOToCompare.pdf)) {
+            if (!AbstractProduct.arePdfEquals(pdf, abstractProductEntityToCompare.pdf)) {
                 return false;
             }
         }

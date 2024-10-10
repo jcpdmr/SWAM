@@ -8,7 +8,7 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import com.swam.commons.mongodb.MongodbTO;
+import com.swam.commons.mongodb.MongodbEntity;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,39 +22,39 @@ public abstract class BaseEndpointTest {
         client = WebTestClient.bindToServer().baseUrl(baseUrl).build();
     }
 
-    protected <T> void checkIfResponseIsEqualsToTO(String uri, MongodbTO<T> TOToCompare) {
+    protected <T> void checkIfResponseIsEqualsToEntity(String uri, MongodbEntity<T> EntityToCompare) {
         client.get().uri(uri)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(TOToCompare.getClass())
+                .expectBody(EntityToCompare.getClass())
                 .consumeWith(result -> {
-                    assertEquals(result.getResponseBody(), TOToCompare);
+                    assertEquals(result.getResponseBody(), EntityToCompare);
                 });
 
     }
 
-    protected <T> void checkIfResponseIsEqualsToTOSet(String uri, Set<MongodbTO<T>> TOSetToCompare,
-            Class<? extends MongodbTO<T>> TOClazz) {
+    protected <T> void checkIfResponseIsEqualsToEntitySet(String uri, Set<MongodbEntity<T>> EntitySetToCompare,
+            Class<? extends MongodbEntity<T>> EntityClazz) {
         client.get().uri(uri)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBodyList(TOClazz)
+                .expectBodyList(EntityClazz)
                 .consumeWith(result -> {
-                    boolean areEqual = TOSetToCompare.size() == result.getResponseBody().size() &&
-                            TOSetToCompare.stream()
+                    boolean areEqual = EntitySetToCompare.size() == result.getResponseBody().size() &&
+                            EntitySetToCompare.stream()
                                     .allMatch(dto -> result.getResponseBody().stream().anyMatch(r -> r.equals(dto)));
                     assertTrue(areEqual);
                 });
 
     }
 
-    protected <T> void checkIfResponseContainsTO(String uri, MongodbTO<T> TOToBeContained) {
+    protected <T> void checkIfResponseContainsEntity(String uri, MongodbEntity<T> EntityToBeContained) {
         client.get().uri(uri)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBodyList(TOToBeContained.getClass())
+                .expectBodyList(EntityToBeContained.getClass())
                 .consumeWith(result -> {
-                    assertTrue(result.getResponseBody().contains(TOToBeContained));
+                    assertTrue(result.getResponseBody().contains(EntityToBeContained));
                 });
     }
 

@@ -10,17 +10,17 @@ import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.MessageHandler;
 import com.swam.commons.intercommunication.ProcessingMessageException;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
-import com.swam.commons.mongodb.instance.WorkflowInstanceTO;
-import com.swam.commons.mongodb.instance.WorkflowInstanceTORepository;
+import com.swam.commons.mongodb.instance.WorkflowInstanceEntity;
+import com.swam.commons.mongodb.instance.WorkflowInstanceEntityRepository;
 
 @Service
 public class MakePersistenceHandler extends MessageHandler {
 
-    private final WorkflowInstanceTORepository workflowInstanceTORepository;
+    private final WorkflowInstanceEntityRepository workflowInstanceEntityRepository;
 
-    public MakePersistenceHandler(WorkflowInstanceTORepository workflowInstanceTORepository) {
+    public MakePersistenceHandler(WorkflowInstanceEntityRepository workflowInstanceEntityRepository) {
         super(List.of(TargetMessageHandler.MAKE_PERSISTENCE));
-        this.workflowInstanceTORepository = workflowInstanceTORepository;
+        this.workflowInstanceEntityRepository = workflowInstanceEntityRepository;
     }
 
     @Override
@@ -46,14 +46,15 @@ public class MakePersistenceHandler extends MessageHandler {
 
         // TODO: do we need additional sanity checks?
         ObjectMapper objectMapper = new ObjectMapper();
-        String serializedWorkflowInstanceTO = (String) context.getResponseBody();
+        String serializedWorkflowInstanceEntity = (String) context.getResponseBody();
         try {
-            WorkflowInstanceTO workflowInstanceTO = objectMapper.readValue(serializedWorkflowInstanceTO,
-                    WorkflowInstanceTO.class);
+            WorkflowInstanceEntity workflowInstanceEntity = objectMapper.readValue(serializedWorkflowInstanceEntity,
+                    WorkflowInstanceEntity.class);
 
-            WorkflowInstanceTO workflowInstanceTOSaved = workflowInstanceTORepository.save(workflowInstanceTO);
-            context.setResponse("Workflow correctly instantiated with id: " + workflowInstanceTOSaved.getId(), 200);
-            logger.info("WorkflowInstaceTO saved");
+            WorkflowInstanceEntity workflowInstanceEntitySaved = workflowInstanceEntityRepository
+                    .save(workflowInstanceEntity);
+            context.setResponse("Workflow correctly instantiated with id: " + workflowInstanceEntitySaved.getId(), 200);
+            logger.info("WorkflowInstaceEntity saved");
         } catch (JsonProcessingException e) {
             throw new ProcessingMessageException(e.getMessage(),
                     "Internal Server Error", 500);

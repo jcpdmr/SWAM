@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
-import com.swam.commons.mongodb.MongodbTO;
+import com.swam.commons.mongodb.MongodbEntity;
 
 import lombok.RequiredArgsConstructor;
 
@@ -61,46 +61,46 @@ public abstract class MessageHandler {
         return Optional.empty();
     }
 
-    protected <TO extends MongodbTO<?>, T> T convertResponseBody(Object responseBody,
-            Class<TO> clazz, Boolean toTO) throws ProcessingMessageException {
+    protected <EN extends MongodbEntity<?>, T> T convertResponseBody(Object responseBody,
+            Class<EN> clazz, Boolean toEntity) throws ProcessingMessageException {
         return uncheckedCast(
-                convertBody((String) responseBody, clazz, "Internal server error", 500, toTO));
+                convertBody((String) responseBody, clazz, "Internal server error", 500, toEntity));
     }
 
-    protected <TO extends MongodbTO<?>, T> T convertRequestBody(Optional<String> requestBody,
-            Class<TO> clazz, Boolean toTO) throws ProcessingMessageException {
+    protected <EN extends MongodbEntity<?>, T> T convertRequestBody(Optional<String> requestBody,
+            Class<EN> clazz, Boolean toEntity) throws ProcessingMessageException {
         // RequestBody Check
         if (requestBody.isEmpty()) {
             throw new ProcessingMessageException("Error request with empty body",
                     "Error: request with empty body", 400);
         }
         return uncheckedCast(
-                convertBody(requestBody.get(), clazz, "Error: request with empty body", 400, toTO));
+                convertBody(requestBody.get(), clazz, "Error: request with empty body", 400, toEntity));
     }
 
-    private <TO extends MongodbTO<?>> Object convertBody(String body,
-            Class<TO> clazz, String responseErrorMsg, Integer httpStatusCode, Boolean toTO)
+    private <EN extends MongodbEntity<?>> Object convertBody(String body,
+            Class<EN> clazz, String responseErrorMsg, Integer httpStatusCode, Boolean toEntity)
             throws ProcessingMessageException {
 
-        // TO deserialization
-        TO receivedTO = null;
+        // Entity deserialization
+        EN receivedEntity = null;
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            receivedTO = objectMapper.readValue(body, clazz);
+            receivedEntity = objectMapper.readValue(body, clazz);
         } catch (JsonProcessingException e) {
             throw new ProcessingMessageException(e.getMessage(),
                     responseErrorMsg, httpStatusCode);
         }
 
-        // TO convertion and validation
-        if (receivedTO == null) {
+        // Entity convertion and validation
+        if (receivedEntity == null) {
             throw new ProcessingMessageException(
-                    "Error TO of type: " + clazz + " is null",
+                    "Error Entity of type: " + clazz + " is null",
                     responseErrorMsg, httpStatusCode);
         } else {
-            Object convertedObject = receivedTO.convertAndValidate();
-            if (toTO) {
-                return receivedTO;
+            Object convertedObject = receivedEntity.convertAndValidate();
+            if (toEntity) {
+                return receivedEntity;
             } else {
                 return convertedObject;
             }

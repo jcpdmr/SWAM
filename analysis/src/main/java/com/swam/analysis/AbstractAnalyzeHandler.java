@@ -31,24 +31,24 @@ import com.swam.commons.intercommunication.CustomMessage;
 import com.swam.commons.intercommunication.MessageHandler;
 import com.swam.commons.intercommunication.ProcessingMessageException;
 import com.swam.commons.intercommunication.RoutingInstructions.TargetMessageHandler;
-import com.swam.commons.mongodb.AbstractWorkflowTO;
+import com.swam.commons.mongodb.AbstractWorkflowEntity;
 
 public abstract class AbstractAnalyzeHandler<V extends AbstractProduct> extends MessageHandler {
 
-    private final Class<? extends AbstractWorkflowTO<?>> workflowTOclass;
+    private final Class<? extends AbstractWorkflowEntity<?>> workflowEntityclass;
     private final Class<V> dagVertexClass;
 
     public AbstractAnalyzeHandler(List<TargetMessageHandler> bindings,
-            Class<? extends AbstractWorkflowTO<?>> workflowTOclass, Class<V> dagVertexClass) {
+            Class<? extends AbstractWorkflowEntity<?>> workflowEntityclass, Class<V> dagVertexClass) {
         super(bindings);
-        this.workflowTOclass = workflowTOclass;
+        this.workflowEntityclass = workflowEntityclass;
         this.dagVertexClass = dagVertexClass;
     }
 
     @Override
     public void handle(CustomMessage context, TargetMessageHandler triggeredBinding) throws ProcessingMessageException {
         AbstractWorkflow<V> abstractWorkflow = convertResponseBody(
-                context.getResponseBody(), workflowTOclass, false);
+                context.getResponseBody(), workflowEntityclass, false);
         // System.out.println(abstractWorkflow);
 
         StructuredTree<V> structuredTree = new StructuredTree<V>(abstractWorkflow.cloneDag(), dagVertexClass);

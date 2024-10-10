@@ -10,16 +10,16 @@ import org.springframework.data.mongodb.repository.Update;
 
 import com.qesm.workflow.AbstractProduct;
 
-public interface WorkflowTORepository<WFTO extends AbstractWorkflowTO<? extends AbstractProduct>, P extends AbstractProductTO<? extends AbstractProduct>>
-        extends MongoRepository<WFTO, String> {
+public interface WorkflowEntityRepository<WFE extends AbstractWorkflowEntity<? extends AbstractProduct>, P extends AbstractProductEntity<? extends AbstractProduct>>
+        extends MongoRepository<WFE, String> {
 
     // @Aggregation(pipeline = {
     // "{ $match: { '_id': ?0 } }",
-    // "{ $unwind: '$subWorkflowTOList' }",
-    // "{ $match: { 'subWorkflowTOList._id': ?1 } }",
-    // "{ $replaceRoot: { newRoot: '$subWorkflowTOList' } }"
+    // "{ $unwind: '$subWorkflowEntityList' }",
+    // "{ $match: { 'subWorkflowEntityList._id': ?1 } }",
+    // "{ $replaceRoot: { newRoot: '$subWorkflowEntityList' } }"
     // })
-    // Optional<AbstractWorkflowTO<? extends AbstractProduct>>
+    // Optional<AbstractWorkflowEntity<? extends AbstractProduct>>
     // findSpecificSubWorkflow(String workflowId,
     // String subWorkflowId);
 
@@ -28,7 +28,7 @@ public interface WorkflowTORepository<WFTO extends AbstractWorkflowTO<? extends 
             "{ $project: { vertex: { $getField: { field: ?1, input: '$vertexMap' } } } }",
             "{ $replaceRoot: { newRoot: '$vertex' } }"
     })
-    Optional<AbstractProductTO<? extends AbstractProduct>> findVertexByWorkflowIdAndVertexName(String workflowId,
+    Optional<AbstractProductEntity<? extends AbstractProduct>> findVertexByWorkflowIdAndVertexName(String workflowId,
             String vertexName);
 
     // @Aggregation(pipeline = {
@@ -37,19 +37,19 @@ public interface WorkflowTORepository<WFTO extends AbstractWorkflowTO<? extends 
     // "{ $unwind: '$vertexMap' }",
     // "{ $replaceRoot: { newRoot: '$vertexMap.v' } }"
     // })
-    // List<AbstractProductTO<? extends AbstractProduct>>
+    // List<AbstractProductEntity<? extends AbstractProduct>>
     // findAllVertexByWorkflowId(String workflowId);
 
     @Aggregation(pipeline = {
             "{ $match: { _id: ?0 } }",
             "{ $project: { vertexMap: 1 , 'edgeSet' : null, _class : 1 } }"
     })
-    Optional<AbstractWorkflowTO<? extends AbstractProduct>> findVertexMapProjectionByWorkflowId(String workflowId);
+    Optional<AbstractWorkflowEntity<? extends AbstractProduct>> findVertexMapProjectionByWorkflowId(String workflowId);
 
     @Aggregation(pipeline = {
             "{ $match: { _id: ?0, 'vertexMap.?1': { $exists: true } } }"
     })
-    Optional<WFTO> findWorkflowIfVertexExists(String workflowId,
+    Optional<WFE> findWorkflowIfVertexExists(String workflowId,
             String productId);
 
     @Aggregation(pipeline = {

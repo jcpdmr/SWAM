@@ -28,37 +28,37 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class AbstractWorkflowTO<P extends AbstractProduct> implements MongodbTO<AbstractWorkflow<P>> {
+public abstract class AbstractWorkflowEntity<P extends AbstractProduct> implements MongodbEntity<AbstractWorkflow<P>> {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     protected @Id String id;
-    protected final Map<String, ? extends AbstractProductTO<P>> vertexMap;
-    protected final Set<? extends AbstractCustomEdgeTO> edgeSet;
+    protected final Map<String, ? extends AbstractProductEntity<P>> vertexMap;
+    protected final Set<? extends AbstractCustomEdgeEntity> edgeSet;
     @JsonIgnore
     @Transient
     protected final HashMap<String, P> nameToProductMap;
 
-    protected AbstractWorkflowTO(String id, Map<String, ? extends AbstractProductTO<P>> vertexMap,
-            Set<? extends AbstractCustomEdgeTO> edgeSet) {
+    protected AbstractWorkflowEntity(String id, Map<String, ? extends AbstractProductEntity<P>> vertexMap,
+            Set<? extends AbstractCustomEdgeEntity> edgeSet) {
         this.id = id;
         this.vertexMap = vertexMap;
         this.edgeSet = edgeSet;
         this.nameToProductMap = new HashMap<>();
     }
 
-    protected AbstractWorkflowTO(Map<String, ? extends AbstractProductTO<P>> vertexMap,
-            Set<? extends AbstractCustomEdgeTO> edgeSet) {
+    protected AbstractWorkflowEntity(Map<String, ? extends AbstractProductEntity<P>> vertexMap,
+            Set<? extends AbstractCustomEdgeEntity> edgeSet) {
         this.id = null;
         this.vertexMap = vertexMap;
         this.edgeSet = edgeSet;
         this.nameToProductMap = new HashMap<>();
     }
 
-    protected AbstractWorkflowTO(AbstractWorkflow<P> workflow) {
+    protected AbstractWorkflowEntity(AbstractWorkflow<P> workflow) {
         this.id = null;
         this.vertexMap = workflow.cloneDag().vertexSet().stream()
-                .collect(Collectors.toMap(vertex -> vertex.getName(), vertex -> createProductTO(vertex)));
-        this.edgeSet = workflow.cloneDag().edgeSet().stream().map(edge -> createCustomEdgeTO(edge))
+                .collect(Collectors.toMap(vertex -> vertex.getName(), vertex -> createProductEntity(vertex)));
+        this.edgeSet = workflow.cloneDag().edgeSet().stream().map(edge -> createCustomEdgeEntity(edge))
                 .collect(Collectors.toSet());
 
         this.nameToProductMap = new HashMap<>();
@@ -67,16 +67,16 @@ public abstract class AbstractWorkflowTO<P extends AbstractProduct> implements M
     private AbstractWorkflow<P> toWorkflow() throws ProcessingMessageException {
         DirectedAcyclicGraph<P, CustomEdge> dag = new DirectedAcyclicGraph<>(CustomEdge.class);
 
-        for (Entry<String, ? extends AbstractProductTO<P>> producTOEntry : vertexMap.entrySet()) {
-            P product = producTOEntry.getValue().convertAndValidate();
-            nameToProductMap.put(producTOEntry.getKey(), product);
+        for (Entry<String, ? extends AbstractProductEntity<P>> productEntityEntry : vertexMap.entrySet()) {
+            P product = productEntityEntry.getValue().convertAndValidate();
+            nameToProductMap.put(productEntityEntry.getKey(), product);
             dag.addVertex(product);
         }
 
-        for (AbstractCustomEdgeTO customEdgeTO : edgeSet) {
-            CustomEdge customEdge = dag.addEdge(nameToProductMap.get(customEdgeTO.getSourceName()),
-                    nameToProductMap.get(customEdgeTO.getTargetName()));
-            customEdge.setQuantityRequired(customEdgeTO.getQuantityRequired());
+        for (AbstractCustomEdgeEntity customEdgeEntity : edgeSet) {
+            CustomEdge customEdge = dag.addEdge(nameToProductMap.get(customEdgeEntity.getSourceName()),
+                    nameToProductMap.get(customEdgeEntity.getTargetName()));
+            customEdge.setQuantityRequired(customEdgeEntity.getQuantityRequired());
         }
 
         return createWorkflow(dag);
@@ -95,7 +95,7 @@ public abstract class AbstractWorkflowTO<P extends AbstractProduct> implements M
         }
     }
 
-    public AbstractWorkflowTO<P> getSubWorkflowTO(String vertexName) throws ProcessingMessageException {
+    public AbstractWorkflowEntity<P> getSubWorkflowEntity(String vertexName) throws ProcessingMessageException {
         if (!vertexMap.containsKey(vertexName)) {
             throw new ProcessingMessageException("SubWorkflow with subWorkflowId: " + vertexName
                     + " not found for Workflow with workflowId: " + id, 404);
@@ -121,23 +121,23 @@ public abstract class AbstractWorkflowTO<P extends AbstractProduct> implements M
             return false;
         }
 
-        AbstractWorkflowTO<P> workflowTOToCompare = uncheckedCast(obj);
+        AbstractWorkflowEntity<P> workflowEntityToCompare = uncheckedCast(obj);
 
-        if (!vertexMap.equals(workflowTOToCompare.vertexMap)) {
+        if (!vertexMap.equals(workflowEntityToCompare.vertexMap)) {
             return false;
         }
-        if (!edgeSet.equals(workflowTOToCompare.edgeSet)) {
+        if (!edgeSet.equals(workflowEntityToCompare.edgeSet)) {
             return false;
         }
 
         return true;
     }
 
-    public abstract AbstractWorkflowTO<P> buildFromWorkflow(AbstractWorkflow<P> workflow);
+    public abstract AbstractWorkflowEntity<P> buildFromWorkflow(AbstractWorkflow<P> workflow);
 
-    protected abstract AbstractProductTO<P> createProductTO(P vertex);
+    protected abstract AbstractProductEntity<P> createProductEntity(P vertex);
 
-    protected abstract AbstractCustomEdgeTO createCustomEdgeTO(CustomEdge edge);
+    protected abstract AbstractCustomEdgeEntity createCustomEdgeEntity(CustomEdge edge);
 
     protected abstract AbstractWorkflow<P> createWorkflow(DirectedAcyclicGraph<P, CustomEdge> dag);
 }
