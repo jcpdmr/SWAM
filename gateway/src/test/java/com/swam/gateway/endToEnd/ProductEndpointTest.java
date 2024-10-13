@@ -1,4 +1,4 @@
-package com.swam.gateway.integration;
+package com.swam.gateway.endToEnd;
 
 import java.math.BigDecimal;
 import java.util.Set;

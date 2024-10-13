@@ -1,4 +1,4 @@
-package com.swam.gateway.integration;
+package com.swam.gateway.endToEnd;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

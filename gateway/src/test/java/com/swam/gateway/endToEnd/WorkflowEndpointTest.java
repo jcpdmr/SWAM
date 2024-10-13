@@ -1,4 +1,4 @@
-package com.swam.gateway.integration;
+package com.swam.gateway.endToEnd;
 
 import org.junit.jupiter.api.Test;
 
